@@ -37,7 +37,7 @@ app.use(
     extended: true,
   })
 );
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
