@@ -1,0 +1,28 @@
+.unit {
+  min-height: 100vh;
+}
+
+[data-bs-theme=light] .unit.default {
+  background-color: rgb(182, 182, 182);
+}
+
+.unit-progress {
+  min-height: 10vh;
+}
+
+.unit-progress.default {
+  background-color: rgb(84, 84, 84);
+  color: beige;
+}
+
+.subunit {
+  min-height: 90vh;
+}
+
+[data-bs-theme=light] .subunit.default {
+  background-color: rgb(230, 230, 230);
+}
+
+[data-bs-theme=light] .collapsible-card-header {
+  background-color: white !important;
+}

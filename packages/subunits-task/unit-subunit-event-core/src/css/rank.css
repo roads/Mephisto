@@ -1,0 +1,33 @@
+.card.rankable {
+  opacity: 1.0;
+}
+
+.card.rankable.reference {
+  border-width: 0.3em;
+}
+
+.card.rankable.reference.eligible {
+  border-color: #a5a5a5;
+}
+
+.card.rankable.reference.eligible:hover {
+  cursor: pointer;
+  border-color: #797979;
+}
+
+.card.rankable.reference.ineligible {
+  opacity: 0.6;
+}
+
+.card.rankable.reference.ineligible:hover {
+  cursor: default;
+}
+
+.card.rankable.reference.selected {
+  border-color: #000000;
+}
+
+.card.rankable.reference.selected:hover {
+  cursor: pointer;
+  border-color: #797979;
+}

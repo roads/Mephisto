@@ -1,0 +1,7 @@
+.self-serve-landing {
+    min-height: 100vh;
+}
+
+[data-bs-theme=light] .self-serve-landing {
+    background-color: rgb(230, 230, 230);
+}
