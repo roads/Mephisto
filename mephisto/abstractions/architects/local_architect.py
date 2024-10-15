@@ -15,6 +15,7 @@ import requests
 
 from mephisto.abstractions.architect import Architect, ArchitectArgs
 from dataclasses import dataclass, field
+from omegaconf import MISSING
 from mephisto.operations.registry import register_mephisto_abstraction
 from typing import Any, Optional, Dict, List, TYPE_CHECKING, Callable
 
@@ -43,6 +44,17 @@ class LocalArchitectArgs(ArchitectArgs):
         default="localhost", metadata={"help": "Addressible location of the server"}
     )
     port: str = field(default="3000", metadata={"help": "Port to launch the server on"})
+    public_port: str = field(
+        default=MISSING,
+        metadata={
+            "help": (
+                "Optional port that is used to publicly access the server. Only "
+                "necessary if different from the port the server was launched "
+                "on (i.e., `port`). If provided, this will typically be 80 "
+                "(http) or 443 (https)."
+            )
+        },
+    )
 
 
 @register_mephisto_abstraction()
@@ -75,6 +87,7 @@ class LocalArchitect(Architect):
         self.running_dir: Optional[str] = None
         self.hostname: Optional[str] = args.architect.hostname
         self.port: Optional[str] = args.architect.port
+        self.public_port = args.architect.get("public_port", None)
         self.cleanup_called = False
         self.server_type = args.architect.server_type
         self.server_source_path = args.architect.get("server_source_path", None)
@@ -83,6 +96,11 @@ class LocalArchitect(Architect):
         """Return the path to the local server socket"""
         assert self.hostname is not None, "No hostname for socket"
         assert self.port is not None, "No ports for socket"
+
+        port = self.port
+        if self.public_port is not None:
+            port = self.public_port
+
         if "https://" in self.hostname:
             basename = self.hostname.split("https://")[1]
             protocol = "wss"
@@ -96,7 +114,7 @@ class LocalArchitect(Architect):
         if basename in ["localhost", "127.0.0.1"]:
             protocol = "ws"
 
-        return [f"{protocol}://{basename}:{self.port}/"]
+        return [f"{protocol}://{basename}:{port}/"]
 
     def get_channels(
         self,
@@ -178,6 +196,10 @@ class LocalArchitect(Architect):
         if port is None:
             port = input("Please enter the port given above, likely 3000: ")
             self.port = port
+
+        if self.public_port is not None:
+            port = self.public_port
+
         return "{}:{}".format(host, port)
 
     def cleanup(self) -> None:
