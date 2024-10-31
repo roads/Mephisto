@@ -25,6 +25,7 @@ function InputField({
   customTriggers,
   className,
   cleanErrorsOnChange,
+  remoteProcedureCollection,
 }) {
   const [value, setValue] = React.useState(DEFAULT_VALUE);
 
@@ -37,16 +38,17 @@ function InputField({
       return;
     }
 
-    runCustomTrigger(
-      field.triggers,
-      triggerName,
-      customTriggers,
-      formData,
-      updateFormData,
-      field,
-      value,
-      formFields
-    );
+    runCustomTrigger({
+      elementTriggersConfig: field.triggers,
+      elementTriggerName: triggerName,
+      customTriggers: customTriggers,
+      formData: formData,
+      updateFormData: updateFormData,
+      element: field,
+      fieldValue: value,
+      formFields: formFields,
+      remoteProcedureCollection: remoteProcedureCollection,
+    });
   }
 
   function onChange(e) {

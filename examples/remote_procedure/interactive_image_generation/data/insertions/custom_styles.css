@@ -1,0 +1,33 @@
+/* Example of custom css */
+
+.custom--dynamic-fieldset .row {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.custom--row-with-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom--row-with-buttons .row-help {
+  border-top: none !important;
+  display: flex;
+  justify-content: center;
+}
+
+.custom--row-with-buttons .col {
+  flex-grow: initial;
+}
+
+.custom--task-image {
+  max-width: 600px;
+  max-height: 400px;
+}
+
+.custom--fieldset-image {
+  max-width: 400px;
+  max-height: 200px;
+}

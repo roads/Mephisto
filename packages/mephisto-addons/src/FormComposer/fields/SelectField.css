@@ -8,6 +8,20 @@
   width: 100%;
 }
 
-.fc-select-field {
+.fc-select-field:not(.is-invalid) {
   background-color: var(--input-bg-color);
+}
+
+.fc-select-field.disabled {
+  cursor: default !important;
+}
+
+.fc-select-field .dropdown-toggle {
+  border: 1px solid #ced4da;
+}
+
+.fc-select-field.disabled .dropdown-toggle {
+  background-color: #e9ecef;
+  cursor: default !important;
+  opacity: 1;
 }

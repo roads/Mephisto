@@ -8,16 +8,7 @@ import React from "react";
 
 const DEFAULT_VALUE = "";
 
-function HiddenField({
-  field,
-  formData,
-  updateFormData,
-  disabled,
-  initialFormData,
-  inReviewState,
-  formFields,
-  customTriggers,
-}) {
+function HiddenField({ field, formData, updateFormData, disabled }) {
   const [value, setValue] = React.useState(DEFAULT_VALUE);
 
   // --- Effects ---

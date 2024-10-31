@@ -176,14 +176,24 @@ The `myTriggerEventType` parameter can take one of the following values, dependi
 Example in `custom_triggers.js`...
 
 ```js
-export function onClickSectionHeader(
+export function onClickSectionHeader({
   formData, // React state for the entire form
   updateFormData, // callback to set the React state
   element, // "field", "section", or "submit button" element that invoked this trigger
   fieldValue, // (optional) current field value, if the `element` is a form field
-  formFields, // (optional) Object containing all form fields as defined in 'unit_config.json'
-  sectionName // Argument for this trigger (taken from form config)
-) {
+  formFields, // Object containing all form fields as defined in 'unit_config.json'
+  remoteProcedureCollection, // (optional) Collection or remote procedures
+  setDynamicFormElementsConfig, // (optional) Setter for React state with dynamic elements
+  setInvalidFormFields, // (optional) Setter for React state with form fields errors
+  setSubmitErrors, // (optional) Setter for React state with form submit errors
+  setSubmitSuccessText, // (optional) Setter for React state with success text next to submit button
+  submitForm, // (optional) Function that submits form
+  triggerArgs, // Trigger-specific arguments (taken from form config)
+}) {
+  const [
+    sectionName, // Argument for this trigger (taken from form config)
+  ] = triggerArgs;
+  
   alert(`${sectionName} section was clicked!`);
 }
 ```

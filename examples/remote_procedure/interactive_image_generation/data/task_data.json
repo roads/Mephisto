@@ -1,0 +1,668 @@
+[
+  {
+    "form": {
+      "title": "Interactive Generation of a Look-Alike Image",
+      "instruction": "<div>\n  This is the target image that we want to closely reproduce by providing text\n  prompts<br />\n\n  <img class=\"custom--task-image\" src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/2010-kodiak-bear-1.jpg/640px-2010-kodiak-bear-1.jpg\" alt=\"\" /><br />\n\n  <ul>\n    <li>\n      Below you will provide detailed text prompts instructing an algorithm to\n      generate a similar-looking image.\n    </li>\n    <li>\n      After each attempt you will score the resemblance between the generated\n      and the target images\n    </li>\n    <li>\n      Once the likeliness score reaches 10 (perfect), or a time/attempts limit\n      is reached, the task will finish.\n    </li>\n    <li>\n      You can also finish task results early by clicking \"Exit\" - but that will\n      lower the quality of your submission.\n    </li>\n  </ul>\n</div>\n",
+      "sections": [
+        {
+          "name": "self_intro_section",
+          "title": "About you",
+          "instruction": "<p>Please introduce yourself</p>",
+          "collapsable": true,
+          "fieldsets": [
+            {
+              "title": "Personal information",
+              "instruction": "",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "help": "",
+                      "id": "id_age",
+                      "label": "Age",
+                      "name": "age",
+                      "placeholder": "Type your age",
+                      "tooltip": "Your age",
+                      "type": "input",
+                      "validators": {
+                        "required": true,
+                        "regexp": ["^[0-9]+$", "ig"]
+                      },
+                      "value": ""
+                    },
+                    {
+                      "id": "id_gender",
+                      "label": "Gender",
+                      "multiple": false,
+                      "name": "gender",
+                      "options": [
+                        {
+                          "label": "---",
+                          "value": ""
+                        },
+                        {
+                          "label": "Male",
+                          "value": "male"
+                        },
+                        {
+                          "label": "Female",
+                          "value": "female"
+                        },
+                        {
+                          "label": "Other",
+                          "value": "other"
+                        }
+                      ],
+                      "type": "select",
+                      "validators": {
+                        "required": true
+                      },
+                      "value": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "interactive_section",
+          "title": "Generated images",
+          "instruction": "<p>Provide prompts to generate images</p>",
+          "collapsable": false,
+          "fieldsets": [
+            {
+              "instruction": "Click \"Start\" button to continue",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "id": "id_prompt_0",
+                      "label": "Please provide a detailed prompt to algorithm to generate an image that resemples the target image above",
+                      "name": "prompt_0",
+                      "type": "textarea",
+                      "validators": {
+                        "minLength": 20,
+                        "maxLength": 500,
+                        "required": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "classes": "custom--row-with-buttons",
+                  "fields": [
+                    {
+                      "id": "id_start_dynamic_button",
+                      "classes_input_element": "btn-primary btn-sm",
+                      "name": "start",
+                      "tooltip": "Generate an updated image",
+                      "type": "button",
+                      "triggers": {
+                        "onClick": [
+                          "requestNextFieldSet",
+                          ["interactive_section", null]
+                        ]
+                      },
+                      "value": "Start"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "lookup_name": "low_score_loop",
+              "instruction": "<div>\n  <div>This is the generated image. Does it look close enough?</div>\n\n  <div>\n    <img class=\"custom--fieldset-image\" src=\"[[image_url]]\" alt=\"\" />\n  </div>\n</div>\n",
+              "classes": "custom--dynamic-fieldset",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "id": "id_score_1",
+                      "label": "How closely does the prompted image match the target image (on scale 1-10)?",
+                      "multiple": false,
+                      "name": "score_1",
+                      "options": [
+                        {
+                          "label": "---",
+                          "value": ""
+                        },
+                        {
+                          "label": "1",
+                          "value": 1
+                        },
+                        {
+                          "label": "2",
+                          "value": 2
+                        },
+                        {
+                          "label": "3",
+                          "value": 3
+                        },
+                        {
+                          "label": "4",
+                          "value": 4
+                        },
+                        {
+                          "label": "5",
+                          "value": 5
+                        },
+                        {
+                          "label": "6",
+                          "value": 6
+                        },
+                        {
+                          "label": "7",
+                          "value": 7
+                        },
+                        {
+                          "label": "8",
+                          "value": 8
+                        },
+                        {
+                          "label": "9",
+                          "value": 9
+                        },
+                        {
+                          "label": "10",
+                          "value": 10
+                        }
+                      ],
+                      "type": "select",
+                      "validators": {
+                        "required": true
+                      },
+                      "value": ""
+                    }
+                  ]
+                },
+                {
+                  "fields": [
+                    {
+                      "id": "id_prompt_1",
+                      "label": "Update the prompt to generate an image that's closer to the target",
+                      "name": "prompt_1",
+                      "type": "textarea",
+                      "validators": {
+                        "minLength": 20,
+                        "maxLength": 500,
+                        "required": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "classes": "custom--row-with-buttons",
+                  "fields": [
+                    {
+                      "id": "id_continue_dynamic_button_1",
+                      "classes_input_element": "btn-primary btn-sm",
+                      "name": "continue_dynamic_button_1",
+                      "tooltip": "Generate an updated image",
+                      "type": "button",
+                      "triggers": {
+                        "onClick": [
+                          "requestNextFieldSet",
+                          ["interactive_section", "low_score_loop"]
+                        ]
+                      },
+                      "value": "Update"
+                    }
+                  ],
+                  "help": "Click this button to submit your response"
+                }
+              ]
+            },
+            {
+              "lookup_name": "high_score_loop",
+              "instruction": "<div>\n  <div>We're on the right track! Is this image even closer to the taget?</div>\n\n  <div>\n    <img class=\"custom--fieldset-image\" src=\"[[image_url]]\" alt=\"\" />\n  </div>\n</div>\n",
+              "classes": "custom--dynamic-fieldset",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "id": "id_score_2",
+                      "label": "How closely does the prompted image match the target image (on scale 1-10)?",
+                      "multiple": false,
+                      "name": "score_2",
+                      "options": [
+                        {
+                          "label": "---",
+                          "value": ""
+                        },
+                        {
+                          "label": "1",
+                          "value": 1
+                        },
+                        {
+                          "label": "2",
+                          "value": 2
+                        },
+                        {
+                          "label": "3",
+                          "value": 3
+                        },
+                        {
+                          "label": "4",
+                          "value": 4
+                        },
+                        {
+                          "label": "5",
+                          "value": 5
+                        },
+                        {
+                          "label": "6",
+                          "value": 6
+                        },
+                        {
+                          "label": "7",
+                          "value": 7
+                        },
+                        {
+                          "label": "8",
+                          "value": 8
+                        },
+                        {
+                          "label": "9",
+                          "value": 9
+                        },
+                        {
+                          "label": "10",
+                          "value": 10
+                        }
+                      ],
+                      "type": "select",
+                      "validators": {
+                        "required": true
+                      },
+                      "value": ""
+                    }
+                  ]
+                },
+                {
+                  "fields": [
+                    {
+                      "id": "id_prompt_2",
+                      "label": "Update the prompt to generate an image that's closer to the target",
+                      "name": "prompt_2",
+                      "type": "textarea",
+                      "validators": {
+                        "minLength": 20,
+                        "maxLength": 500,
+                        "required": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "classes": "custom--row-with-buttons",
+                  "fields": [
+                    {
+                      "id": "id_continue_dynamic_button_2",
+                      "classes_input_element": "btn-primary btn-sm",
+                      "name": "continue_dynamic_button_2",
+                      "tooltip": "Generate an updated image",
+                      "type": "button",
+                      "triggers": {
+                        "onClick": [
+                          "requestNextFieldSet",
+                          ["interactive_section", "high_score_loop"]
+                        ]
+                      },
+                      "value": "Update"
+                    }
+                  ],
+                  "help": "Click this button to submit your response"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "submit_button": {
+        "classes_button_element": "btn-outline-success",
+        "instruction": "<i>Skip the remainder of the task and finish with incomplete result.</i>",
+        "text": "Exit",
+        "tooltip": "Submit and exit form early"
+      }
+    },
+    "form_metadata": {
+      "tokens_values": {
+        "target_image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/2010-kodiak-bear-1.jpg/640px-2010-kodiak-bear-1.jpg"
+      }
+    }
+  },
+  {
+    "form": {
+      "title": "Interactive Generation of a Look-Alike Image",
+      "instruction": "<div>\n  This is the target image that we want to closely reproduce by providing text\n  prompts<br />\n\n  <img class=\"custom--task-image\" src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Lo_sbadiglio.jpg/640px-Lo_sbadiglio.jpg\" alt=\"\" /><br />\n\n  <ul>\n    <li>\n      Below you will provide detailed text prompts instructing an algorithm to\n      generate a similar-looking image.\n    </li>\n    <li>\n      After each attempt you will score the resemblance between the generated\n      and the target images\n    </li>\n    <li>\n      Once the likeliness score reaches 10 (perfect), or a time/attempts limit\n      is reached, the task will finish.\n    </li>\n    <li>\n      You can also finish task results early by clicking \"Exit\" - but that will\n      lower the quality of your submission.\n    </li>\n  </ul>\n</div>\n",
+      "sections": [
+        {
+          "name": "self_intro_section",
+          "title": "About you",
+          "instruction": "<p>Please introduce yourself</p>",
+          "collapsable": true,
+          "fieldsets": [
+            {
+              "title": "Personal information",
+              "instruction": "",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "help": "",
+                      "id": "id_age",
+                      "label": "Age",
+                      "name": "age",
+                      "placeholder": "Type your age",
+                      "tooltip": "Your age",
+                      "type": "input",
+                      "validators": {
+                        "required": true,
+                        "regexp": ["^[0-9]+$", "ig"]
+                      },
+                      "value": ""
+                    },
+                    {
+                      "id": "id_gender",
+                      "label": "Gender",
+                      "multiple": false,
+                      "name": "gender",
+                      "options": [
+                        {
+                          "label": "---",
+                          "value": ""
+                        },
+                        {
+                          "label": "Male",
+                          "value": "male"
+                        },
+                        {
+                          "label": "Female",
+                          "value": "female"
+                        },
+                        {
+                          "label": "Other",
+                          "value": "other"
+                        }
+                      ],
+                      "type": "select",
+                      "validators": {
+                        "required": true
+                      },
+                      "value": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "interactive_section",
+          "title": "Generated images",
+          "instruction": "<p>Provide prompts to generate images</p>",
+          "collapsable": false,
+          "fieldsets": [
+            {
+              "instruction": "Click \"Start\" button to continue",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "id": "id_prompt_0",
+                      "label": "Please provide a detailed prompt to algorithm to generate an image that resemples the target image above",
+                      "name": "prompt_0",
+                      "type": "textarea",
+                      "validators": {
+                        "minLength": 20,
+                        "maxLength": 500,
+                        "required": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "classes": "custom--row-with-buttons",
+                  "fields": [
+                    {
+                      "id": "id_start_dynamic_button",
+                      "classes_input_element": "btn-primary btn-sm",
+                      "name": "start",
+                      "tooltip": "Generate an updated image",
+                      "type": "button",
+                      "triggers": {
+                        "onClick": [
+                          "requestNextFieldSet",
+                          ["interactive_section", null]
+                        ]
+                      },
+                      "value": "Start"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "lookup_name": "low_score_loop",
+              "instruction": "<div>\n  <div>This is the generated image. Does it look close enough?</div>\n\n  <div>\n    <img class=\"custom--fieldset-image\" src=\"[[image_url]]\" alt=\"\" />\n  </div>\n</div>\n",
+              "classes": "custom--dynamic-fieldset",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "id": "id_score_1",
+                      "label": "How closely does the prompted image match the target image (on scale 1-10)?",
+                      "multiple": false,
+                      "name": "score_1",
+                      "options": [
+                        {
+                          "label": "---",
+                          "value": ""
+                        },
+                        {
+                          "label": "1",
+                          "value": 1
+                        },
+                        {
+                          "label": "2",
+                          "value": 2
+                        },
+                        {
+                          "label": "3",
+                          "value": 3
+                        },
+                        {
+                          "label": "4",
+                          "value": 4
+                        },
+                        {
+                          "label": "5",
+                          "value": 5
+                        },
+                        {
+                          "label": "6",
+                          "value": 6
+                        },
+                        {
+                          "label": "7",
+                          "value": 7
+                        },
+                        {
+                          "label": "8",
+                          "value": 8
+                        },
+                        {
+                          "label": "9",
+                          "value": 9
+                        },
+                        {
+                          "label": "10",
+                          "value": 10
+                        }
+                      ],
+                      "type": "select",
+                      "validators": {
+                        "required": true
+                      },
+                      "value": ""
+                    }
+                  ]
+                },
+                {
+                  "fields": [
+                    {
+                      "id": "id_prompt_1",
+                      "label": "Update the prompt to generate an image that's closer to the target",
+                      "name": "prompt_1",
+                      "type": "textarea",
+                      "validators": {
+                        "minLength": 20,
+                        "maxLength": 500,
+                        "required": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "classes": "custom--row-with-buttons",
+                  "fields": [
+                    {
+                      "id": "id_continue_dynamic_button_1",
+                      "classes_input_element": "btn-primary btn-sm",
+                      "name": "continue_dynamic_button_1",
+                      "tooltip": "Generate an updated image",
+                      "type": "button",
+                      "triggers": {
+                        "onClick": [
+                          "requestNextFieldSet",
+                          ["interactive_section", "low_score_loop"]
+                        ]
+                      },
+                      "value": "Update"
+                    }
+                  ],
+                  "help": "Click this button to submit your response"
+                }
+              ]
+            },
+            {
+              "lookup_name": "high_score_loop",
+              "instruction": "<div>\n  <div>We're on the right track! Is this image even closer to the taget?</div>\n\n  <div>\n    <img class=\"custom--fieldset-image\" src=\"[[image_url]]\" alt=\"\" />\n  </div>\n</div>\n",
+              "classes": "custom--dynamic-fieldset",
+              "rows": [
+                {
+                  "fields": [
+                    {
+                      "id": "id_score_2",
+                      "label": "How closely does the prompted image match the target image (on scale 1-10)?",
+                      "multiple": false,
+                      "name": "score_2",
+                      "options": [
+                        {
+                          "label": "---",
+                          "value": ""
+                        },
+                        {
+                          "label": "1",
+                          "value": 1
+                        },
+                        {
+                          "label": "2",
+                          "value": 2
+                        },
+                        {
+                          "label": "3",
+                          "value": 3
+                        },
+                        {
+                          "label": "4",
+                          "value": 4
+                        },
+                        {
+                          "label": "5",
+                          "value": 5
+                        },
+                        {
+                          "label": "6",
+                          "value": 6
+                        },
+                        {
+                          "label": "7",
+                          "value": 7
+                        },
+                        {
+                          "label": "8",
+                          "value": 8
+                        },
+                        {
+                          "label": "9",
+                          "value": 9
+                        },
+                        {
+                          "label": "10",
+                          "value": 10
+                        }
+                      ],
+                      "type": "select",
+                      "validators": {
+                        "required": true
+                      },
+                      "value": ""
+                    }
+                  ]
+                },
+                {
+                  "fields": [
+                    {
+                      "id": "id_prompt_2",
+                      "label": "Update the prompt to generate an image that's closer to the target",
+                      "name": "prompt_2",
+                      "type": "textarea",
+                      "validators": {
+                        "minLength": 20,
+                        "maxLength": 500,
+                        "required": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "classes": "custom--row-with-buttons",
+                  "fields": [
+                    {
+                      "id": "id_continue_dynamic_button_2",
+                      "classes_input_element": "btn-primary btn-sm",
+                      "name": "continue_dynamic_button_2",
+                      "tooltip": "Generate an updated image",
+                      "type": "button",
+                      "triggers": {
+                        "onClick": [
+                          "requestNextFieldSet",
+                          ["interactive_section", "high_score_loop"]
+                        ]
+                      },
+                      "value": "Update"
+                    }
+                  ],
+                  "help": "Click this button to submit your response"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "submit_button": {
+        "classes_button_element": "btn-outline-success",
+        "instruction": "<i>Skip the remainder of the task and finish with incomplete result.</i>",
+        "text": "Exit",
+        "tooltip": "Submit and exit form early"
+      }
+    },
+    "form_metadata": {
+      "tokens_values": {
+        "target_image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Lo_sbadiglio.jpg/640px-Lo_sbadiglio.jpg"
+      }
+    }
+  }
+]

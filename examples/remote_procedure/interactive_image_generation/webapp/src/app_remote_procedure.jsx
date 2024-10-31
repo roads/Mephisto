@@ -9,7 +9,7 @@ import ReactDOM from "react-dom";
 import {
   FormComposerBaseFrontend,
   LoadingScreen,
-} from "./components/core_components_presigned_url.jsx";
+} from "./components/core_components_remote_procedure.jsx";
 import { useMephistoRemoteProcedureTask, ErrorBoundary } from "mephisto-core";
 
 /* ================= Application Components ================= */

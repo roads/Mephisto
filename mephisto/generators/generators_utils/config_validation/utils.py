@@ -31,6 +31,7 @@ from .config_validation_constants import CUSTOM_TRIGGERS_JS_FILE_NAME
 from .config_validation_constants import CUSTOM_TRIGGERS_JS_FILE_NAME_ENV_KEY
 from .config_validation_constants import CUSTOM_VALIDATORS_JS_FILE_NAME
 from .config_validation_constants import CUSTOM_VALIDATORS_JS_FILE_NAME_ENV_KEY
+from .config_validation_constants import INSERTIONS_DIR_NAME_ENV_KEY
 
 logger = ConsoleWriter()
 s3_client = boto3.client("s3")
@@ -165,6 +166,12 @@ def set_custom_triggers_js_env_var(data_path: str):
         file_name=CUSTOM_TRIGGERS_JS_FILE_NAME,
         env_var_name=CUSTOM_TRIGGERS_JS_FILE_NAME_ENV_KEY,
     )
+
+
+def set_insertions_env_var(data_path: str):
+    dir_path = os.path.abspath(os.path.join(data_path, INSERTIONS_PATH_NAME))
+    dir_exists = os.path.exists(dir_path)
+    os.environ[INSERTIONS_DIR_NAME_ENV_KEY] = dir_path if dir_exists else ""
 
 
 # ----- S3 -----

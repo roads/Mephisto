@@ -32,6 +32,11 @@ module.exports = {
   resolve: {
     alias: {
       react: path.resolve("./node_modules/react"),
+      // Use local library with code that can submit FormData
+      "mephisto-core": path.resolve(
+        __dirname,
+        "../../../packages/mephisto-core"
+      ),
       // Use local library with code that can use FormComposer and submit Worker Opinion
       "mephisto-addons": path.resolve(
         __dirname,

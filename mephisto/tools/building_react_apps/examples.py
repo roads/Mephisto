@@ -13,6 +13,9 @@ from mephisto.generators.generators_utils.config_validation.utils import (
 from mephisto.generators.generators_utils.config_validation.utils import (
     set_custom_validators_js_env_var,
 )
+from mephisto.generators.generators_utils.config_validation.utils import (
+    set_insertions_env_var,
+)
 from mephisto.tools.scripts import build_custom_bundle
 from mephisto.utils.console_writer import ConsoleWriter
 from . import packages
@@ -25,6 +28,11 @@ EXAMPLES_PATH = os.path.join(REPO_PATH, "examples")
 FORM_COMPOSER_EXAMPLE_PATH = os.path.join(EXAMPLES_PATH, "form_composer_demo")
 VIDEO_ANNOTATOR_EXAMPLE_PATH = os.path.join(EXAMPLES_PATH, "video_annotator_demo")
 PARLAI_CHAT_TASK_EXAMPLE_PATH = os.path.join(EXAMPLES_PATH, "parlai_chat_task_demo")
+REMOTE_PROCEDURE_INTERACTIVE_IMAGE_GENERATION_EXAMPLE_PATH = os.path.join(
+    EXAMPLES_PATH,
+    "remote_procedure",
+    "interactive_image_generation",
+)
 REMOTE_PROCEDURE_MNIST_EXAMPLE_PATH = os.path.join(EXAMPLES_PATH, "remote_procedure", "mnist")
 REMOTE_PROCEDURE_TEMPLATE_EXAMPLE_PATH = os.path.join(EXAMPLES_PATH, "remote_procedure", "template")
 REMOTE_PROCEDURE_TOXICITY_DETECTION_EXAMPLE_PATH = os.path.join(
@@ -53,8 +61,8 @@ def build_form_composer_simple(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Review UI for the application
     build_custom_bundle(
@@ -107,8 +115,8 @@ def build_form_composer_dynamic(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=True)
 
     # Set env vars for `custom_validators.js` and `custom_triggers.js`
     from mephisto.client.cli_form_composer_commands import FORM_COMPOSER__DATA_DIR_NAME
@@ -159,8 +167,8 @@ def build_form_composer_dynamic_presigned_urls_ec2_prolific(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Review UI for the application
     build_custom_bundle(
@@ -175,7 +183,43 @@ def build_form_composer_dynamic_presigned_urls_ec2_prolific(
         FORM_COMPOSER_EXAMPLE_PATH,
         force_rebuild=force_rebuild,
         post_install_script=post_install_script,
-        build_command="build:presigned_urls",
+        build_command="build:simple:remote_procedure",
+    )
+
+
+def build_interactive_image_generation(
+    force_rebuild: bool = False,
+    post_install_script: Optional[str] = None,
+) -> None:
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=True)
+
+    # Set env vars for `custom_validators.js` and `custom_triggers.js`
+    from mephisto.client.cli_form_composer_commands import FORM_COMPOSER__DATA_DIR_NAME
+
+    data_path = os.path.join(
+        REMOTE_PROCEDURE_INTERACTIVE_IMAGE_GENERATION_EXAMPLE_PATH,
+        FORM_COMPOSER__DATA_DIR_NAME,
+    )
+    set_insertions_env_var(data_path)
+    set_custom_validators_js_env_var(data_path)
+    set_custom_triggers_js_env_var(data_path)
+
+    # Build Review UI for the application
+    build_custom_bundle(
+        REMOTE_PROCEDURE_INTERACTIVE_IMAGE_GENERATION_EXAMPLE_PATH,
+        force_rebuild=force_rebuild,
+        webapp_name="webapp",
+        build_command="build:review",
+    )
+
+    # Build Task UI for the application
+    build_custom_bundle(
+        REMOTE_PROCEDURE_INTERACTIVE_IMAGE_GENERATION_EXAMPLE_PATH,
+        force_rebuild=force_rebuild,
+        webapp_name="webapp",
+        post_install_script=post_install_script,
+        build_command="build:remote_procedure",
     )
 
 
@@ -191,8 +235,8 @@ def build_video_annotator_simple(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Review UI for the application
     build_custom_bundle(
@@ -215,8 +259,8 @@ def build_video_annotator_dynamic(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=True)
 
     # Set env vars for `custom_validators.js` and `custom_triggers.js`
     from mephisto.client.cli_video_annotator_commands import VIDEO_ANNOTATOR__DATA_DIR_NAME
@@ -289,7 +333,7 @@ def build_remote_procedure_mnist(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Review UI for the application
     build_custom_bundle(
@@ -312,7 +356,7 @@ def build_remote_procedure_template(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Task UI for the application
     build_custom_bundle(
@@ -327,7 +371,7 @@ def build_remote_procedure_toxicity_detection(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Task UI for the application
     build_custom_bundle(
@@ -350,7 +394,7 @@ def build_static_react_task(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Task UI for the application
     build_custom_bundle(
@@ -372,8 +416,8 @@ def build_static_react_task_with_worker_opinion(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=True)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=True)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=True)
 
     # Build Task UI for the application
     build_custom_bundle(

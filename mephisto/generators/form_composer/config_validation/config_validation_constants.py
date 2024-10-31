@@ -63,6 +63,10 @@ AVAILABLE_SUBMIT_BUTTON_ATTRS: AvailableAttrsType = {
         "type": str,
         "required": False,
     },
+    "classes_button_element": {
+        "type": str,
+        "required": False,
+    },
     "id": {
         "type": str,
         "required": False,
@@ -141,6 +145,10 @@ AVAILABLE_FIELDSET_ATTRS: AvailableAttrsType = {
         "type": str,
         "required": False,
     },
+    "lookup_name": {
+        "type": str,
+        "required": False,
+    },
     "name": {
         "type": str,
         "required": False,
@@ -174,7 +182,47 @@ AVAILABLE_ROW_ATTRS: AvailableAttrsType = {
     },
 }
 
+AVAILABLE_BUTTON_FIELD_ATTRS: AvailableAttrsType = {
+    "classes": {
+        "type": str,
+        "required": False,
+    },
+    "classes_input_element": {
+        "type": str,
+        "required": False,
+    },
+    "help": {
+        "type": str,
+        "required": False,
+    },
+    "id": {
+        "type": str,
+        "required": False,
+    },
+    "name": {
+        "type": str,
+        "required": False,
+    },
+    "tooltip": {
+        "type": str,
+        "required": False,
+    },
+    "triggers": {
+        "type": dict,
+        "required": False,
+    },
+    "type": {
+        "type": str,
+        "required": True,
+    },
+    "value": {
+        "type": str,
+        "required": False,
+    },
+}
+
 AVAILABLE_FIELD_ATTRS_BY_TYPE: Dict[str, AvailableAttrsType] = {
+    "button": AVAILABLE_BUTTON_FIELD_ATTRS,
     "checkbox": {
         **COMMON_AVAILABLE_FIELD_ATTRS,
         "options": {
@@ -187,7 +235,13 @@ AVAILABLE_FIELD_ATTRS_BY_TYPE: Dict[str, AvailableAttrsType] = {
         },
     },
     "email": COMMON_AVAILABLE_FIELD_ATTRS,
-    "file": COMMON_AVAILABLE_FIELD_ATTRS,
+    "file": {
+        **COMMON_AVAILABLE_FIELD_ATTRS,
+        "show_preview": {
+            "type": bool,
+            "required": False,
+        },
+    },
     "hidden": COMMON_AVAILABLE_FIELD_ATTRS,
     "input": COMMON_AVAILABLE_FIELD_ATTRS,
     "radio": {

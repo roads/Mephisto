@@ -22,9 +22,15 @@ docker-compose -f docker/docker-compose.dev.yml up
 docker exec -it mephisto_dc bash
 mephisto scripts local_db auto_generate_all_docs_reference_md
 cd /mephisto/docs/web/
+
 yarn
 yarn install
 yarn start-dev:docker
+
+# or
+
+npm install
+npm run start-dev:docker
 ```
 
 Then run `mephisto scripts local_db auto_generate_all_docs_reference_md` to auto-generate `.md` files in `docs/web/docs/reference` directory. (They will describe parameters of some Python classes.) Noe that on production this command is called by Github Actions.
@@ -42,8 +48,15 @@ Sometimes development server do not raise exceptions which production one can.
 docker-compose -f docker/docker-compose.dev.yml up
 docker exec -it mephisto_dc bash
 cd /mephisto/docs/web/
+
 yarn
 yarn install
 yarn build
 yarn serve-prod:docker
+
+# or
+
+npm install
+npm run build
+npm run serve-prod:docker
 ```

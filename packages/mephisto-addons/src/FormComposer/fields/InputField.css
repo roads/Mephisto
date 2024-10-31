@@ -6,8 +6,5 @@
 
 .fc-input-field {
   width: 100%;
-}
-
-.fc-input-field {
   background-color: var(--input-bg-color);
 }

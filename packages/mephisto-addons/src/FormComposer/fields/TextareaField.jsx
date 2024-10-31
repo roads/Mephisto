@@ -25,6 +25,7 @@ function TextareaField({
   customTriggers,
   className,
   cleanErrorsOnChange,
+  remoteProcedureCollection,
   rows,
 }) {
   const [value, setValue] = React.useState(DEFAULT_VALUE);
@@ -38,16 +39,17 @@ function TextareaField({
       return;
     }
 
-    runCustomTrigger(
-      field.triggers,
-      triggerName,
-      customTriggers,
-      formData,
-      updateFormData,
-      field,
-      value,
-      formFields
-    );
+    runCustomTrigger({
+      elementTriggersConfig: field.triggers,
+      elementTriggerName: triggerName,
+      customTriggers: customTriggers,
+      formData: formData,
+      updateFormData: updateFormData,
+      element: field,
+      fieldValue: value,
+      formFields: formFields,
+      remoteProcedureCollection: remoteProcedureCollection,
+    });
   }
 
   function onChange(e) {

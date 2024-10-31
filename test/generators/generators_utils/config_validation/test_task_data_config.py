@@ -28,7 +28,7 @@ from mephisto.generators.generators_utils.config_validation.task_data_config imp
     _extrapolate_tokens_values,
 )
 from mephisto.generators.generators_utils.config_validation.task_data_config import (
-    _set_tokens_in_unit_config_item,
+    set_tokens_in_unit_config_item,
 )
 from mephisto.generators.generators_utils.config_validation.task_data_config import (
     _validate_tokens_in_both_configs,
@@ -167,7 +167,7 @@ class TestTaskDataConfig(unittest.TestCase):
             "token_2": "value 2",
         }
 
-        _set_tokens_in_unit_config_item(item, tokens_values)
+        set_tokens_in_unit_config_item(item, tokens_values)
 
         self.assertEqual(
             item,

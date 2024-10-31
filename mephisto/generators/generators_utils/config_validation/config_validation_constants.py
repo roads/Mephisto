@@ -15,6 +15,7 @@ CUSTOM_VALIDATORS_JS_FILE_NAME = "custom_validators.js"
 CUSTOM_TRIGGERS_JS_FILE_NAME = "custom_triggers.js"
 CUSTOM_VALIDATORS_JS_FILE_NAME_ENV_KEY = "WEBAPP__GENERATOR__CUSTOM_VALIDATORS"
 CUSTOM_TRIGGERS_JS_FILE_NAME_ENV_KEY = "WEBAPP__GENERATOR__CUSTOM_TRIGGERS"
+INSERTIONS_DIR_NAME_ENV_KEY = "WEBAPP__GENERATOR__INSERTIONS_DIR"
 GENERATOR_METADATA_KEY = "form_metadata"
 
 AVAILABLE_TASK_ATTRS: AvailableAttrsType = {
@@ -38,6 +39,10 @@ COMMON_AVAILABLE_FIELD_ATTRS: AvailableAttrsType = {
         "type": str,
         "required": False,
     },
+    "classes_input_element": {
+        "type": str,
+        "required": False,
+    },
     "help": {
         "type": str,
         "required": False,
@@ -56,10 +61,6 @@ COMMON_AVAILABLE_FIELD_ATTRS: AvailableAttrsType = {
     },
     "placeholder": {
         "type": str,
-        "required": False,
-    },
-    "show_preview": {
-        "type": bool,
         "required": False,
     },
     "tooltip": {

@@ -33,7 +33,7 @@ This is a quick guide over file directories in Mephisto project. Note that some 
         - `webapp` - task's React app containing FC
             - `src` - React code to display FC component (example of using FC plugin in a project)
             - `webpack.config.js` - webpack config for React app containing FC
-            - `webpack.config.presigned_urls.js` - webpack config for React app containing FC with presigned S3 URLs feature
+            - `webpack.config.remote_procedure.js` - webpack config for React app containing FC with remote procedures (e.g. presigned S3 URLs feature)
             - `webpack.config.review.js` - webpack config for React app displayin read-only task page inside iframe (for TaskReview app)
       - `static_react_task` - simple React application (with Onboarding and Screening)
       - `static_react_task_with_worker_opinion` - simple React application with Worker Opinion widget

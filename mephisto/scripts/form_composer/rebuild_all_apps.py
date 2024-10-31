@@ -58,8 +58,8 @@ def _build():
     if verbose:
         logger.info("[blue]Started building web apps[/blue]")
 
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=verbose)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=verbose)
 
     generators.build_form_composer_generator(force_rebuild=force_rebuild, verbose=verbose)
 

@@ -1,14 +1,20 @@
 // NOTE: that `mephisto-addons` library must be set in webpack config as an alias.
 import { validateFieldValue } from "mephisto-addons";
 
-export function onChangeCountry(
+export function onChangeCountry({
   formData, // React state for the entire form
   updateFormData, // callback to set the React state
   element, // "field", "section", or "submit button" element that invoked this trigger
   fieldValue, // (optional) current field value, if the `element` is a form field
   formFields, // Object containing all form fields as defined in 'unit_config.json'
-  ...args // Arguments for this trigger (taken from form config)
-) {
+  remoteProcedureCollection, // (optional) Collection or remote procedures
+  setDynamicFormElementsConfig, // (optional) Setter for React state with dynamic elements
+  setInvalidFormFields, // (optional) Setter for React state with form fields errors
+  setSubmitErrors, // (optional) Setter for React state with form submit errors
+  setSubmitSuccessText, // (optional) Setter for React state with success text next to submit button
+  submitForm, // (optional) Function that submits form
+  triggerArgs, // Trigger-specific arguments (taken from form config)
+}) {
   // By default, `id_section_second` section is collapsed, and `id_region` field is hidden.
   // Selecting "USA" in `id_country` should open that section, and display that field.
   const secondSectionElement = document.getElementById("id_section_second");
@@ -42,14 +48,24 @@ export function onChangeCountry(
   }
 }
 
-export function onClickSectionHeader(
+export function onClickSectionHeader({
   formData, // React state for the entire form
   updateFormData, // callback to set the React state
   element, // "field", "section", or "submit button" element that invoked this trigger
   fieldValue, // (optional) current field value, if the `element` is a form field
   formFields, // Object containing all form fields as defined in 'unit_config.json'
-  sectionName // Argument for this trigger (taken from form config)
-) {
+  remoteProcedureCollection, // (optional) Collection or remote procedures
+  setDynamicFormElementsConfig, // (optional) Setter for React state with dynamic elements
+  setInvalidFormFields, // (optional) Setter for React state with form fields errors
+  setSubmitErrors, // (optional) Setter for React state with form submit errors
+  setSubmitSuccessText, // (optional) Setter for React state with success text next to submit button
+  submitForm, // (optional) Function that submits form
+  triggerArgs, // Trigger-specific arguments (taken from form config)
+}) {
+  const [
+    sectionName, // Argument for this trigger (taken from form config)
+  ] = triggerArgs;
+
   // Do something when header is clicked (toggle a section content)
   alert(`${sectionName} section title clicked.`);
 }

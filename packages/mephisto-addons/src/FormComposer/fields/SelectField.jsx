@@ -24,7 +24,9 @@ function SelectField({
   validationErrors,
   formFields,
   customTriggers,
+  className,
   cleanErrorsOnChange,
+  remoteProcedureCollection,
 }) {
   const defaultValue = field.multiple ? [] : "";
   const [value, setValue] = React.useState(defaultValue);
@@ -38,16 +40,17 @@ function SelectField({
       return;
     }
 
-    runCustomTrigger(
-      field.triggers,
-      triggerName,
-      customTriggers,
-      formData,
-      updateFormData,
-      field,
-      value,
-      formFields
-    );
+    runCustomTrigger({
+      elementTriggersConfig: field.triggers,
+      elementTriggerName: triggerName,
+      customTriggers: customTriggers,
+      formData: formData,
+      updateFormData: updateFormData,
+      element: field,
+      fieldValue: value,
+      formFields: formFields,
+      remoteProcedureCollection: remoteProcedureCollection,
+    });
   }
 
   function onChange(e, fieldName) {
@@ -111,7 +114,7 @@ function SelectField({
     if (value === "" || (Array.isArray(value) && value.length === 0)) {
       $fieldElement.selectpicker("deselectAll");
     }
-  }, [value]);
+  }, [value, disabled]);
 
   // Value in formData is updated
   React.useEffect(() => {
@@ -131,6 +134,7 @@ function SelectField({
           fc-select-field
           selectpicker
           select-${field.name}
+          ${className || ""}
           ${invalidField ? "is-invalid" : ""}
         `}
         id={field.id}

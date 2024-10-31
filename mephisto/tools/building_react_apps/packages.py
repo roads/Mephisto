@@ -193,7 +193,7 @@ def build_mephisto_task_package(force_rebuild: bool = False, verbose: bool = Fal
     )
 
 
-def build_mephisto_task_multipart_package(force_rebuild: bool = False, verbose: bool = False):
+def build_mephisto_core_package(force_rebuild: bool = False, verbose: bool = False):
     if verbose:
         logger.info(f"[blue]Building '{PACKAGES_PATH}/mephisto-core'[/blue]")
 
@@ -205,7 +205,7 @@ def build_mephisto_task_multipart_package(force_rebuild: bool = False, verbose: 
     )
 
 
-def build_mephisto_task_addons_package(force_rebuild: bool = False, verbose: bool = False):
+def build_mephisto_addons_package(force_rebuild: bool = False, verbose: bool = False):
     if verbose:
         logger.info(f"[blue]Building '{PACKAGES_PATH}/mephisto-addons'[/blue]")
 
