@@ -158,6 +158,11 @@ class TaskRunArgs:
         metadata={"help": "Resume incomplete or interrupted TaskRun if it exists."},
     )
 
+    aux_parameters: Optional[dict] = field(
+        default_factory=dict,
+        metadata={"help": "Any auxiliary parameter you need to pass for your task."},
+    )
+
     @classmethod
     def get_mock_params(cls) -> str:
         """Returns a param string with default / mock arguments to use for testing"""

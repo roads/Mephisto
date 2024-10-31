@@ -86,8 +86,8 @@ def build_form_composer_generator_with_packages(
     post_install_script: Optional[str] = None,
     verbose: bool = False,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=verbose)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=verbose)
     build_form_composer_generator(
         force_rebuild=force_rebuild,
         post_install_script=post_install_script,
@@ -133,8 +133,8 @@ def build_video_annotator_generator_with_packages(
     post_install_script: Optional[str] = None,
     verbose: bool = False,
 ) -> None:
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=verbose)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=verbose)
     build_video_annotator_generator(
         force_rebuild=force_rebuild,
         post_install_script=post_install_script,

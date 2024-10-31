@@ -8,8 +8,9 @@
     "dev:simple": "type=simple webpack --mode development",
     "dev:watch": "webpack --mode development --watch",
     "test": "cypress open",
+    "build:simple:remote_procedure": "type=simple webpack --config=webpack.config.remote_procedure.js --mode development",
+    "build:dynamic:remote_procedure": "type=dynamic webpack --config=webpack.config.remote_procedure.js --mode development",
     "build:review": "webpack --config=webpack.config.review.js --mode development",
-    "build:presigned_urls": "webpack --config=webpack.config.presigned_urls.js --mode development",
     "build:simple:review": "type=simple webpack --config=webpack.config.review.js --mode development"
   },
   "keywords": [],

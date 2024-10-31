@@ -165,6 +165,8 @@ TBD: Other classes and styles insertions
 - `show_instructions_as_modal` - Enables showing `instruction` content as a modal (opened by clicking a sticky button in top-right corner); this make lengthy task instructions available from any place of a lengthy form without scrolling the page (Boolean, Optional, Default: false)
 - `title` - HTML header of the form (String)
 - `submit_button` - Button to submit the whole form and thus finish a task (Object)
+    - `classes` - Custom classes that you can use to restyle element or refer to it from custom handlers code (String, Optional)
+    - `classes_button_element` - Custom classes that you can use to restyle button element or refer to it from custom handlers code (String, Optional)
     - `id` - Unique HTML id of the button, in case we need to refer to it from custom handlers code (String, Optional)
     - `instruction` - Text shown above the "Submit" button (String, Optional)
     - `text` - Label shown on the button (String)
@@ -206,6 +208,7 @@ Each item of `fieldsets` list is an object with the following attributes:
 
 Each item of `rows` list is an object with the following attributes:
 
+- `help` - HTML explanation of the row - displayed in small font below the field (String, Optional)
 - `id` - Unique HTML id of the row, in case we need to refer to it from custom handlers code (String, Optional)
 - `classes` = Custom classes that you can use to restyle element or refer to it from custom handlers code (String, Optional)
 - `fields` - **List of fields** that will be lined up into one horizontal line
@@ -214,7 +217,7 @@ Each item of `rows` list is an object with the following attributes:
 
 #### Config level: field
 
-Each item of `fields` list is an object that corresponds to the actual form field displayed in the resulting Task UI page.
+Each item of `fields` list is an object corresponding to the actual form field that's displayed in the resulting Task UI page.
 
 Here's example of a single field config:
 
@@ -257,12 +260,12 @@ The `value` attribute specifies initial value of a field, and has the following 
 
 The most important attributes are: `label`, `name`, `type`, `validators`
 
-- `help` - HTML explanation of the field/fieldset displayed in small font below the field (String, Optional)
+- `help` - HTML explanation of the field/fieldset - displayed in small font below the field (String, Optional)
 - `id` - Unique HTML id of the field, in case we need to refer to it from custom handlers code (String, Optional)
 - `classes` = Custom classes that you can use to restyle element or refer to it from custom handlers code (String, Optional)
-- `label` - Field name displayed above the field (String)
+- `label` - Field name - displayed above the field (String)
 - `name` - Unique name under which this field's data will be sent to the server (String)
-- `placeholder` - Text faintly displayed in the field before user provides a value (String, Optional)
+- `placeholder` - Text faintly - displayed in the field before user provides a value (String, Optional)
 - `tooltip` - Text shown in browser tooltip on mouseover (String, Optional)
 - `type` - Type of the field (`input`, `email`, `select`, `textarea`, `checkbox`, `radio`, `file`, `hidden`) (String)
 - `validators` - Validators preventing incorrect data from being submitted (Object[<String\>: String|Boolean|Number], Optional). Supported key-value pairs for the `validators` object:

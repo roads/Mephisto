@@ -32,6 +32,8 @@ def _extrapolate_tokens_values(
     text: str,
     tokens_values: dict,
     data_path: Optional[str] = None,
+    token_start_regex: Optional[str] = TOKEN_START_REGEX,
+    token_end_regex: Optional[str] = TOKEN_END_REGEX,
 ) -> str:
     for token, value in tokens_values.items():
         # For HTML paths
@@ -40,7 +42,7 @@ def _extrapolate_tokens_values(
         # For other values
         text = re.sub(
             (
-                TOKEN_START_REGEX
+                token_start_regex
                 + r"(\s*)"
                 +
                 # Escape and add regexp grouping parentheses around the token
@@ -49,7 +51,7 @@ def _extrapolate_tokens_values(
                 + re.escape(token)
                 + r")"
                 + "(\s*)"
-                + TOKEN_END_REGEX
+                + token_end_regex
             ),
             str(value),
             text,
@@ -57,10 +59,12 @@ def _extrapolate_tokens_values(
     return text
 
 
-def _set_tokens_in_unit_config_item(
+def set_tokens_in_unit_config_item(
     item: dict,
     tokens_values: dict,
     data_path: Optional[str] = None,
+    token_start_regex: Optional[str] = TOKEN_START_REGEX,
+    token_end_regex: Optional[str] = TOKEN_END_REGEX,
 ):
     attrs_supporting_tokens = get_validation_mappings()["ATTRS_SUPPORTING_TOKENS"]
     for attr_name in attrs_supporting_tokens:
@@ -68,7 +72,13 @@ def _set_tokens_in_unit_config_item(
         if not item_attr:
             continue
 
-        item[attr_name] = _extrapolate_tokens_values(item_attr, tokens_values, data_path)
+        item[attr_name] = _extrapolate_tokens_values(
+            text=item_attr,
+            tokens_values=tokens_values,
+            data_path=data_path,
+            token_start_regex=token_start_regex,
+            token_end_regex=token_end_regex,
+        )
 
 
 def _collect_tokens_from_unit_config(
@@ -92,6 +102,7 @@ def _collect_tokens_from_unit_config(
             item_attr = item.get(attr_name)
             if not item_attr:
                 continue
+
             tokens_in_unit_config.update(
                 set(
                     re.findall(
@@ -131,7 +142,8 @@ def _extrapolate_tokens_in_unit_config(
     ]
     items_to_extrapolate = _collect_unit_config_items_to_extrapolate(config_data)
     for item in items_to_extrapolate:
-        _set_tokens_in_unit_config_item(item, tokens_values, data_path)
+        set_tokens_in_unit_config_item(item, tokens_values, data_path)
+
     return config_data
 
 

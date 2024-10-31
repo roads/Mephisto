@@ -1,0 +1,32 @@
+#@package _global_
+
+# Copyright (c) Meta Platforms and its affiliates.
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+defaults:
+  - /mephisto/blueprint: remote_procedure
+  - /mephisto/architect: local
+  - /mephisto/provider: inhouse
+
+mephisto:
+  blueprint:
+    task_source: ${task_dir}/webapp/build/bundle.remote_procedure.js
+    task_source_review: ${task_dir}/webapp/build/bundle.review.js
+    link_task_source: false
+    extra_source_dir: ${task_dir}/webapp/src/static
+    units_per_assignment: 1
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
+  task:
+    task_name: "Interactive Generation of a Look-Alike Image"
+    # Note: don't use `Prolific` in task names, because Prolific will (silently) block your account
+    task_title: "Dynamic form-based Tasks with expiring URLs for Prolifik"
+    task_description: "In this Task, we use dynamic FormComposer feature with presigned S3 URLs."
+    task_reward: 70
+    task_tags: "test,simple,form,form-composer,interactive-image-prompts"
+    force_rebuild: true
+    max_num_concurrent_units: 1
+    aux_parameters:
+      max_answer_loops: 3

@@ -76,8 +76,8 @@ def _build():
     packages.build_bootstrap_chat_package(force_rebuild=force_rebuild, verbose=verbose)
     packages.build_global_context_store_package(force_rebuild=force_rebuild, verbose=verbose)
     packages.build_mephisto_task_package(force_rebuild=force_rebuild, verbose=verbose)
-    packages.build_mephisto_task_multipart_package(force_rebuild=force_rebuild, verbose=verbose)
-    packages.build_mephisto_task_addons_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_core_package(force_rebuild=force_rebuild, verbose=verbose)
+    packages.build_mephisto_addons_package(force_rebuild=force_rebuild, verbose=verbose)
     packages.build_mephisto_worker_addons_package(force_rebuild=force_rebuild, verbose=verbose)
 
     generators.build_form_composer_generator(force_rebuild=force_rebuild, verbose=verbose)

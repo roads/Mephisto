@@ -23,6 +23,7 @@ function RadioField({
   formFields,
   customTriggers,
   cleanErrorsOnChange,
+  remoteProcedureCollection,
 }) {
   const [value, setValue] = React.useState(DEFAULT_VALUE);
 
@@ -35,16 +36,17 @@ function RadioField({
       return;
     }
 
-    runCustomTrigger(
-      field.triggers,
-      triggerName,
-      customTriggers,
-      formData,
-      updateFormData,
-      field,
-      value,
-      formFields
-    );
+    runCustomTrigger({
+      elementTriggersConfig: field.triggers,
+      elementTriggerName: triggerName,
+      customTriggers: customTriggers,
+      formData: formData,
+      updateFormData: updateFormData,
+      element: field,
+      fieldValue: value,
+      formFields: formFields,
+      remoteProcedureCollection: remoteProcedureCollection,
+    });
   }
 
   function onClick(e) {

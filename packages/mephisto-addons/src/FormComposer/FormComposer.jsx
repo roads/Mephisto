@@ -5,35 +5,27 @@
  */
 
 import React from "react";
-import TaskInstructionButton from "../TaskInstructionModal/TaskInstructionButton.jsx";
 import TaskInstructionModal from "../TaskInstructionModal/TaskInstructionModal.jsx";
 import {
-  DEFAULT_COLLAPSABLE,
-  DEFAULT_INITIALLY_COLLAPSED,
-  FieldType,
+  DEFAULT_DYNAMIC_STATE,
   MESSAGES_IN_REVIEW_FILE_DATA_KEY,
 } from "./constants";
-import {
-  CheckboxField,
-  FileField,
-  HiddenField,
-  InputField,
-  RadioField,
-  SelectField,
-  TextareaField,
-} from "./fields";
+import { Field } from "./Field.jsx";
+import { FieldSet } from "./FieldSet.jsx";
 import "./FormComposer.css";
 import { FormErrors } from "./FormErrors.jsx";
-import { SectionErrors } from "./SectionErrors.jsx";
-import { SectionErrorsCountBadge } from "./SectionErrorsCountBadge.jsx";
+import { FormHeaderBlock } from "./FormHeaderBlock.jsx";
+import { Row } from "./Row.jsx";
+import { Section } from "./Section.jsx";
+import { SubmitButtonBlock } from "./SubmitButtonBlock.jsx";
 import {
-  getDefaultFormFieldValue,
   getFormatStringWithTokensFunction,
   runCustomTrigger,
+  setInitialDataFromSections,
   setPageTitle,
+  updateDataWithDynamicSections,
 } from "./utils";
 import {
-  checkFieldRequiredness,
   prepareFormDataForSubmit,
   validateFormFields,
 } from "./validation/helpers";
@@ -46,11 +38,12 @@ function FormComposer({
   setRenderingErrors,
   customValidators,
   customTriggers,
+  remoteProcedureCollection,
 }) {
   const formComposerConfig = data;
 
   // State to hide submit button
-  const [onSubmitLoading, setOnSubmitLoading] = React.useState(false);
+  const [submitLoading, setSubmitLoading] = React.useState(false);
 
   // List of unexpected server error messages
   const [submitErrors, setSubmitErrors] = React.useState([]);
@@ -69,9 +62,24 @@ function FormComposer({
 
   // Form instruction modal state
   const [
-    formInstrupctionModalOpen,
-    setFormInstrupctionModalOpen,
+    formInstructionModalOpen,
+    setFormInstructionModalOpen,
   ] = React.useState(false);
+
+  // Dynamic form elements fonfigs
+  const [
+    dynamicFormElementsConfig,
+    setDynamicFormElementsConfig,
+  ] = React.useState(DEFAULT_DYNAMIC_STATE);
+
+  // Submit block success message
+  const [submitSuccessText, setSubmitSuccessText] = React.useState(
+    <>
+      Thank you!
+      <br />
+      Your form has been submitted.
+    </>
+  );
 
   const inReviewState = finalResults !== null;
   const formatStringWithTokens = getFormatStringWithTokensFunction(
@@ -90,6 +98,8 @@ function FormComposer({
     formComposerConfig.show_instructions_as_modal || false;
   let formSections = formComposerConfig.sections;
   let formSubmitButton = formComposerConfig.submit_button;
+
+  // --- Methods ---
 
   function updateFormData(fieldName, value, e) {
     if (e) {
@@ -113,11 +123,11 @@ function FormComposer({
     }
   }
 
-  function validateForm(e) {
+  function validateForm() {
     // Clean previously invalidated fields
     setInvalidFormFields({});
 
-    // Set new invalid fields
+    // Set new invalid fields to show errors and highlight those fields
     const _invalidFormFields = validateFormFields(
       formState,
       formFields,
@@ -129,10 +139,12 @@ function FormComposer({
   }
 
   function onSubmitForm(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-    const formIsValid = validateForm(e);
+    const formIsValid = validateForm();
 
     if (!formIsValid) {
       return;
@@ -140,7 +152,7 @@ function FormComposer({
 
     const formData = prepareFormDataForSubmit(formState, formFields);
 
-    setOnSubmitLoading(true);
+    setSubmitLoading(true);
 
     // Pass data to `mephisto-core` library
     onSubmit(formData);
@@ -164,14 +176,21 @@ function FormComposer({
       return;
     }
 
-    runCustomTrigger(
-      formSubmitButton.triggers,
-      "onClick",
-      customTriggers,
-      formState,
-      updateFormData,
-      formSubmitButton
-    );
+    runCustomTrigger({
+      elementTriggersConfig: formSubmitButton.triggers,
+      elementTriggerName: "onClick",
+      customTriggers: customTriggers,
+      formData: formState,
+      updateFormData: updateFormData,
+      element: formSubmitButton,
+      fieldValue: formSubmitButton.text,
+      formFields: formFields,
+      remoteProcedureCollection: remoteProcedureCollection,
+      setDynamicFormElementsConfig: setDynamicFormElementsConfig,
+      setInvalidFormFields: setInvalidFormFields,
+      setSubmitErrors: setSubmitErrors,
+      validateForm: validateForm,
+    });
   }
 
   // --- Effects ---
@@ -180,39 +199,26 @@ function FormComposer({
   }, [formTitle]);
 
   React.useEffect(() => {
-    if (formSections.length) {
-      const _fields = {};
-      const initialFormData = {};
-
-      formSections.map((section, sectionIndex) => {
-        const _sectionFields = [];
-
-        // Set fields to Form fields and Section fields
-        section.fieldsets.map((fieldset) => {
-          fieldset.rows.map((row) => {
-            row.fields.map((field) => {
-              _fields[field.name] = field;
-              initialFormData[field.name] = getDefaultFormFieldValue(
-                field,
-                finalResults
-              );
-              _sectionFields.push(field);
-            });
-          });
-        });
-
-        setSectionsFields((prevState) => {
-          return {
-            ...prevState,
-            ...{ [sectionIndex]: _sectionFields },
-          };
-        });
-      });
-
-      setFormState(initialFormData);
-      setFormFields(_fields);
-    }
+    setInitialDataFromSections(
+      formSections,
+      finalResults,
+      setSectionsFields,
+      setFormState,
+      setFormFields
+    );
   }, [formSections]);
+
+  React.useEffect(() => {
+    updateDataWithDynamicSections(
+      dynamicFormElementsConfig.sections,
+      formSections,
+      finalResults,
+      formState,
+      setSectionsFields,
+      setFormState,
+      setFormFields
+    );
+  }, [dynamicFormElementsConfig.sections]);
 
   React.useEffect(() => {
     if (Object.keys(invalidFormFields).length) {
@@ -234,476 +240,174 @@ function FormComposer({
       noValidate={true}
       onSubmit={onSubmitForm}
     >
-      {(formTitle || formInstruction) && (
-        <div className={`form-header alert alert-primary`} role={"alert"}>
-          {formTitle && (
-            <h2
-              className={`form-name`}
-              dangerouslySetInnerHTML={{ __html: formTitle }}
-            ></h2>
-          )}
-
-          {/* Show instruction or button that opens a modal with instructions */}
-          {showFormInstructionAsModal ? (
-            <>
-              {/* Instructions */}
-              {formTitle && formInstruction && <hr />}
-
-              {formInstruction && (
-                <div>
-                  For instructions, click "Task Instruction" button in the
-                  top-right corner.
-                </div>
-              )}
-
-              {/* Button (modal in the end of the component) */}
-              <TaskInstructionButton
-                onClick={() =>
-                  setFormInstrupctionModalOpen(!formInstrupctionModalOpen)
-                }
-              />
-            </>
-          ) : (
-            <>
-              {/* Instructions */}
-              {formTitle && formInstruction && <hr />}
-
-              {formInstruction && (
-                <p
-                  className={`form-instruction`}
-                  dangerouslySetInnerHTML={{ __html: formInstruction }}
-                ></p>
-              )}
-            </>
-          )}
-        </div>
-      )}
+      <FormHeaderBlock
+        instruction={formInstruction}
+        instructionModalOpen={formInstructionModalOpen}
+        setInstructionModalOpen={setFormInstructionModalOpen}
+        showInstructionAsModal={showFormInstructionAsModal}
+        title={formTitle}
+      />
 
       {/* Accordion with collapsable sections */}
       <div className={`accordion`} id={`id_accordion`}>
         {/* Sections */}
         {formSections.map((section, sectionIndex) => {
-          const sectionTitle = formatStringWithTokens(
-            section.title,
-            setRenderingErrors
-          );
-          const sectionInstruction = formatStringWithTokens(
-            section.instruction,
-            setRenderingErrors
-          );
-          const fieldsets = section.fieldsets;
-
-          const collapsable = [null, undefined].includes(section.collapsable) // Not specified in config
-            ? DEFAULT_COLLAPSABLE
-            : section.collapsable;
-          const initiallyCollapsed = collapsable
-            ? [null, undefined].includes(section.initially_collapsed) // Not specified in config
-              ? DEFAULT_INITIALLY_COLLAPSED
-              : section.initially_collapsed
-            : false;
-
-          const sectionHasInvalidFields = !!(
-            sectionsFields[sectionIndex] || []
-          ).filter((field) =>
-            Object.keys(invalidFormFields).includes(field.name)
-          ).length;
-
-          function onClickSectionHeader() {
-            if (inReviewState) {
-              return;
-            }
-
-            runCustomTrigger(
-              section.triggers,
-              "onClick",
-              customTriggers,
-              formState,
-              updateFormData,
-              data
-            );
-          }
+          const dynamicFieldsets =
+            dynamicFormElementsConfig.sections[section.name]?.fieldsets || {};
 
           return (
-            <section
+            <Section
+              customTriggers={customTriggers}
+              data={section}
+              formFields={formFields}
+              formState={formState}
+              formatStringWithTokens={formatStringWithTokens}
+              inReviewState={inReviewState}
+              index={sectionIndex}
+              invalidFormFields={invalidFormFields}
               key={`section-${sectionIndex}`}
-              className={`section ${section.classes || ""}`}
-              id={section.id}
-              data-id={`section-${sectionIndex}`}
-              data-invalid={sectionHasInvalidFields}
+              remoteProcedureCollection={remoteProcedureCollection}
+              sectionsFields={sectionsFields}
+              setRenderingErrors={setRenderingErrors}
+              updateFormData={updateFormData}
             >
-              {(sectionTitle || sectionInstruction) && (
-                // Section header is clickable for accordion
-                <div
-                  className={`
-                    section-header
-                    alert
-                    alert-info
-                    ${collapsable ? "collapsable" : ""}
-                    ${sectionHasInvalidFields ? "has-invalid-fields" : ""}
-                  `}
-                  role={"alert"}
-                  id={`accordion_heading_${sectionIndex}`}
-                  onClick={onClickSectionHeader}
-                  data-toggle={collapsable ? "collapse" : null}
-                  data-target={
-                    collapsable
-                      ? `#accordion_collapsable_part_${sectionIndex}`
-                      : null
-                  }
-                  aria-expanded={collapsable ? initiallyCollapsed : null}
-                  aria-controls={
-                    collapsable
-                      ? `accordion_collapsable_part_${sectionIndex}`
-                      : null
-                  }
-                >
-                  <div className="row justify-content-between">
-                    {/* Section name on the left side */}
-                    {sectionTitle && (
-                      <h4
-                        className={`
-                          col-8
-                          section-name
-                          ${collapsable ? "dropdown-toggle" : ""}
-                        `}
-                        dangerouslySetInnerHTML={{ __html: sectionTitle }}
-                      ></h4>
-                    )}
+              {section.fieldsets.map((fieldset, fieldsetIndex) => {
+                // Do not render dynamic fieldsets here
+                const fieldsetIsDynamic = fieldset.lookup_name;
+                if (fieldsetIsDynamic) {
+                  return;
+                }
 
-                    {/* Badge with errors number on the right side */}
-                    <div className={`col-1`}>
-                      <SectionErrorsCountBadge
-                        sectionFields={sectionsFields[sectionIndex]}
-                        invalidFormFields={invalidFormFields}
-                      />
-                    </div>
-                  </div>
-
-                  {sectionTitle && sectionInstruction && <hr />}
-
-                  {sectionInstruction && (
-                    <p
-                      className={`section-instruction`}
-                      dangerouslySetInnerHTML={{ __html: sectionInstruction }}
-                    ></p>
-                  )}
-                </div>
-              )}
-
-              {/* Collapsable part of section with fieldsets */}
-              <div
-                id={`accordion_collapsable_part_${sectionIndex}`}
-                className={`
-                  collapse
-                  ${collapsable ? "" : "non-collapsable"}
-                  ${initiallyCollapsed ? "" : "show"}
-                `}
-                aria-labelledby={`accordion_heading_${sectionIndex}`}
-                data-parent={`#id_accordion`}
-              >
-                <SectionErrors
-                  sectionFields={sectionsFields[sectionIndex]}
-                  invalidFormFields={invalidFormFields}
-                />
-
-                {fieldsets.map((fieldset, fieldsetIndex) => {
-                  const fieldsetTitle = formatStringWithTokens(
-                    fieldset.title,
-                    setRenderingErrors
-                  );
-                  const fieldsetInstruction = formatStringWithTokens(
-                    fieldset.instruction,
-                    setRenderingErrors
-                  );
-                  const rows = fieldset.rows;
-
-                  return (
-                    <fieldset
-                      key={`fieldset-${fieldsetIndex}`}
-                      className={`fieldset container ${fieldset.classes || ""}`}
-                      id={fieldset.id}
-                    >
-                      {fieldsetTitle || fieldsetInstruction ? (
-                        <div
-                          className={`fieldset-header alert alert-secondary`}
-                          role={"alert"}
+                return (
+                  <FieldSet
+                    data={fieldset}
+                    formatStringWithTokens={formatStringWithTokens}
+                    key={`fieldset-${fieldsetIndex}`}
+                    setRenderingErrors={setRenderingErrors}
+                  >
+                    {fieldset.rows.map((row, rowIndex) => {
+                      return (
+                        <Row
+                          data={row}
+                          formatStringWithTokens={formatStringWithTokens}
+                          key={`row-${rowIndex}`}
+                          setRenderingErrors={setRenderingErrors}
                         >
-                          {fieldsetTitle && (
-                            <h5
-                              className={`fieldset-name`}
-                              dangerouslySetInnerHTML={{
-                                __html: fieldsetTitle,
-                              }}
-                            ></h5>
-                          )}
+                          {row.fields.map((field, fieldIndex) => {
+                            return (
+                              <Field
+                                customTriggers={customTriggers}
+                                data={field}
+                                finalResults={finalResults}
+                                formFields={formFields}
+                                formState={formState}
+                                formatStringWithTokens={formatStringWithTokens}
+                                inReviewState={inReviewState}
+                                invalidFormFields={invalidFormFields}
+                                key={`field-${fieldIndex}`}
+                                remoteProcedureCollection={
+                                  remoteProcedureCollection
+                                }
+                                sendMessageToReviewAppWithFileInfo={
+                                  sendMessageToReviewAppWithFileInfo
+                                }
+                                dynamicFormElementsConfig={
+                                  dynamicFormElementsConfig
+                                }
+                                setDynamicFormElementsConfig={
+                                  setDynamicFormElementsConfig
+                                }
+                                setInvalidFormFields={setInvalidFormFields}
+                                setRenderingErrors={setRenderingErrors}
+                                setSubmitErrors={setSubmitErrors}
+                                setSubmitSuccessText={setSubmitSuccessText}
+                                submitForm={onSubmitForm}
+                                updateFormData={updateFormData}
+                                validateForm={validateForm}
+                              />
+                            );
+                          })}
+                        </Row>
+                      );
+                    })}
+                  </FieldSet>
+                );
+              })}
 
-                          {fieldsetTitle && fieldsetInstruction && <hr />}
-
-                          {fieldsetInstruction && (
-                            <p
-                              className={`fieldset-instruction`}
-                              dangerouslySetInnerHTML={{
-                                __html: fieldsetInstruction,
-                              }}
-                            ></p>
-                          )}
-                        </div>
-                      ) : (
-                        <hr />
-                      )}
-
-                      {rows.map((row, rowIndex) => {
-                        const rowHelp = formatStringWithTokens(
-                          row.help,
-                          setRenderingErrors
-                        );
-                        const fields = row.fields;
-
+              {Object.entries(dynamicFieldsets).map(
+                ([fieldsetIndex, fieldset]) => {
+                  return (
+                    <FieldSet
+                      data={fieldset}
+                      formatStringWithTokens={formatStringWithTokens}
+                      key={`fieldset-${fieldsetIndex}`}
+                      setRenderingErrors={setRenderingErrors}
+                    >
+                      {fieldset.rows.map((row, rowIndex) => {
                         return (
-                          <div
+                          <Row
+                            data={row}
+                            formatStringWithTokens={formatStringWithTokens}
                             key={`row-${rowIndex}`}
-                            className={`row ${row.classes || ""}`}
-                            id={row.id}
+                            setRenderingErrors={setRenderingErrors}
                           >
-                            {fields.map((field, fieldIndex) => {
-                              const fieldLabel = formatStringWithTokens(
-                                field.label,
-                                setRenderingErrors
-                              );
-                              const fieldTooltip = formatStringWithTokens(
-                                field.tooltip,
-                                setRenderingErrors
-                              );
-                              const fieldHelp = field.help;
-                              const isInvalid = !!(
-                                invalidFormFields[field.name] || []
-                              ).length;
-                              const validationErrors =
-                                invalidFormFields[field.name] || [];
-
+                            {row.fields.map((field, fieldIndex) => {
                               return (
-                                <div
+                                <Field
+                                  customTriggers={customTriggers}
+                                  data={field}
+                                  finalResults={finalResults}
+                                  formFields={formFields}
+                                  formState={formState}
+                                  formatStringWithTokens={
+                                    formatStringWithTokens
+                                  }
+                                  inReviewState={inReviewState}
+                                  invalidFormFields={invalidFormFields}
                                   key={`field-${fieldIndex}`}
-                                  className={`
-                                    field
-                                    form-group
-                                    col
-                                    ${
-                                      checkFieldRequiredness(field)
-                                        ? "required"
-                                        : ""
-                                    }
-                                    ${
-                                      field.type === FieldType.HIDDEN
-                                        ? "hidden-type"
-                                        : ""
-                                    }
-                                    ${field.classes || ""}
-                                  `}
-                                  title={fieldTooltip}
-                                >
-                                  <i>{field.icon}</i>
-                                  <label htmlFor={field.id}>{fieldLabel}</label>
-
-                                  {[
-                                    FieldType.INPUT,
-                                    FieldType.EMAIL,
-                                    FieldType.PASSWORD,
-                                    FieldType.NUMBER,
-                                  ].includes(field.type) && (
-                                    <InputField
-                                      field={field}
-                                      formData={formState}
-                                      updateFormData={updateFormData}
-                                      disabled={inReviewState}
-                                      initialFormData={finalResults}
-                                      inReviewState={inReviewState}
-                                      invalid={isInvalid}
-                                      validationErrors={validationErrors}
-                                      formFields={formFields}
-                                      customTriggers={customTriggers}
-                                      cleanErrorsOnChange={true}
-                                    />
-                                  )}
-
-                                  {field.type === FieldType.TEXTAREA && (
-                                    <TextareaField
-                                      field={field}
-                                      formData={formState}
-                                      updateFormData={updateFormData}
-                                      disabled={inReviewState}
-                                      initialFormData={finalResults}
-                                      inReviewState={inReviewState}
-                                      invalid={isInvalid}
-                                      validationErrors={validationErrors}
-                                      formFields={formFields}
-                                      customTriggers={customTriggers}
-                                      cleanErrorsOnChange={true}
-                                    />
-                                  )}
-
-                                  {field.type === FieldType.CHECKBOX && (
-                                    <CheckboxField
-                                      field={field}
-                                      formData={formState}
-                                      updateFormData={updateFormData}
-                                      disabled={inReviewState}
-                                      initialFormData={finalResults}
-                                      inReviewState={inReviewState}
-                                      invalid={isInvalid}
-                                      validationErrors={validationErrors}
-                                      formFields={formFields}
-                                      customTriggers={customTriggers}
-                                      cleanErrorsOnChange={true}
-                                    />
-                                  )}
-
-                                  {field.type === FieldType.RADIO && (
-                                    <RadioField
-                                      field={field}
-                                      formData={formState}
-                                      updateFormData={updateFormData}
-                                      disabled={inReviewState}
-                                      initialFormData={finalResults}
-                                      inReviewState={inReviewState}
-                                      invalid={isInvalid}
-                                      validationErrors={validationErrors}
-                                      formFields={formFields}
-                                      customTriggers={customTriggers}
-                                      cleanErrorsOnChange={true}
-                                    />
-                                  )}
-
-                                  {field.type === FieldType.SELECT && (
-                                    <SelectField
-                                      field={field}
-                                      formData={formState}
-                                      updateFormData={updateFormData}
-                                      disabled={inReviewState}
-                                      initialFormData={finalResults}
-                                      inReviewState={inReviewState}
-                                      invalid={isInvalid}
-                                      validationErrors={validationErrors}
-                                      formFields={formFields}
-                                      customTriggers={customTriggers}
-                                      cleanErrorsOnChange={true}
-                                    />
-                                  )}
-
-                                  {field.type === FieldType.FILE && (
-                                    <FileField
-                                      field={field}
-                                      formData={formState}
-                                      updateFormData={updateFormData}
-                                      disabled={inReviewState}
-                                      initialFormData={finalResults}
-                                      inReviewState={inReviewState}
-                                      invalid={isInvalid}
-                                      validationErrors={validationErrors}
-                                      onReviewFileButtonClick={
-                                        sendMessageToReviewAppWithFileInfo
-                                      }
-                                      formFields={formFields}
-                                      customTriggers={customTriggers}
-                                      cleanErrorsOnChange={true}
-                                    />
-                                  )}
-
-                                  {field.type === FieldType.HIDDEN && (
-                                    <HiddenField
-                                      field={field}
-                                      formData={formState}
-                                      updateFormData={updateFormData}
-                                      disabled={inReviewState}
-                                      initialFormData={finalResults}
-                                      inReviewState={inReviewState}
-                                      formFields={formFields}
-                                    />
-                                  )}
-
-                                  {fieldHelp && (
-                                    <small
-                                      className={`field-help form-text text-muted`}
-                                      dangerouslySetInnerHTML={{
-                                        __html: fieldHelp,
-                                      }}
-                                    ></small>
-                                  )}
-                                </div>
+                                  remoteProcedureCollection={
+                                    remoteProcedureCollection
+                                  }
+                                  sendMessageToReviewAppWithFileInfo={
+                                    sendMessageToReviewAppWithFileInfo
+                                  }
+                                  dynamicFormElementsConfig={
+                                    dynamicFormElementsConfig
+                                  }
+                                  setDynamicFormElementsConfig={
+                                    setDynamicFormElementsConfig
+                                  }
+                                  setInvalidFormFields={setInvalidFormFields}
+                                  setRenderingErrors={setRenderingErrors}
+                                  setSubmitErrors={setSubmitErrors}
+                                  setSubmitSuccessText={setSubmitSuccessText}
+                                  submitForm={onSubmitForm}
+                                  updateFormData={updateFormData}
+                                  validateForm={validateForm}
+                                />
                               );
                             })}
-
-                            {rowHelp && (
-                              <div
-                                className={`row-help container`}
-                                dangerouslySetInnerHTML={{ __html: rowHelp }}
-                              ></div>
-                            )}
-                          </div>
+                          </Row>
                         );
                       })}
-                    </fieldset>
+                    </FieldSet>
                   );
-                })}
-              </div>
-            </section>
+                }
+              )}
+            </Section>
           );
         })}
       </div>
 
-      {/* Submit button */}
-      {formSubmitButton && !inReviewState && (
-        <div
-          className={`${formSubmitButton.classes || ""}`}
-          id={formSubmitButton.id}
-        >
-          <hr className={`form-buttons-separator`} />
-
-          {onSubmitLoading ? (
-            // Banner of success
-            <div
-              className={`alert alert-success centered mx-auto col-6 ml-2 mr-2`}
-            >
-              Thank you!
-              <br />
-              Your form has been submitted.
-            </div>
-          ) : (
-            <>
-              {/* Button instruction */}
-              {formSubmitButton.instruction && (
-                <div
-                  className={`alert alert-light centered mx-auto col-6 ml-2 mr-2`}
-                  dangerouslySetInnerHTML={{
-                    __html: formSubmitButton.instruction,
-                  }}
-                ></div>
-              )}
-
-              {/* Submit button */}
-              <div className={`form-buttons container`}>
-                <button
-                  className={`button-submit btn btn-success`}
-                  type={"submit"}
-                  title={formSubmitButton.tooltip}
-                  onClick={onClickSubmitButton}
-                >
-                  {formSubmitButton.text}
-                </button>
-              </div>
-            </>
-          )}
-
-          {/* Additional reminder to correct form errors above */}
-          {!!Object.keys(invalidFormFields).length && (
-            <div
-              className={`alert alert-danger centered mx-auto col-6 ml-2 mr-2`}
-            >
-              Please correct validation errors in the form
-            </div>
-          )}
-        </div>
-      )}
+      {/* Submit button and instructions */}
+      <SubmitButtonBlock
+        data={formSubmitButton}
+        inReviewState={inReviewState}
+        invalidFormFields={invalidFormFields}
+        onClick={onClickSubmitButton}
+        submitLoading={submitLoading}
+        submitSuccessText={submitSuccessText}
+      />
 
       {/* Unexpected server errors */}
       {!!submitErrors.length && <FormErrors errorMessages={submitErrors} />}
@@ -718,8 +422,8 @@ function FormComposer({
               dangerouslySetInnerHTML={{ __html: formInstruction }}
             ></p>
           }
-          open={formInstrupctionModalOpen}
-          setOpen={setFormInstrupctionModalOpen}
+          open={formInstructionModalOpen}
+          setOpen={setFormInstructionModalOpen}
           title={"Task Instructions"}
         />
       )}

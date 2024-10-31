@@ -29,7 +29,9 @@ function FileField({
   validationErrors,
   formFields,
   customTriggers,
+  className,
   cleanErrorsOnChange,
+  remoteProcedureCollection,
   onReviewFileButtonClick,
 }) {
   const [value, setValue] = React.useState(DEFAULT_VALUE);
@@ -48,16 +50,17 @@ function FileField({
       return;
     }
 
-    runCustomTrigger(
-      field.triggers,
-      triggerName,
-      customTriggers,
-      formData,
-      updateFormData,
-      field,
-      value,
-      formFields
-    );
+    runCustomTrigger({
+      elementTriggersConfig: field.triggers,
+      elementTriggerName: triggerName,
+      customTriggers: customTriggers,
+      formData: formData,
+      updateFormData: updateFormData,
+      element: field,
+      fieldValue: value,
+      formFields: formFields,
+      remoteProcedureCollection: remoteProcedureCollection,
+    });
   }
 
   function onChange(e, fieldName) {
@@ -142,6 +145,7 @@ function FileField({
       <input
         className={`
           custom-file-input
+          ${className || ""}
           ${invalidField ? "is-invalid" : ""}
         `}
         id={field.id}

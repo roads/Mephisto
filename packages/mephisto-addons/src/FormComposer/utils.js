@@ -322,18 +322,25 @@ export function isObjectEmpty(_object) {
   return Object.keys(_object).length === 0;
 }
 
-export function runCustomTrigger(
+export function runCustomTrigger({
   // Args used in this util
   elementTriggersConfig, // 'triggers' value defined in 'unit_config.json' file
-  elementTriggerName,
-  customTriggers,
+  elementTriggerName, // Name of a trigger
+  customTriggers, // Collection of custom trigger functions
   // Args passed directly into the trigger function
   formData, // React state for the entire form
   updateFormData, // callback to set the React state
   element, // "field", "section", or "submit button" element that invoked this trigger
   fieldValue, // (optional) Current field value, if the `element` is a form field
-  formFields // (optional) Object containing all form fields as defined in 'unit_config.json'
-) {
+  formFields, // (optional) Object containing all form fields as defined in 'unit_config.json'
+  remoteProcedureCollection, // (optional) Collection or remote procedures
+  setDynamicFormElementsConfig, // (optional) Setter for React state with dynamic elements
+  setInvalidFormFields, // (optional) Setter for React state with form fields errors
+  setSubmitErrors, // (optional) Setter for React state with form submit errors
+  setSubmitSuccessText, // (optional) Setter for React state with success text next to submit button
+  submitForm, // (optional) Function that submits form
+  validateForm, // (optional) Function that validates whole form
+}) {
   // Exit if the element that doesn't have any triggers defined (no logs required)
   if (!elementTriggersConfig || isObjectEmpty(elementTriggersConfig)) {
     return;
@@ -415,14 +422,21 @@ export function runCustomTrigger(
 
   // Run custom trigger
   try {
-    triggerFn(
-      formData,
-      updateFormData,
-      element,
-      fieldValue,
-      formFields,
-      ...triggerFnArgs
-    );
+    triggerFn({
+      formData: formData,
+      updateFormData: updateFormData,
+      element: element,
+      fieldValue: fieldValue,
+      formFields: formFields,
+      remoteProcedureCollection: remoteProcedureCollection,
+      setDynamicFormElementsConfig: setDynamicFormElementsConfig,
+      validateForm: validateForm,
+      setInvalidFormFields: setInvalidFormFields,
+      setSubmitErrors: setSubmitErrors,
+      setSubmitSuccessText: setSubmitSuccessText,
+      submitForm: submitForm,
+      triggerArgs: triggerFnArgs,
+    });
   } catch (error) {
     const textAboutElement = fieldValue
       ? `Field "${element.name}" value: ${fieldValue}. `
@@ -594,4 +608,134 @@ export function validateFieldValue(field, value, writeConsoleLog) {
   }
 
   return valueIsValid;
+}
+
+/**
+ * Prepare all main FormComposer states with data from sections
+ * @param {array} formSections FormComposer sections from task config
+ * @param {object} finalResults initial form data (e.g. it can be not empty in TaskReview app)
+ * @param {Function} setSectionsFields Setter for `sectionsFields` state
+ * @param {Function} setFormState Setter for `formState` state
+ * @param {Function} setFormFields Setter for `formFields` state
+ */
+export function setInitialDataFromSections(
+  formSections,
+  finalResults,
+  setSectionsFields,
+  setFormState,
+  setFormFields
+) {
+  if (formSections.length) {
+    const _fields = {};
+    const initialFormData = {};
+
+    formSections.map((section, sectionIndex) => {
+      const _sectionFields = [];
+
+      // Set fields to Form fields and Section fields
+      section.fieldsets.map((fieldset) => {
+        // Do not add fields from dynamic fieldsets
+        const fieldsetIsDynamic = !!fieldset.lookup_name;
+        if (fieldsetIsDynamic) {
+          return;
+        }
+
+        fieldset.rows.map((row) => {
+          row.fields.map((field) => {
+            _fields[field.name] = field;
+            initialFormData[field.name] = getDefaultFormFieldValue(
+              field,
+              finalResults
+            );
+            _sectionFields.push(field);
+          });
+        });
+      });
+
+      setSectionsFields((prevState) => {
+        return {
+          ...prevState,
+          ...{ [sectionIndex]: _sectionFields },
+        };
+      });
+    });
+
+    setFormState(initialFormData);
+    setFormFields(_fields);
+  }
+}
+
+/**
+ * Update all main FormComposer states with data from dynamic sections
+ * @param {object} dynamicSections dynamic FormComposer sections from triggers
+ * @param {array} formSections FormComposer sections from task config
+ * @param {object} finalResults initial form data (e.g. it can be not empty in TaskReview app)
+ * @param {object} formState actual form data
+ * @param {Function} setSectionsFields Setter for `sectionsFields` state
+ * @param {Function} setFormState Setter for `formState` state
+ * @param {Function} setFormFields Setter for `formFields` state
+ */
+export function updateDataWithDynamicSections(
+  dynamicSections,
+  formSections,
+  finalResults,
+  formState,
+  setSectionsFields,
+  setFormState,
+  setFormFields
+) {
+  if (Object.keys(dynamicSections).length) {
+    const newFields = {};
+    const initialFormDataForNewFields = {};
+
+    Object.entries(dynamicSections).map(([sectionName, section]) => {
+      let sectionIndex = formSections.length;
+      formSections.map((section, i) => {
+        if (section.name === sectionName) {
+          sectionIndex = i;
+        }
+      });
+      const _sectionFields = [];
+
+      // Set fields to Form fields and Section fields
+      Object.values(section.fieldsets).map((fieldset) => {
+        fieldset.rows.map((row) => {
+          row.fields.map((field) => {
+            newFields[field.name] = field;
+            const initialFieldValue = formState[field.name];
+            if (initialFieldValue === undefined) {
+              initialFormDataForNewFields[
+                field.name
+              ] = getDefaultFormFieldValue(field, finalResults);
+            }
+            _sectionFields.push(field);
+          });
+        });
+      });
+
+      setSectionsFields((prevState) => {
+        const prevSection = prevState[sectionIndex] || {};
+
+        const updatedSectionFields = [...prevSection, ..._sectionFields];
+
+        return {
+          ...prevState,
+          ...{ [sectionIndex]: updatedSectionFields },
+        };
+      });
+    });
+
+    setFormState((prevState) => {
+      return {
+        ...prevState,
+        ...initialFormDataForNewFields,
+      };
+    });
+    setFormFields((prevState) => {
+      return {
+        ...prevState,
+        ...newFields,
+      };
+    });
+  }
 }

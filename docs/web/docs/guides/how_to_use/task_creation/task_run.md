@@ -433,3 +433,69 @@ We also specify two `units_per_assignment`, meaning that Mephisto creates one `U
 meaning in this case that different workers can complete the same job, usually to get inter-annotator agreement.
 (In some cases Mephisto can use an `Assignment` to connect multiple workers each with one `Unit` on a collaborative live task).
 As we had one assignment, it makes sense that each worker `x` and your second worker could only complete one task each.
+
+
+### 3.5 Server Callbacks
+
+To make your Tasks more dynamic and flexible, we have server callbacks or remote procedures how we call them.
+
+In two words, remote procedures are server Pythong functions that can be called from the UI via JS in the middle of the Task progress.
+
+To start working with them, you need to follow several rules:
+1. Use blueprint `remote_procedure`
+2. Use agent state `SharedRemoteProcedureTaskState`
+3. Write your own remote procedure(-s) and pass them in the Task intialization into agent state
+    ```python
+    from mephisto.abstractions.blueprints.remote_procedure.remote_procedure_agent_state import (
+        RemoteProcedureAgentState,
+    )
+    from mephisto.abstractions.blueprints.remote_procedure.remote_procedure_blueprint import (
+        SharedRemoteProcedureTaskState,
+    )
+    
+    ...
+    
+    def my_remote_procedure(
+        request_id: str,
+        args: dict,
+        agent_state: RemoteProcedureAgentState,
+    ):
+        # Your logic here
+        pass
+        
+    ...    
+    
+    task_data = ...
+    shared_state = SharedRemoteProcedureTaskState(
+        static_task_data=task_data,
+        function_registry={
+            "nameProcedureNameForJs": my_remote_procedure,
+        },
+    )
+    ```
+4. Use `useMephistoRemoteProcedureTask` in yout React-app
+   ```js
+   const {
+     isLoading,
+     initialTaskData,
+     remoteProcedure,
+     handleSubmit,
+     handleFatalError,
+   } = useMephistoRemoteProcedureTask();
+    
+   const nameProcedureNameForJsFn = remoteProcedure("nameProcedureNameForJs");
+    
+   const requestArgs = {
+     // your args that will be passed into `my_remote_procedure` under `args` argument
+   };
+   nameProcedureNameForJsFn(requestArgs)
+     .then((response) => {
+       // Your logic here
+     })
+     .catch((error) => {
+       // JS errors
+     });
+   ```
+   
+We recommend to pay attention to our comprehensive [example](/docs/guides/tutorials/model_in_the_loop/), 
+where we touched all related aspects of remote procedures feature.

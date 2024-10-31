@@ -24,7 +24,7 @@ To launch a form-based Task from within a Docker container follow these steps:
 1. Prepare and validate your config files as described in [FormComposer config files](/docs/guides/how_to_use/form_composer/configuration/setup/) and
 [form_composer config command](/docs/guides/how_to_use/form_composer/configuration/form_composer_config_command/) sections
 
-2. Launch your form-based Task (see details in [Running FormComposer task](/docs/guides/how_to_use/form_composer/running/)). For a lcal testing scenario, we will run:
+2. Launch your form-based Task (see details in [Running FormComposer task](/docs/guides/how_to_use/form_composer/running/)). For a local testing scenario, we will run:
 
 ```shell
 docker-compose -f docker/docker-compose.dev.yml run \

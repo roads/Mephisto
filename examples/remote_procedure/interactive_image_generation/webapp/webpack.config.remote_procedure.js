@@ -8,10 +8,10 @@ var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/presigned_urls.js",
+  entry: "./src/main_remote_procedure.js",
   output: {
     path: __dirname,
-    filename: "build/bundle.presigned_urls.js",
+    filename: "build/bundle.remote_procedure.js",
   },
   resolve: {
     alias: {
@@ -19,12 +19,20 @@ module.exports = {
       // Use local library with code that can submit FormData
       "mephisto-core": path.resolve(
         __dirname,
-        "../../../packages/mephisto-core"
+        "../../../../packages/mephisto-core"
       ),
       // Use local library with code that can use FormComposer and submit Worker Opinion
       "mephisto-addons": path.resolve(
         __dirname,
-        "../../../packages/mephisto-addons"
+        "../../../../packages/mephisto-addons"
+      ),
+      // Required for custom validators
+      "custom-validators": path.resolve(
+        process.env.WEBAPP__GENERATOR__CUSTOM_VALIDATORS
+      ),
+      // Required for custom triggers
+      "custom-triggers": path.resolve(
+        process.env.WEBAPP__GENERATOR__CUSTOM_TRIGGERS
       ),
     },
     fallback: {

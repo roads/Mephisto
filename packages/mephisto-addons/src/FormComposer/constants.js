@@ -13,6 +13,7 @@ export const TOKEN_END_REGEX = /\}\}/;
 export const MESSAGES_IN_REVIEW_FILE_DATA_KEY = "IN_REVIEW_FILE_DATA";
 
 export const FieldType = {
+  BUTTON: "button",
   CHECKBOX: "checkbox",
   EMAIL: "email",
   FILE: "file",
@@ -62,4 +63,10 @@ export const VIDEO_TYPES_BY_EXT = {
   webm: "video/webm",
   mov: "video/quicktime",
   avi: "video/x-msvideo",
+};
+
+export const DEFAULT_DYNAMIC_STATE = {
+  disables: {},
+  loadings: {},
+  sections: {},
 };
