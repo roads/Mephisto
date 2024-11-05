@@ -77,7 +77,7 @@
                 "fields": [
                   {
                     "id": "id_prompt_0",
-                    "label": "Please provide a detailed prompt to algorithm to generate an image that resemples the target image above",
+                    "label": "Please provide a detailed prompt to algorithm to generate an image that resembles the target image above",
                     "name": "prompt_0",
                     "type": "textarea",
                     "validators": {
@@ -118,7 +118,7 @@
                 "fields": [
                   {
                     "id": "id_score_1",
-                    "label": "How closely does the prompted image match the target image (on scale 1-10)?",
+                    "label": "How closely does the generated image match the target image (on scale 1-10)?",
                     "multiple": false,
                     "name": "score_1",
                     "options": [
@@ -221,7 +221,7 @@
                 "fields": [
                   {
                     "id": "id_score_2",
-                    "label": "How closely does the prompted image match the target image (on scale 1-10)?",
+                    "label": "How closely does the generated image match the target image (on scale 1-10)?",
                     "multiple": false,
                     "name": "score_2",
                     "options": [

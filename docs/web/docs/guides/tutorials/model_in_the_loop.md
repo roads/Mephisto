@@ -73,7 +73,10 @@ docker-compose -f docker/docker-compose.dev.yml run \
     python /mephisto/examples/remote_procedure/interactive_image_generation/run_task__local__inhouse.py
 ```
 
-3. Once your Task launches, your console will display you URLs like this: `http://localhost:3001?worker_id=WORKER_USERNAME&id=1`
+3. Once your Task launches, your console will display you Task Unit URLs like this: `http://localhost:3001?worker_id=WORKER_USERNAME&id=1`
+
+4. Opening a Task Unit URL will show you a page like this:
+![Model-in-the-loop](./screenshots/model_in_the_loop.jpg)
 
 
 #### Further Details

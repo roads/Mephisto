@@ -61,7 +61,7 @@ def _onboarding_always_valid(onboarding_data: dict) -> bool:
     return True
 
 
-@task_script(default_config_file="example_local_mock")
+@task_script(default_config_file="example__local__inhouse")
 def main(operator: Operator, cfg: DictConfig) -> None:
     examples.build_remote_procedure_template(
         force_rebuild=cfg.mephisto.task.force_rebuild,

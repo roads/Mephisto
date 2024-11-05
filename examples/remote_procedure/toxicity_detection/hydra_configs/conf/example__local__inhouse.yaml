@@ -7,17 +7,21 @@
 defaults:
   - /mephisto/blueprint: remote_procedure
   - /mephisto/architect: local
-  - /mephisto/provider: mock
+  - /mephisto/provider: inhouse
 mephisto:
   blueprint:
-    task_source: ${task_dir}/webapp/build/bundle.js
+    task_source: ${task_dir}/webapp/build/bundle.remote_procedure.js
+    task_source_review: ${task_dir}/webapp/build/bundle.review.js
     link_task_source: false
     # NOTE pick something based on your task
     block_qualification: test_qual_block
     units_per_assignment: 1
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     allowed_concurrent: 1
-    task_name: remote-procedure-test-task
+    task_name: "Toxicity Example"
     task_title: "Provide feedback on our toxicity detection model"
     # NOTE you'll want to update your task description
     task_description: "Type text into the input box. You will not be able to submit your message to the backend if the message is too toxic (>0.5)."

@@ -5,6 +5,5 @@
  */
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-select/dist/css/bootstrap-select.min.css";
-import "./reviewapp.jsx";
 import "./css/style.css";
+import "./reviewapp.jsx";

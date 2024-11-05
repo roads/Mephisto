@@ -98,6 +98,7 @@ def task_script(
     else:
         assert default_config_file is not None, "Must provide one of config or default_config_file"
         used_config = build_default_task_config(default_config_file)
+
     register_script_config(name="taskconfig", module=used_config)
 
     def task_script_wrapper(script_func: TaskFunction) -> TaskFunction:
@@ -160,11 +161,13 @@ def augment_config_from_db(script_cfg: DictConfig, db: "MephistoDB") -> DictConf
         if provider_type is None:
             print("No requester specified, defaulting to mock")
             provider_type = "mock"
+
         if provider_type == "mock":
             req = get_mock_requester(db)
             requester_name = req.requester_name
         else:
             reqs = db.find_requesters(provider_type=provider_type)
+
             if len(reqs) == 0:
                 print(
                     f"No requesters found for provider type {provider_type}, please "
@@ -187,12 +190,14 @@ def augment_config_from_db(script_cfg: DictConfig, db: "MephistoDB") -> DictConf
     else:
         # Ensure provided requester exists
         reqs = db.find_requesters(requester_name=requester_name)
+
         if len(reqs) == 0:
             print(
                 f"No requesters found under name {requester_name}, "
                 "have you registered with `mephisto register`?"
             )
             exit(1)
+
         requester_provider_type = reqs[0].provider_type
         if provider_type != requester_provider_type:
             print(
@@ -206,6 +211,7 @@ def augment_config_from_db(script_cfg: DictConfig, db: "MephistoDB") -> DictConf
     if provider_type in ["mturk"]:
         try_prerun_cleanup(db, cfg.provider.requester_name)
         input(f"This task is going to launch live on {provider_type}, press enter to continue: ")
+
     if provider_type in ["mturk_sandbox", "mturk"] and architect_type not in [
         "heroku",
         "ec2",
@@ -218,6 +224,7 @@ def augment_config_from_db(script_cfg: DictConfig, db: "MephistoDB") -> DictConf
 
     cfg.provider.requester_name = requester_name
     cfg.provider._provider_type = provider_type
+
     return script_cfg
 
 

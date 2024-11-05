@@ -347,7 +347,7 @@ def main(operator: Operator, cfg: DictConfig) -> None:
         "getNextFieldset": _get_next_fieldset,
     }
 
-    examples.build_interactive_image_generation(
+    examples.build_remote_procedure_interactive_image_generation(
         force_rebuild=cfg.mephisto.task.force_rebuild,
         post_install_script=cfg.mephisto.task.post_install_script,
     )

@@ -5,7 +5,7 @@
  */
 
 import "bootstrap-select/dist/css/bootstrap-select.min.css";
-import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./app_remote_procedure.jsx";
 import "./css/style.css";
 

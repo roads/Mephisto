@@ -44,6 +44,10 @@ def _clean(remove_package_locks: bool):
     examples.clean_form_composer_demo(remove_package_locks, verbose=verbose)
     examples.clean_video_annotator_demo(remove_package_locks, verbose=verbose)
     examples.clean_parlai_chat_task_demo(remove_package_locks, verbose=verbose)
+    examples.clean_remote_procedure_interactive_image_generation(
+        remove_package_locks,
+        verbose=verbose,
+    )
     examples.clean_remote_procedure_mnist(remove_package_locks, verbose=verbose)
     examples.clean_remote_procedure_template(remove_package_locks, verbose=verbose)
     examples.clean_remote_procedure_toxicity_detection(remove_package_locks, verbose=verbose)

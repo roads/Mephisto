@@ -116,45 +116,67 @@ def list_requesters():
 @click.argument("args", nargs=-1)
 def register_provider(args):
     """Register a requester with a crowd provider"""
+
     if len(args) == 0:
         logger.error("\n[red]Usage: mephisto register <provider_type> arg1=value arg2=value[/red]")
         logger.info("\n[b]Valid Providers[/b]")
-        provider_text = """"""
+
+        provider_text = ""
+
         for provider in get_valid_provider_types():
             provider_text += "\n* " + provider
+
         provider_text_markdown = Markdown(provider_text)
         console.print(provider_text_markdown)
+
         return
 
     from mephisto.abstractions.databases.local_database import LocalMephistoDB
+    from mephisto.operations.hydra_config import get_extra_argument_dicts
+    from mephisto.operations.hydra_config import parse_arg_dict
     from mephisto.operations.registry import get_crowd_provider_from_type
-    from mephisto.operations.hydra_config import (
-        parse_arg_dict,
-        get_extra_argument_dicts,
-    )
 
-    provider_type, requester_args = args[0], args[1:]
-    args_dict = dict(arg.split("=", 1) for arg in requester_args)
+    provider_type, requester_consose_args = args[0], args[1:]
+    args_dict = dict((a.split("=", 1) if "=" in a else (a, "")) for a in requester_consose_args)
 
     crowd_provider = get_crowd_provider_from_type(provider_type)
     RequesterClass = crowd_provider.RequesterClass
 
-    if len(requester_args) == 0:
-        params = get_extra_argument_dicts(RequesterClass)
+    # Params from RequesterArgs by provider type
+    params = get_extra_argument_dicts(RequesterClass)
+
+    # Names of passed args in console
+    requester_console_arg_names = set(
+        [(a.split("=") if "=" in a else a)[0] for a in requester_consose_args]
+    )
+
+    # Names of requred provider args
+    required_arg_names = set(
+        [name for p in params for name, data in p["args"].items() if data.get("required") is True]
+    )
+
+    has_passed_required_params = len(required_arg_names) == 0 or (
+        required_arg_names.issubset(requester_console_arg_names)
+    )
+    if not has_passed_required_params:
         for param in params:
             click.echo("\n" + param["desc"])
             param_keys = list(param["args"].keys())
+
             if len(param_keys) > 0:
                 first_arg_key = param_keys[0]
                 requester_headers = list(param["args"][first_arg_key].keys())
                 requester_table = create_table(requester_headers, "[b]Arguments[/b]")
+
                 for arg in param["args"]:
                     arg_values = list(param["args"][arg].values())
                     arg_values = [str(x) for x in arg_values]
                     requester_table.add_row(*arg_values)
+
                 console.print(requester_table)
             else:
                 logger.error("[red]Requester has no args[/red]")
+
         return
 
     try:
@@ -169,10 +191,12 @@ def register_provider(args):
     db = LocalMephistoDB()
     requester_name = parsed_options.name
     requesters = db.find_requesters(requester_name=requester_name)
+
     if len(requesters) == 0:
         requester = RequesterClass.new(db, requester_name)
     else:
         requester = requesters[0]
+
     try:
         requester.register(parsed_options)
         logger.info(f'[green]Registered requester "{requester_name}" successfully.[/green]')

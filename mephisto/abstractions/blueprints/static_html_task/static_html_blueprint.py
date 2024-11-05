@@ -57,7 +57,7 @@ class StaticHTMLBlueprintArgs(StaticBlueprintArgs):
         metadata={
             "help": (
                 "Tasks launched from static blueprints need a "
-                "source html file to display to workers, as well as a csv "
+                "source html file to display to workers, as well as a CSV file "
                 "containing values that will be inserted into templates in "
                 "the html. "
             )
