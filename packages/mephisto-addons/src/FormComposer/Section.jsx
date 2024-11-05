@@ -25,6 +25,7 @@ function Section({
   sectionsFields,
   setRenderingErrors,
   updateFormData,
+  setcurrentlyWorkedOnSectionName,
 }) {
   const title = formatStringWithTokens(data.title, setRenderingErrors);
   const instruction = formatStringWithTokens(
@@ -44,6 +45,11 @@ function Section({
   const hasInvalidFields = !!(sectionsFields[index] || []).filter((field) =>
     Object.keys(invalidFormFields).includes(field.name)
   ).length;
+
+  function onClick() {
+    // For scrolling to first invalid field in current section
+    setcurrentlyWorkedOnSectionName(data.name);
+  }
 
   function onClickSectionHeader() {
     if (inReviewState) {
@@ -68,7 +74,9 @@ function Section({
       className={`section ${data.classes || ""}`}
       id={data.id}
       data-id={`section-${index}`}
+      data-name={data.name}
       data-invalid={hasInvalidFields}
+      onClick={onClick}
     >
       {(title || instruction) && (
         // Section header is clickable for accordion

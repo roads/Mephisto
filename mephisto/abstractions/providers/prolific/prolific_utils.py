@@ -610,7 +610,7 @@ def pay_bonus(
         client,
         workspace_name=task_run_config.provider.prolific_workspace_name,
     ):
-        # Just in case if Prolific adds showing an available balance for an account
+        # Just in case Prolific adds showing an available balance for an account
         logger.debug("Cannot pay bonus. Reason: Insufficient funds in your Prolific account.")
         return False
 

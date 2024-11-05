@@ -61,6 +61,7 @@ function Field({
       `}
       title={tooltip}
       data-name={data.name}
+      data-invalid={isInvalid}
     >
       {data.icon && <i>{data.icon}</i>}
 

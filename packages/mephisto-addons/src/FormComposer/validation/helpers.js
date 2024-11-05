@@ -30,7 +30,7 @@ export function fieldIsVisible(field) {
   // All fields have same wrapper that contains label, etc.
   const $htmlFieldElementWrapper = $htmlFieldElement.closest(".field");
 
-  // In case if field is invisible and field wrapper has `hidden` class.
+  // in case field is invisible and field wrapper has `hidden` class.
   // Otherwise, we will select even collapsed sections and other unexpected blocks
   const htmlFieldElementIsVisible =
     $htmlFieldElement && $htmlFieldElement.is(":visible");

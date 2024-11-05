@@ -29,7 +29,7 @@ export default function TaskInstructionModal({
   React.useEffect(() => {
     if (open) {
       // Set saved scrolling position to continue reading from that place we stopped.
-      // This is needed in case if instruction is too long,
+      // This is needed in case instruction is too long,
       // and it is hard to start searching previous place again
       modalContentRef.current.scrollTo(0, modalContentTopPosition);
     }

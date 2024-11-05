@@ -267,7 +267,7 @@ class ProlificProvider(CrowdProvider):
         # we need to block Mephisto workers on Prolific as well
         if blocked_participant_ids:
             new_prolific_specific_qualifications = []
-            # Add empty Blacklist in case if there is not in state or config
+            # Add empty Blacklist in case there is not in state or config
             blacklist_qualification = DictConfig(
                 dict(
                     name=CustomBlacklistEligibilityRequirement.name,

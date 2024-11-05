@@ -21,11 +21,13 @@ mephisto video_annotator config --verify
 # Parameters that work together
 mephisto video_annotator config --directory /my/own/path/to/data/ --verify
 mephisto video_annotator config --directory /my/own/path/to/data/ --extrapolate-token-sets
+mephisto video_annotator config --directory /my/own/path/to/data/ --extrapolate-token-sets --copy-config-files
 mephisto video_annotator config --update-file-location-values "https://s3.amazonaws.com/..."
 ```
 
 where
 - `-d/--directory` - a **modifier** for all `video_annotator config` command options that specifies the directory where all annotator JSON config files are located (if missing the default is `mephisto/generators/video_annotator/data` directory)
+- `-c/--copy-config-files` - a **modifier** for all `form_composer config` command options that allows to copy all data files from specified in `--directory` to the generator's data directory. It can be useful, when you have a bunch of different data directories
 - `-v/--verify` - if truthy, validates all JSON configs currently present in the annotator builder config directory
 - `-p/--permutate-sepatate-tokens` - if truthy, generates token sets values as all possible combinations of values of individual tokens
 - `-f/--update-file-location-values S3_FOLDER_URL` - generates token values based on file names found within the specified S3 folder (see a separate section about this mode of running VideoAnnotator)

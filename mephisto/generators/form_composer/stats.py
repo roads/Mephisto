@@ -19,7 +19,7 @@ def _get_unit_data(data_browser: DataBrowser, unit: Unit) -> dict:
 
     unit_inputs = unit_data.get("data", {}).get("inputs") or {}
     unit_outputs = unit_data.get("data", {}).get("outputs") or {}
-    # In case if there is outdated code that returns `final_submission`
+    # in case there is outdated code that returns `final_submission`
     # under `inputs` and `outputs` keys, we should use the value in side `final_submission`
     if "final_submission" in unit_inputs:
         unit_inputs = unit_inputs["final_submission"]

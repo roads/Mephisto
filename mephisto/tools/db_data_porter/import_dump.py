@@ -141,7 +141,7 @@ def import_single_db(
                 in_progress_dump_row = dump_row
 
                 # --- HACK (#UNIT.AGENT_ID) START #2:
-                # We save pairs `unit_id: agent_id` in case if `agent_id is not None` and
+                # We save pairs `unit_id: agent_id` in case `agent_id is not None` and
                 # replace `agent_id` with `None`
                 if provider_type == MEPHISTO_DUMP_KEY:
                     if table_name == "units" and (unit_agent_id := dump_row.get("agent_id")):
