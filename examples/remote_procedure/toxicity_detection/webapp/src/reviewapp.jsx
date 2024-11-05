@@ -8,7 +8,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { FormComposerBaseFrontend } from "./components/core_components_dynamic.jsx";
+import { ToxicityTaskFrontend } from "./components/core_components_remote_procedure.jsx";
 
 function ReviewApp() {
   const appRef = React.useRef(null);
@@ -48,10 +48,9 @@ function ReviewApp() {
   return (
     <div ref={appRef}>
       {reviewData ? (
-        <FormComposerBaseFrontend
-          taskData={reviewData["inputs"]}
-          finalResults={reviewData["outputs"]}
-        />
+        <div className={"container"} id={"ui-container"}>
+          <ToxicityTaskFrontend finalResults={reviewData["outputs"]} />
+        </div>
       ) : (
         <div>Loading...</div>
       )}

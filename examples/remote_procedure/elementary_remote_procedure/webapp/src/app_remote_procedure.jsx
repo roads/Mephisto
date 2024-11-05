@@ -4,15 +4,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { BaseFrontend, LoadingScreen } from "./components/core_components.jsx";
-
 import {
+  ErrorBoundary,
   MephistoContext,
   useMephistoRemoteProcedureTask,
-  ErrorBoundary,
 } from "mephisto-core";
+import React from "react";
+import ReactDOM from "react-dom";
+import {
+  LoadingScreen,
+  ElementaryRemoteProcedureTaskFrontend,
+} from "./components/core_components_remote_procedure.jsx";
 
 /* ================= Application Components ================= */
 
@@ -51,27 +53,32 @@ function RemoteProcedureApp() {
     // At the moment, this task has no onboarding
     return <h1>This task doesn't currently have an onboarding example set</h1>;
   }
+
   if (blockedReason !== null) {
     return <h1>{blockedExplanation}</h1>;
   }
+
   if (isLoading) {
     return <LoadingScreen />;
   }
+
   if (isPreview) {
     if (!taskConfig.has_preview) {
       return <TaskPreviewView description={taskConfig.task_description} />;
     }
+
     if (previewHtml === null) {
       return <div>Loading...</div>;
     }
+
     return <div dangerouslySetInnerHTML={{ __html: previewHtml }} />;
   }
 
   return (
     <ErrorBoundary handleError={handleFatalError}>
       <MephistoContext.Provider value={mephistoProps}>
-        <div className="container-fluid" id="ui-container">
-          <BaseFrontend
+        <div className={"container"} id={"ui-container"}>
+          <ElementaryRemoteProcedureTaskFrontend
             taskData={initialTaskData}
             handleRemoteCall={handleRemoteCall}
             handleSubmit={handleSubmit}
@@ -84,7 +91,7 @@ function RemoteProcedureApp() {
 
 function TaskPreviewView({ description }) {
   return (
-    <div className="preview-screen">
+    <div className={"preview-screen"}>
       <div
         dangerouslySetInnerHTML={{
           __html: description,

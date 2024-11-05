@@ -1,20 +1,20 @@
 {
-  "name": "remote-procedure-template-example",
+  "name": "elementary-remote-procedure",
   "version": "1.0.1",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
     "dev": "webpack --mode development",
-    "test": "cypress open"
+    "test": "cypress open",
+    "build:remote_procedure": "webpack --config=webpack.config.remote_procedure.js --mode development",
+    "build:review": "webpack --config=webpack.config.review.js --mode development"
   },
   "keywords": [],
   "author": "",
   "dependencies": {
-    "bootstrap": "^4.6.0",
-    "mephisto-task": "2.0.4",
+    "bootstrap": "^5.3.1",
     "rc-slider": "^8.6.3",
     "react": "^16",
-    "react-bootstrap": "^1.6.0",
     "react-dom": "^16",
     "react-table": "^6.8.6"
   },

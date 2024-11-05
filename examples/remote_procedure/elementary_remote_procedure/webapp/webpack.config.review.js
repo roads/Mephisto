@@ -8,10 +8,10 @@ var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/main.js",
+  entry: "./src/review.js",
   output: {
     path: __dirname,
-    filename: "build/bundle.js",
+    filename: "build/bundle.review.js",
   },
   resolve: {
     alias: {

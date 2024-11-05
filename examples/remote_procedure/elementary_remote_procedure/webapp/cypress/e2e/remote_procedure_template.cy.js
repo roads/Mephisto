@@ -4,7 +4,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-describe("Loads remote_procedure_template", () => {
+describe("Loads elementary_remote_procedure", () => {
   it("Makes request for agent", () => {
     cy.intercept({ pathname: "/request_agent" }).as("agentRequest");
     cy.visit("/");

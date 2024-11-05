@@ -7,10 +7,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {
-  BaseFrontend,
+  ToxicityTaskFrontend,
   LoadingScreen,
   Instructions,
-} from "./components/core_components.jsx";
+} from "./components/core_components_remote_procedure.jsx";
 
 import {
   MephistoContext,
@@ -50,12 +50,8 @@ function RemoteProcedureApp() {
   return (
     <ErrorBoundary handleError={handleFatalError}>
       <MephistoContext.Provider value={mephistoProps}>
-        <div
-          className="container"
-          id="ui-container"
-          style={{ padding: "1rem 1.5rem" }}
-        >
-          <BaseFrontend
+        <div className={"container"} id={"ui-container"}>
+          <ToxicityTaskFrontend
             handleSubmit={handleSubmit}
             handleToxicityCalculation={handleToxicityCalculation}
           />

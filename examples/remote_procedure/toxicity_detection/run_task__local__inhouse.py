@@ -56,7 +56,7 @@ def _calculate_toxicity(
     }
 
 
-@task_script(default_config_file="example_local_mock")
+@task_script(default_config_file="example__local__inhouse")
 def main(operator: Operator, cfg: DictConfig) -> None:
     examples.build_remote_procedure_toxicity_detection(
         force_rebuild=cfg.mephisto.task.force_rebuild,
