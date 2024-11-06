@@ -119,7 +119,7 @@ class UnitsDetailsView(MethodView):
             try:
                 unit_data = app.data_browser.get_data_from_unit(unit)
             except AssertionError:
-                # In case if this is Expired Unit. It raises and axceptions
+                # in case this is Expired Unit. It raises and axceptions
                 unit_data = {}
 
             task_run: TaskRun = unit.get_task_run()
@@ -134,7 +134,7 @@ class UnitsDetailsView(MethodView):
             is_form_composer_task = FORM_COMPOSER_TASK_TAG in task_tags
             is_video_annotator_task = VIDEO_ANNOTATOR_TASK_TAG in task_tags
 
-            # In case if there is outdated code that returns `final_submission`
+            # in case there is outdated code that returns `final_submission`
             # under `inputs` and `outputs` keys, we should use the value in side `final_submission`
             if "final_submission" in inputs:
                 inputs = inputs["final_submission"]

@@ -81,6 +81,12 @@ function FormComposer({
     </>
   );
 
+  // The name of a section which we currently work with
+  const [
+    currentlyWorkedOnSectionName,
+    setcurrentlyWorkedOnSectionName,
+  ] = React.useState(null);
+
   const inReviewState = finalResults !== null;
   const formatStringWithTokens = getFormatStringWithTokensFunction(
     inReviewState
@@ -115,16 +121,40 @@ function FormComposer({
   }
 
   function scrollToFirstInvalidSection() {
-    const firstInvalidSection = document.querySelectorAll(
-      "section[data-invalid='true']"
-    )[0];
-    if (firstInvalidSection) {
-      window.scrollTo(0, firstInvalidSection.offsetTop);
+    // 1. Find a section which has errors
+    let invalidSectionElement = null;
+
+    // 1a. Choose a section was marked as "currently worked on"
+    if (currentlyWorkedOnSectionName) {
+      invalidSectionElement = document.querySelectorAll(
+        `section[data-name='${currentlyWorkedOnSectionName}']`
+      )[0];
+    }
+
+    // 1b. If there's no such section, then choose the first one containing errors
+    if (!invalidSectionElement) {
+      const firstInvalidSectionElement = document.querySelectorAll(
+        "section[data-invalid='true']"
+      )[0];
+      invalidSectionElement = firstInvalidSectionElement;
+    }
+
+    // 2. In the chosen section, identify the first form field element containing errors
+    let firstInvalidFieldElement = null;
+    if (invalidSectionElement) {
+      firstInvalidFieldElement = invalidSectionElement.querySelectorAll(
+        ".field[data-invalid='true']"
+      )[0];
+    }
+
+    // 3. By default we're scrolling to the identified field
+    if (firstInvalidFieldElement) {
+      window.scrollTo(0, firstInvalidFieldElement.offsetTop);
     }
   }
 
   function validateForm() {
-    // Clean previously invalidated fields
+    // Clean error state in previously invalidated fields
     setInvalidFormFields({});
 
     // Set new invalid fields to show errors and highlight those fields
@@ -143,6 +173,8 @@ function FormComposer({
       e.preventDefault();
       e.stopPropagation();
     }
+
+    setcurrentlyWorkedOnSectionName(null);
 
     const formIsValid = validateForm();
 
@@ -270,6 +302,7 @@ function FormComposer({
               sectionsFields={sectionsFields}
               setRenderingErrors={setRenderingErrors}
               updateFormData={updateFormData}
+              setcurrentlyWorkedOnSectionName={setcurrentlyWorkedOnSectionName}
             >
               {section.fieldsets.map((fieldset, fieldsetIndex) => {
                 // Do not render dynamic fieldsets here

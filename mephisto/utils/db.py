@@ -656,7 +656,7 @@ def retry_generate_id(caught_excs: Optional[List[Type[Exception]]] = None):
                     result = unreliable_fn(*args, **kwargs)
                     return result
                 except caught_excs_tuple as e:
-                    # We can check constraint only in case if excpetion was configured well.
+                    # We can check constraint only in case excpetion was configured well.
                     # Othervise, we just leave error as is
                     exc_message = str(getattr(e, "original_exc", None) or "")
                     db = getattr(e, "db", None)
@@ -670,7 +670,7 @@ def retry_generate_id(caught_excs: Optional[List[Type[Exception]]] = None):
                     if db and table_name and is_pk_unique_constraint:
                         pk_exists = True
                     else:
-                        # In case if we caught other unique constraint, reraise it
+                        # in case we caught other unique constraint, reraise it
                         raise
 
         # Set original function name to wrapped one.

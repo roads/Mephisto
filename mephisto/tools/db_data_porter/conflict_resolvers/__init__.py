@@ -12,7 +12,7 @@ from pkgutil import iter_modules
 from .base_merge_conflict_resolver import BaseMergeConflictResolver
 
 # Import all conflict resolver classes except the base class.
-# This is needed in case if user decides to write a custom class and
+# This is needed in case user decides to write a custom class and
 # this way its name will be available as a parameter for import command
 current_dir = os.path.dirname(os.path.abspath(__file__))
 for (_, module_name, _) in iter_modules([current_dir]):

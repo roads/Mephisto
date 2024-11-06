@@ -177,7 +177,7 @@ function VideoAnnotator({
       );
 
       if (isVideoPlaying) {
-        // We pause video only in case if video was started before ending current segment.
+        // We pause video only in case video was started before ending current segment.
         // Otherwise, we should continue playing.
         if (lastTimePressedPlay < endSec && player.currentTime() >= endSec) {
           player.pause();

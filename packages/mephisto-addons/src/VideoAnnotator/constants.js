@@ -8,7 +8,7 @@ export const DELAY_PROGRESSBAR_RESIZING_MSEC = 1000;
 
 export const STORAGE_PRESAVED_ANNOTATION_TRACKS_KEY = "annotation_tracks";
 
-// In case if user does not specify any field
+// in case user does not specify any field
 export const DEFAULT_SEGMENT_FIELDS = [
   {
     id: "id_title",

@@ -176,7 +176,7 @@ function AnnotationTrack({
     if (segmentsCount !== 0) {
       const latestSegment = annotationTrack.segments[segmentsCount - 1];
 
-      // In case if player was not found somehow, create segment right after previous one
+      // in case player was not found somehow, create segment right after previous one
       if (currentVideoTime === null) {
         currentVideoTime = latestSegment.end_sec + START_NEXT_SECTION_PLUS_SEC;
         newSegment.start_sec = currentVideoTime;

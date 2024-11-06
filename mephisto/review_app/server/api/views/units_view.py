@@ -66,7 +66,7 @@ class UnitsView(MethodView):
             try:
                 unit_data = app.data_browser.get_data_from_unit(unit)
             except AssertionError:
-                # In case if this is Expired Unit. It raises and axceptions
+                # in case this is Expired Unit. It raises and axceptions
                 unit_data = {}
 
             bonus = unit_data.get("bonus")

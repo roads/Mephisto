@@ -246,7 +246,7 @@ function TaskPage(props: TaskPagePropsType) {
   function setNextUnit() {
     let firstWrokerUnits = workerUnits[0];
 
-    // If no Workers left (in case if we review multiple Units)
+    // If no Workers left (in case we review multiple Units)
     if (!firstWrokerUnits) {
       setFinishedTask(true);
       return;
@@ -255,7 +255,7 @@ function TaskPage(props: TaskPagePropsType) {
     if (firstWrokerUnits[1].length === 0) {
       workerUnits.shift();
 
-      // If no Worker Units left (in case if we review Units one by one)
+      // If no Worker Units left (in case we review Units one by one)
       if (workerUnits.length === 0) {
         setFinishedTask(true);
         return;

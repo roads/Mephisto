@@ -32,7 +32,7 @@ function TrackSegment({
   }
   const leftPositionPx = paddingLeft + segment.start_sec * oneSecWidthPx;
   let segmentWidthPx = (segment.end_sec - segment.start_sec) * oneSecWidthPx;
-  // In case if segment is too narrow, we need to make it a bit vissible
+  // in case segment is too narrow, we need to make it a bit vissible
   if (segmentWidthPx < MIN_SEGMENT_WIDTH_PX) {
     segmentWidthPx = MIN_SEGMENT_WIDTH_PX;
   }

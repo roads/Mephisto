@@ -56,7 +56,7 @@ class TaskExportResultsView(MethodView):
             try:
                 unit_data = app.data_browser.get_data_from_unit(unit)
             except AssertionError:
-                # In case if unit does not have agent somehow
+                # in case unit does not have an agent somehow
                 unit_data = {}
 
             task_units_data[unit_id] = unit_data

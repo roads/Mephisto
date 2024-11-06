@@ -201,6 +201,18 @@ def form_composer_cli(
         "when we use `--update_file_location_values` command"
     ),
 )
+@click.option(
+    "-c",
+    "--copy-config-files",
+    type=bool,
+    default=False,
+    is_flag=True,
+    help=(
+        "In case if you want to copy files into data directory of generator, "
+        "when `--directory` parameter was used. "
+        "It can be useful, when you have a bunch of different data directories"
+    ),
+)
 def config(
     ctx: click.Context,
     verify: Optional[bool] = False,
@@ -209,6 +221,7 @@ def config(
     permutate_separate_tokens: Optional[bool] = False,
     directory: Optional[str] = None,
     use_presigned_urls: Optional[bool] = False,
+    copy_files: Optional[bool] = False,
 ):
     """
     Prepare (parts of) config for the `form_composer` command.
@@ -346,7 +359,7 @@ def config(
 
         logger.info(f"[green]Finished configuring all steps[/green]")
 
-    # Move generated configs to default configs dir if user specified `--directory` option.
+    # Copy generated configs to default configs dir if user specified `--directory` option.
     # This is needed to start a generator with these new configs
-    if directory:
+    if directory and copy_files:
         shutil.copytree(app_data_path, default_app_data_path, dirs_exist_ok=True)
