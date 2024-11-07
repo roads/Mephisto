@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) Meta Platforms and its affiliates.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+.segment-mobile {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.segment-mobile::before {
+  content: "• ";
+}
+
+.segment-mobile .segment-title {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: underline;
+}
+
+.segment-mobile .segment-duration {
+  font-size: 10px;
+  display: inline-block;
+}

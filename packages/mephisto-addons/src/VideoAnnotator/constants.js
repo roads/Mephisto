@@ -45,6 +45,7 @@ export const COLORS = [
 ];
 
 export const MIN_SEGMENT_WIDTH_PX = 6;
+export const MIN_SEGMENT_WIDTH_MOBILE_PX = 3;
 
 export const POPOVER_INVALID_SEGMENT_CLASS = "with-segment-validation";
 

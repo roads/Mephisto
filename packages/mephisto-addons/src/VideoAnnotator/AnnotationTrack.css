@@ -41,25 +41,29 @@
 
 .annotation-track .track-info {
   position: relative;
-  height: 40px;
+  min-height: 40px;
   display: flex;
   flex-direction: row;
   gap: 4px;
   align-items: center;
-  padding: 0 190px 0 10px;
+  padding: 0 10px;
 }
 
-.annotation-track .track-info .track-name-label {
+.annotation-track .track-info .track-name-wrapper {
+  display: flex;
+}
+
+.annotation-track .track-info .track-name-wrapper .track-name-label {
   font-size: 14px;
   margin-right: 6px;
 }
 
-.annotation-track .track-info .track-name {
+.annotation-track .track-info .track-name-wrapper .track-name {
   font-size: 14px;
   font-weight: bold;
 }
 
-.annotation-track .track-info .buttons {
+.annotation-track .track-info .track-name-wrapper .buttons {
   display: flex;
   flex-direction: row;
   gap: 6px;
@@ -70,8 +74,8 @@
 }
 
 .annotation-track .track-info .track-buttons {
-  position: absolute;
-  right: 10px;
+  /*position: absolute;*/
+  /*right: 10px;*/
   display: none;
   gap: 4px;
 }
@@ -100,6 +104,12 @@
   opacity: 0.2;
 }
 
+.annotation-track .segments-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .annotation-track .overlapping-segments.is-invalid {
   display: flex;
   justify-content: center;
@@ -110,7 +120,6 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 10px;
 }
 
 .annotation-track .segment-info .time {

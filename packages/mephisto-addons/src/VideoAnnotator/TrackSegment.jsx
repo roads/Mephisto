@@ -6,7 +6,8 @@
 
 import { Popover } from "bootstrap";
 import React from "react";
-import { MIN_SEGMENT_WIDTH_PX } from "./constants";
+import { isMobile } from "react-device-detect";
+import { MIN_SEGMENT_WIDTH_MOBILE_PX, MIN_SEGMENT_WIDTH_PX } from "./constants";
 import { secontsToTime } from "./helpers";
 import "./TrackSegment.css";
 
@@ -22,23 +23,60 @@ function TrackSegment({
   segmentsColor,
   selectedSegment,
 }) {
+  const segmentRef = React.useRef(null);
+
   const isSelectedSegment =
     isSelectedAnnotationTrack &&
     String(selectedSegment) === String(segmentIndex);
 
+  const isClickable = segmentIsValid && !isMobile;
+
   let oneSecWidthPx = 0;
-  if (playerSizes.progressBar?.width) {
-    oneSecWidthPx = playerSizes.progressBar.width / duration;
+  if (isMobile) {
+    // For mobile devices we use width of our progress bar, not VideoJS
+    const parentElement = segmentRef?.current?.closest(".segments");
+    const progressBarElement = parentElement?.querySelector(".progress-bar");
+    if (progressBarElement) {
+      oneSecWidthPx =
+        progressBarElement.getBoundingClientRect().width / duration;
+    }
+  } else {
+    // For desktops we use width of VideoJS's progress bar
+    if (playerSizes.progressBar?.width) {
+      oneSecWidthPx = playerSizes.progressBar.width / duration;
+    }
   }
+
   const leftPositionPx = paddingLeft + segment.start_sec * oneSecWidthPx;
   let segmentWidthPx = (segment.end_sec - segment.start_sec) * oneSecWidthPx;
+
   // in case segment is too narrow, we need to make it a bit vissible
-  if (segmentWidthPx < MIN_SEGMENT_WIDTH_PX) {
-    segmentWidthPx = MIN_SEGMENT_WIDTH_PX;
+  const minSegmentWidthPx = isMobile
+    ? MIN_SEGMENT_WIDTH_MOBILE_PX
+    : MIN_SEGMENT_WIDTH_PX;
+  if (segmentWidthPx < minSegmentWidthPx) {
+    segmentWidthPx = minSegmentWidthPx;
   }
 
   const segmentId = `id-segment-${segmentIndex}`;
 
+  const popoverSegmentProps = isMobile
+    ? {}
+    : {
+        "data-html": true,
+        "data-placement": "top",
+        "data-content": `
+      <span>
+        Time: <b>${secontsToTime(segment.start_sec)} - ${secontsToTime(
+          segment.end_sec
+        )}</b>
+      </span>
+    `,
+        "data-toggle": "popover",
+        "data-trigger": "hover",
+      };
+
+  // ----- Effects -----
   React.useEffect(() => {
     const popovers = [
       ...document.querySelectorAll(`#${segmentId}[data-toggle="popover"]`),
@@ -54,7 +92,7 @@ function TrackSegment({
       className={`
         segment
         ${isSelectedSegment ? "active" : ""}
-        ${!segmentIsValid ? "non-clickable" : ""}
+        ${isClickable ? "" : "non-clickable"}
       `}
       id={segmentId}
       style={{
@@ -63,21 +101,12 @@ function TrackSegment({
         backgroundColor: `var(--${segmentsColor}-color)`,
       }}
       onClick={(e) => onClickSegment(e, segmentIndex)}
-      data-html={true}
-      data-placement={"top"}
-      data-content={`
-        <span>
-          Time: <b>${secontsToTime(segment.start_sec)} - ${secontsToTime(
-        segment.end_sec
-      )}</b>
-        </span>
-      `}
-      data-title={segment.title}
-      data-toggle={"popover"}
-      data-trigger={"hover"}
+      ref={segmentRef}
       // HACK to pass values into event listeners as them cannot read updated React states
       data-startsec={segment.start_sec}
       data-endsec={segment.end_sec}
+      // Popover props
+      {...popoverSegmentProps}
     />
   );
 }

@@ -18,7 +18,15 @@ function FormHeaderBlock({
   return (
     <>
       {(title || instruction) && (
-        <div className={`form-header alert alert-primary`} role={"alert"}>
+        <div
+          className={`
+            form-header
+            alert
+            alert-primary
+            ${showInstructionAsModal ? "mt-5 mt-sm-5 mt-lg-0" : ""}
+          `}
+          role={"alert"}
+        >
           {title && (
             <h2
               className={`form-name`}

@@ -23,11 +23,15 @@
 }
 
 .custom--task-image {
+  width: 100%;
   max-width: 600px;
   max-height: 400px;
+  object-fit: scale-down;
 }
 
 .custom--fieldset-image {
+  width: 100%;
   max-width: 400px;
   max-height: 200px;
+  object-fit: scale-down;
 }

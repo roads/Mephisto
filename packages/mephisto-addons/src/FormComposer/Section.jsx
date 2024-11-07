@@ -114,7 +114,7 @@ function Section({
             )}
 
             {/* Badge with errors number on the right side */}
-            <div className={`col-1`}>
+            <div className={`col-auto`}>
               <SectionErrorsCountBadge
                 sectionFields={sectionsFields[index]}
                 invalidFormFields={invalidFormFields}
