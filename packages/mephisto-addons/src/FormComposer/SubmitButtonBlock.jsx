@@ -24,7 +24,7 @@ function SubmitButtonBlock({
           {submitLoading ? (
             // Banner of success
             <div
-              className={`alert alert-success centered mx-auto col-6 ml-2 mr-2`}
+              className={`alert alert-success centered mx-auto col-12 col-sm-8 ml-2 mr-2`}
             >
               Thank you!
               <br />
@@ -36,7 +36,7 @@ function SubmitButtonBlock({
               {/* Button instruction */}
               {data.instruction && (
                 <div
-                  className={`alert alert-light centered mx-auto col-6 ml-2 mr-2`}
+                  className={`alert alert-light centered mx-auto col-12 col-sm-8 ml-2 mr-2`}
                   dangerouslySetInnerHTML={{
                     __html: data.instruction,
                   }}

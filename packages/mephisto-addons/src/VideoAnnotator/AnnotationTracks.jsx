@@ -77,13 +77,28 @@ function AnnotationTracks({
     <div
       className={`
         annotation-tracks
+        mb-5
         ${className || ""}
       `}
     >
       {!inReviewState && (
-        <div className={`tracks-buttons`}>
+        <div
+          className={`
+            tracks-buttons
+            mb-2
+            justify-content-end
+            justify-content-sm-center
+          `}
+        >
           <button
-            className={`btn btn-sm btn-primary ${POPOVER_INVALID_SEGMENT_CLASS}`}
+            className={`
+              btn
+              btn-sm
+              btn-primary
+              mr-2
+              mr-sm-0
+              ${POPOVER_INVALID_SEGMENT_CLASS}
+            `}
             type={"button"}
             onClick={(e) => segmentIsValid && onClickAddAnnotationTrack(e)}
             disabled={!segmentIsValid}

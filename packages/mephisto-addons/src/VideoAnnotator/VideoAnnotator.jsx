@@ -21,6 +21,7 @@ import {
 import { getExtFromFilePath } from "./helpers";
 import "./VideoAnnotator.css";
 import VideoPlayer from "./VideoPlayer.jsx";
+import { isMobile } from "react-device-detect";
 
 function VideoAnnotator({
   data,
@@ -111,10 +112,12 @@ function VideoAnnotator({
     ],
     width: "700",
     height: "400",
+    fluid: true,
     playbackRates: [0.5, 1, 1.5, 2],
     preload: "auto",
+    playsinline: true,
     controlBar: {
-      chaptersButton: true,
+      chaptersButton: !isMobile,
       fullscreenToggle: false,
       pictureInPictureToggle: false,
     },
@@ -262,9 +265,15 @@ function VideoAnnotator({
   }, [segmentIsValid]);
 
   return (
-    <div className={`video-annotation`}>
+    <div
+      className={`
+        video-annotation
+        p-1
+        ${showTaskInstructionAsModal ? "pt-5 pt-sm-5 pt-lg-0" : ""}
+      `}
+    >
       {/* Task info */}
-      <h2 className={`title`}>{annotatorTitle}</h2>
+      <h2 className={`title mb-4`}>{annotatorTitle}</h2>
 
       {/* Show instruction or button that opens a modal with instructions */}
       {showTaskInstructionAsModal ? (
@@ -273,7 +282,7 @@ function VideoAnnotator({
           {annotatorTitle && annotatorInstruction && <hr />}
 
           {annotatorInstruction && (
-            <div className={`instruction-hint`}>
+            <div className={`instruction-hint mb-4`}>
               For instructions, click "Task Instructions" button in the
               top-right corner.
             </div>
@@ -293,7 +302,7 @@ function VideoAnnotator({
 
           {annotatorInstruction && (
             <div
-              className={`instruction`}
+              className={`instruction mb-4`}
               dangerouslySetInnerHTML={{ __html: annotatorInstruction || "" }}
             ></div>
           )}
@@ -301,7 +310,7 @@ function VideoAnnotator({
       )}
 
       {/* Video Player */}
-      <div className={"video-player-container"}>
+      <div className={"video-player-container mb-4"}>
         <VideoPlayer
           chapters={videoPlayerChapters}
           className={"video-player"}
@@ -336,12 +345,12 @@ function VideoAnnotator({
           className={`${annotatorSubmitButton.classes || ""}`}
           id={annotatorSubmitButton.id}
         >
-          <hr className={`annotator-buttons-separator`} />
+          <hr className={`annotator-buttons-separator mb-5`} />
 
           {onSubmitLoading ? (
             // Banner of success
             <div
-              className={`alert alert-success centered mx-auto col-6 ml-2 mr-2`}
+              className={`alert alert-success centered mx-auto col-12 col-sm-8 ml-2 mr-2`}
             >
               Thank you!
               <br />
@@ -352,7 +361,7 @@ function VideoAnnotator({
               {/* Button instruction */}
               {annotatorSubmitButton.instruction && (
                 <div
-                  className={`alert alert-light centered mx-auto col-6 ml-2 mr-2`}
+                  className={`alert alert-light centered mx-auto col-12 col-sm-8 ml-2 mr-2`}
                   dangerouslySetInnerHTML={{
                     __html: annotatorSubmitButton.instruction,
                   }}

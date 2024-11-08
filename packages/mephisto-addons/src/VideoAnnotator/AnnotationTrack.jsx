@@ -6,6 +6,7 @@
 
 import { cloneDeep } from "lodash";
 import React from "react";
+import { isMobile } from "react-device-detect";
 import { FieldType } from "../FormComposer/constants";
 import { validateFormFields } from "../FormComposer/validation/helpers";
 import { pluralizeString } from "../helpers";
@@ -21,6 +22,7 @@ import {
 } from "./constants";
 import { secontsToTime } from "./helpers";
 import TrackSegment from "./TrackSegment.jsx";
+import TrackSegmentMobile from "./TrackSegmentMobile.jsx";
 import { validateTimeFieldsOnSave } from "./utils";
 
 function AnnotationTrack({
@@ -65,10 +67,17 @@ function AnnotationTrack({
   // exactly under VideoPlayer progress bar
   let paddingLeft = 0;
   let paddingRight = 0;
-  if (playerSizes.progressBar?.left && playerSizes.player?.left) {
-    paddingLeft = playerSizes.progressBar.left - playerSizes.player.left;
-    paddingRight = playerSizes.player.right - playerSizes.progressBar.right;
+
+  if (isMobile) {
+    paddingLeft = 10;
+    paddingRight = 10;
+  } else {
+    if (playerSizes.progressBar?.left && playerSizes.player?.left) {
+      paddingLeft = playerSizes.progressBar.left - playerSizes.player.left;
+      paddingRight = playerSizes.player.right - playerSizes.progressBar.right;
+    }
   }
+
   const segmentsColorIndex =
     trackIndex - Math.floor(trackIndex / COLORS.length) * COLORS.length;
   const segmentsColor = COLORS[segmentsColorIndex];
@@ -325,22 +334,34 @@ function AnnotationTrack({
       )}
 
       {isSelectedAnnotationTrack && (
-        <div className={`track-info`}>
-          <span className={`track-name-label`}>Track:</span>
+        <div className={`track-info row m-0 justify-content-between`}>
+          <div
+            className={`
+              track-name-wrapper
+              col-12
+              col-sm-auto
+              pl-0
+              pr-0
+              mt-1
+              mb-2
+              mb-sm-0
+              align-items-center
+            `}
+          >
+            <span className={`track-name-label`}>Track:</span>
 
-          {inEditState ? (
-            <input
-              className={`form-control form-control-sm`}
-              name={"track-name"}
-              value={trackTitle}
-              onChange={(e) => setTrackTitle(e.target.value)}
-            />
-          ) : (
-            <span className={`track-name`}>{annotationTrack.title}</span>
-          )}
+            {inEditState ? (
+              <input
+                className={`form-control form-control-sm`}
+                name={"track-name"}
+                value={trackTitle}
+                onChange={(e) => setTrackTitle(e.target.value)}
+              />
+            ) : (
+              <span className={`track-name`}>{annotationTrack.title}</span>
+            )}
 
-          {!inReviewState && (
-            <>
+            {!inReviewState && (
               <div className={`buttons`}>
                 {inEditState ? (
                   <>
@@ -372,69 +393,103 @@ function AnnotationTrack({
                   </>
                 )}
               </div>
+            )}
+          </div>
 
-              <div className={`track-buttons`}>
-                <button
-                  className={`btn btn-sm btn-outline-danger remove-track`}
-                  type={"button"}
-                  onClick={(e) => onClickRemoveTrack(e)}
-                >
-                  <i className={`las la-trash`} /> Track
-                </button>
+          {!inReviewState && (
+            <div
+              className={`
+                track-buttons
+                col-12
+                col-sm-auto
+                pl-0
+                pr-0
+                justify-content-end
+              `}
+            >
+              <button
+                className={`btn btn-sm btn-outline-danger remove-track`}
+                type={"button"}
+                onClick={(e) => onClickRemoveTrack(e)}
+              >
+                <i className={`las la-trash`} /> Track
+              </button>
 
-                <button
-                  className={`btn btn-sm btn-primary ${POPOVER_INVALID_SEGMENT_CLASS}`}
-                  type={"button"}
-                  onClick={(e) => segmentIsValid && onClickAddSegment(e)}
-                  disabled={!segmentIsValid}
-                  {...POPOVER_INVALID_SEGMENT_PROPS}
-                >
-                  <i className={`las la-plus`} /> Segment
-                </button>
-              </div>
-            </>
+              <button
+                className={`btn btn-sm btn-primary ${POPOVER_INVALID_SEGMENT_CLASS}`}
+                type={"button"}
+                onClick={(e) => segmentIsValid && onClickAddSegment(e)}
+                disabled={!segmentIsValid}
+                {...POPOVER_INVALID_SEGMENT_PROPS}
+              >
+                <i className={`las la-plus`} /> Segment
+              </button>
+            </div>
           )}
         </div>
       )}
 
       {showSegments && (
-        <div
-          className={`segments`}
-          style={{
-            "--segments-padding-left": `${paddingLeft}px`,
-            "--segments-padding-right": `${paddingRight}px`,
-          }}
-        >
+        <>
           <div
-            className={`progress-bar`}
+            className={`segments`}
             style={{
               "--segments-padding-left": `${paddingLeft}px`,
               "--segments-padding-right": `${paddingRight}px`,
             }}
-          />
+          >
+            <div
+              className={`progress-bar`}
+              style={{
+                "--segments-padding-left": `${paddingLeft}px`,
+                "--segments-padding-right": `${paddingRight}px`,
+              }}
+            />
 
-          {Object.entries(annotationTrack.segments).map(
-            ([segmentIndex, segment]) => {
-              return (
-                <TrackSegment
-                  duration={duration}
-                  isSelectedAnnotationTrack={isSelectedAnnotationTrack}
-                  key={`track-segment-${segmentIndex}`}
-                  onClickSegment={(e, index) =>
-                    segmentIsValid && onClickSegment(e, index)
-                  }
-                  paddingLeft={paddingLeft}
-                  playerSizes={playerSizes}
-                  segment={segment}
-                  segmentIndex={segmentIndex}
-                  segmentIsValid={segmentIsValid}
-                  segmentsColor={segmentsColor}
-                  selectedSegment={selectedSegment}
-                />
-              );
-            }
+            {Object.entries(annotationTrack.segments).map(
+              ([segmentIndex, segment]) => {
+                return (
+                  <TrackSegment
+                    duration={duration}
+                    isSelectedAnnotationTrack={isSelectedAnnotationTrack}
+                    key={`track-segment-${segmentIndex}`}
+                    onClickSegment={(e, index) => {
+                      !isMobile && segmentIsValid && onClickSegment(e, index);
+                    }}
+                    paddingLeft={paddingLeft}
+                    playerSizes={playerSizes}
+                    segment={segment}
+                    segmentIndex={segmentIndex}
+                    segmentIsValid={segmentIsValid}
+                    segmentsColor={segmentsColor}
+                    selectedSegment={selectedSegment}
+                  />
+                );
+              }
+            )}
+          </div>
+
+          {isMobile && isSelectedAnnotationTrack && (
+            <div className={`segments-mobile p-2`}>
+              {Object.entries(annotationTrack.segments).map(
+                ([segmentIndex, segment]) => {
+                  return (
+                    <TrackSegmentMobile
+                      isSelectedAnnotationTrack={isSelectedAnnotationTrack}
+                      key={`track-segment-mobile-${segmentIndex}`}
+                      onClickSegment={(e, index) => {
+                        isMobile && segmentIsValid && onClickSegment(e, index);
+                      }}
+                      segment={segment}
+                      segmentIndex={segmentIndex}
+                      selectedSegment={selectedSegment}
+                    />
+                  );
+                }
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
 
       <ListErrors
@@ -449,6 +504,7 @@ function AnnotationTrack({
         <div
           className={`
             segment-info
+            p-2
             ${segmentToChangeErrors.length ? "is-invalid" : ""}
           `}
         >

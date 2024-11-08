@@ -51,10 +51,15 @@ function Field({
 
   return (
     <div
+      // `col-12` - full width for screens <576px
+      // `col-sm-12` - full width for screens ≥576px
+      // `col-md` - adaptive sise for all screens ≥768px (2 cols - both 50%, 3 cols - 33.3%, etc)
       className={`
         field
         form-group
-        col
+        col-12
+        col-sm-12
+        col-md
         ${checkFieldRequiredness(data) ? "required" : ""}
         ${data.type === FieldType.HIDDEN ? "hidden-type" : ""}
         ${data.classes || ""}
