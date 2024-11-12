@@ -134,7 +134,7 @@ To run tests locally you should first launch the task as follows:
 ```bash
 python run_task.py mephisto.task.post_install_script=link_mephisto_task.sh mephisto.task.force_rebuild=true
 ```
-This will run the task and make sure to link the `mephisto-task` package with the local one. 
+This will run the task and make sure to link the `mephisto-core` package with the local one. 
 
 Then you can run cypress by going into the webapp directory and running `npm run test`. This should open the cypress app. 
 

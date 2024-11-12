@@ -62,23 +62,13 @@ def clean_mephisto_review_hook_package(remove_package_locks: bool, verbose: bool
     clean_single_react_app(webapp_path, remove_package_locks=remove_package_locks, verbose=verbose)
 
 
-def clean_mephisto_task_package(remove_package_locks: bool, verbose: bool = False):
-    webapp_path = os.path.join(PACKAGES_PATH, "mephisto-task")
-    clean_single_react_app(webapp_path, remove_package_locks=remove_package_locks, verbose=verbose)
-
-
-def clean_mephisto_task_multipart_package(remove_package_locks: bool, verbose: bool = False):
+def clean_mephisto_core_package(remove_package_locks: bool, verbose: bool = False):
     webapp_path = os.path.join(PACKAGES_PATH, "mephisto-core")
     clean_single_react_app(webapp_path, remove_package_locks=remove_package_locks, verbose=verbose)
 
 
-def clean_mephisto_task_addons_package(remove_package_locks: bool, verbose: bool = False):
+def clean_mephisto_addons_package(remove_package_locks: bool, verbose: bool = False):
     webapp_path = os.path.join(PACKAGES_PATH, "mephisto-addons")
-    clean_single_react_app(webapp_path, remove_package_locks=remove_package_locks, verbose=verbose)
-
-
-def clean_mephisto_worker_addons_package(remove_package_locks: bool, verbose: bool = False):
-    webapp_path = os.path.join(PACKAGES_PATH, "mephisto-worker-addons")
     clean_single_react_app(webapp_path, remove_package_locks=remove_package_locks, verbose=verbose)
 
 
@@ -181,18 +171,6 @@ def build_mephisto_review_hook_package(force_rebuild: bool = False, verbose: boo
     )
 
 
-def build_mephisto_task_package(force_rebuild: bool = False, verbose: bool = False):
-    if verbose:
-        logger.info(f"[blue]Building '{PACKAGES_PATH}/mephisto-task'[/blue]")
-
-    build_custom_bundle(
-        PACKAGES_PATH,
-        force_rebuild=force_rebuild,
-        webapp_name="mephisto-task",
-        build_command="build",
-    )
-
-
 def build_mephisto_core_package(force_rebuild: bool = False, verbose: bool = False):
     if verbose:
         logger.info(f"[blue]Building '{PACKAGES_PATH}/mephisto-core'[/blue]")
@@ -213,17 +191,5 @@ def build_mephisto_addons_package(force_rebuild: bool = False, verbose: bool = F
         PACKAGES_PATH,
         force_rebuild=force_rebuild,
         webapp_name="mephisto-addons",
-        build_command="build",
-    )
-
-
-def build_mephisto_worker_addons_package(force_rebuild: bool = False, verbose: bool = False):
-    if verbose:
-        logger.info(f"[blue]Building '{PACKAGES_PATH}/mephisto-worker-addons'[/blue]")
-
-    build_custom_bundle(
-        PACKAGES_PATH,
-        force_rebuild=force_rebuild,
-        webapp_name="mephisto-worker-addons",
         build_command="build",
     )

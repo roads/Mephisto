@@ -1,0 +1,27 @@
+#@package _global_
+
+# Copyright (c) Meta Platforms and its affiliates.
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+defaults:
+  - /mephisto/blueprint: parlai_chat
+  - /mephisto/architect: local
+  - /mephisto/provider: inhouse
+
+mephisto:
+  blueprint:
+    world_file: ${task_dir}/demo_worlds.py
+    task_description_file: ${task_dir}/task_description.html
+    num_conversations: 1
+  provider:
+    ui_base_url: "http://localhost:3001"
+  task:
+    task_name: parlai-chat-example
+    task_title: "Test ParlAI Chat Task"
+    task_description: >
+      This is a simple chat between two people
+      used to demonstrate the functionalities around using Mephisto
+      for ParlAI tasks.
+    task_reward: 0.3
+    task_tags: "dynamic,chat,testing,inhouse"

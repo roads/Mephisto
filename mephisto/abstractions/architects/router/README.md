@@ -5,7 +5,7 @@
 -->
 
 # router
-This directory contains all of the Mephisto code regarding setting up and deploying and endpoint that can handle interfacing with the `mephisto-task` package. As of now there are two implementations, a node server in `deploy` and a Flask server in `flask`. Each of these can be extended upon such that you can deploy your own server (with whatever logic you may need) but still have mephisto routing functionality.
+This directory contains all of the Mephisto code regarding setting up and deploying and endpoint that can handle interfacing with the `mephisto-core` package. As of now there are two implementations, a node server in `deploy` and a Flask server in `flask`. Each of these can be extended upon such that you can deploy your own server (with whatever logic you may need) but still have mephisto routing functionality.
 
 ## `build_router.py`
 This file contains code to be able to initialize the required build files for a server, assuming that they're set up properly. With the routers available in this directory, they should work out-of-the-box, but more configuration. If you want to specify your own build, you should start from the given servers, then provide the `architect.server_source_root` and `architect.server_type` arguments as appropriate with your server directory and the kind of server you're running.

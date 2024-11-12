@@ -4,20 +4,18 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from mephisto.abstractions.blueprint import TaskBuilder
-
-from distutils.dir_util import copy_tree
 import os
-import time
-import sh  # type: ignore
 import shutil
 import subprocess
+from distutils.dir_util import copy_tree
+from typing import TYPE_CHECKING
 
-from typing import ClassVar, List, Type, Any, Dict, TYPE_CHECKING
+import sh  # type: ignore
+
+from mephisto.abstractions.blueprint import TaskBuilder
 
 if TYPE_CHECKING:
-    from mephisto.data_model.task_run import TaskRun
-    from mephisto.data_model.assignment import Assignment
+    pass
 
 STATIC_TASK_DIR = os.path.dirname(__file__)
 FRONTEND_SOURCE_DIR = os.path.join(STATIC_TASK_DIR, "source")
@@ -36,10 +34,12 @@ class StaticHTMLTaskBuilder(TaskBuilder):
 
     def rebuild_core(self):
         """Rebuild the frontend for this task"""
+
         return_dir = os.getcwd()
         os.chdir(FRONTEND_SOURCE_DIR)
         if os.path.exists(FRONTEND_BUILD_DIR):
             shutil.rmtree(FRONTEND_BUILD_DIR)
+
         packages_installed = subprocess.call(["npm", "install"])
         if packages_installed != 0:
             raise Exception(
@@ -53,6 +53,7 @@ class StaticHTMLTaskBuilder(TaskBuilder):
                 "Webpack appears to have failed to build your "
                 "frontend. See the above error for more information."
             )
+
         os.chdir(return_dir)
 
     def build_in_dir(self, build_dir: str):

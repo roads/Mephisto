@@ -40,7 +40,7 @@ describe("Loads remote_procedure_toxicity_detection", () => {
     cy.intercept({ pathname: "/submit_task" }).as("submitTaskRequest");
     cy.on("window:alert", (text) => {
       expect(text).to.contains(
-        'The task has been submitted! Data: {"toxicity":'
+        "Thank you for your submission.\nYou may close this message to view the next task."
       );
     });
     cy.get('[data-cy="detection-text-area"]').as("textArea");

@@ -11,7 +11,7 @@ import {
   useMephistoLiveTask,
   AGENT_STATUS,
   STATUS_TO_TEXT_MAP,
-} from "mephisto-task";
+} from "mephisto-core";
 import BaseFrontend from "./BaseFrontend.jsx";
 
 /* ================= Application Components ================= */

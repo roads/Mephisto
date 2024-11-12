@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { CONNECTION_STATUS } from "mephisto-task";
+import { CONNECTION_STATUS } from "mephisto-core";
 
 function ConnectionStatusBoundary({ children, status }) {
   if (status === CONNECTION_STATUS.INITIALIZING) {

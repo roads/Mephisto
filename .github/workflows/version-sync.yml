@@ -16,4 +16,4 @@ jobs:
       - name: Install Mephisto
         run: pip install -e .
       - name: Run version sync script
-        run: python scripts/sync_mephisto_task.py check
+        run: python scripts/sync_mephisto_core.py check

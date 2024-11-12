@@ -4,36 +4,39 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-
-import os
 import json
-from dataclasses import dataclass, field
+import os
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import TYPE_CHECKING
+
 from dateutil.parser import parse
+from omegaconf import MISSING
+from omegaconf import OmegaConf
 
-from mephisto.data_model.requester import Requester
+from mephisto.data_model._db_backed_meta import MephistoDataModelComponentMixin
+from mephisto.data_model._db_backed_meta import MephistoDBBackedMeta
 from mephisto.data_model.constants.assignment_state import AssignmentState
-from mephisto.data_model._db_backed_meta import (
-    MephistoDBBackedMeta,
-    MephistoDataModelComponentMixin,
-)
+from mephisto.data_model.requester import Requester
 from mephisto.utils.dirs import get_dir_for_run
-
-from omegaconf import OmegaConf, MISSING
-
-from typing import List, Optional, Dict, Mapping, TYPE_CHECKING, Any
+from mephisto.utils.logger_core import get_logger
 
 if TYPE_CHECKING:
+    from mephisto.abstractions.blueprint import Blueprint
+    from mephisto.abstractions.blueprint import SharedTaskState
+    from mephisto.abstractions.crowd_provider import CrowdProvider
     from mephisto.abstractions.database import MephistoDB
     from mephisto.data_model.assignment import Assignment
-    from mephisto.abstractions.blueprint import Blueprint, SharedTaskState
-    from mephisto.data_model.worker import Worker
-    from mephisto.data_model.unit import Unit
-    from mephisto.abstractions.crowd_provider import CrowdProvider
     from mephisto.data_model.task import Task
+    from mephisto.data_model.unit import Unit
+    from mephisto.data_model.worker import Worker
     from omegaconf import DictConfig
-
-from mephisto.utils.logger_core import get_logger
 
 logger = get_logger(name=__name__)
 
@@ -336,7 +339,6 @@ class TaskRun(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedMeta):
     ) -> "Blueprint":
         """Return the runner associated with this task run"""
         from mephisto.operations.registry import get_blueprint_from_type
-        from mephisto.abstractions.blueprint import SharedTaskState
 
         if self.__blueprint is None:
             cache = False

@@ -1,5 +1,5 @@
 {
-  "name": "mephisto-task-compiler",
+  "name": "static_html_task",
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
@@ -12,7 +12,6 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
-    "mephisto-task": "2.0.4",
     "rc-slider": "^8.6.3",
     "react": "^16",
     "react-bootstrap": "^0.32.4",

@@ -109,16 +109,16 @@ export function doesSupportWebsockets() {
 // Sends a request to get the task_config
 export function getTaskConfig() {
   return axiosInstance("/task_config.json", {
-    params: { mephisto_task_version: libVersion },
+    params: { mephisto_core_version: libVersion },
   }).then((res) => {
     const taskConfig = res.data;
-    if (taskConfig.mephisto_task_version !== libVersion) {
+    if (taskConfig.mephisto_core_version !== libVersion) {
       console.warn(
-        "Version mismatch detected! Local `mephisto-task` package is " +
+        "Version mismatch detected! Local `mephisto-core` package is " +
           "on version " +
           libVersion +
           " but the server expected version " +
-          taskConfig.mephisto_task_version +
+          taskConfig.mephisto_core_version +
           ". Please ensure you " +
           "are using the package version expected by the Mephisto backend."
       );

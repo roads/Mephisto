@@ -19,9 +19,11 @@ module.exports = {
   externals: {
     react: "react",
     "react-dom": "react-dom",
-    "mephisto-task": "mephisto-task",
   },
   resolve: {
+    alias: {
+      "mephisto-core": path.resolve(__dirname, "../../packages/mephisto-core"),
+    },
     fallback: {
       net: false,
       dns: false,

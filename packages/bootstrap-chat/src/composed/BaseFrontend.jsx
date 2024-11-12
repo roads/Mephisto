@@ -15,7 +15,7 @@ import {
   ConnectionStatusBoundary,
   ChatPane,
 } from "../index.js";
-import { MephistoContext } from "mephisto-task";
+import { MephistoContext } from "mephisto-core";
 import { AppContext, INPUT_MODE } from "./ChatApp.jsx";
 
 function BaseFrontend({

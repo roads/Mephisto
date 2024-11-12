@@ -19,7 +19,7 @@ import ConnectionStatusBoundary from "./ConnectionStatusBoundary.jsx";
 import DefaultTaskDescription from "./DefaultTaskDescription.jsx";
 import ChatPane from "./ChatPane.jsx";
 import { ChatApp, AppContext, INPUT_MODE, BaseFrontend } from "./composed";
-import { MephistoContext } from "mephisto-task";
+import { MephistoContext } from "mephisto-core";
 
 export {
   ConnectionIndicator,

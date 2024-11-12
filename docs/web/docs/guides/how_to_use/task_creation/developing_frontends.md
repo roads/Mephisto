@@ -9,23 +9,17 @@ sidebar_position: 1
 
 # Developing and debugging frontends
 
-## The `mephisto-task` package
+## The `mephisto-core` package
 
-We provide the `mephisto-task` package for use in your front-end React tasks.
+We provide the `mephisto-core` package for use in your front-end React tasks.
 
-To install, add it to your npm project as such:
-
-```
-npm install mephisto-task
-```
-
-The `mephisto-task` project surfaces three React hooks depending on your use case:
+The `mephisto-core` project surfaces three React hooks depending on your use case:
 
 1. `useMephistoTask` - Used for static tasks where one-time initial data is enough to power the task. See the example task in `/examples/static_react_task/` for an example project using this hook.
 2. `useMephistoLiveTask` - Used for multi-turn, socket-based tasks, such as a dialogue task. See the example task in `/examples/parlai_chat_task_demo/` for an example project using this hook.
 3. `useMephistoRemoteProcedureTask` - Used for static tasks that require access to some remote function on the back-end, for example invoking a back-end model for model-assisted annotation. See the example task in `/examples/remote_procedure/mnist/` for an example project using this hook.
 
-Complete documentation for each of the hooks can be found in the [associated README for the `mephisto-task` package](https://github.com/facebookresearch/Mephisto/tree/main/packages/mephisto-task).
+Complete documentation for each of the hooks can be found in the [associated README for the `mephisto-core` package](https://github.com/facebookresearch/Mephisto/tree/main/packages/mephisto-core).
 
 ## Reusable UI component libraries
 
@@ -54,7 +48,7 @@ Currently, we have beta functionality for error handling. We provide a few ways 
 For #1 above, auto-logging can be enabled for React apps by importing the `<ErrorBoundary />` component and wiring it up as such:
 
 ```jsx
-import { ErrorBoundary } from "mephisto-task";
+import { ErrorBoundary } from "mephisto-core";
 ...
 const { handleFatalError, /* ... */ } = useMephistoTask();
 ...
