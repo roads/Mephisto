@@ -16,6 +16,10 @@ module.exports = {
   resolve: {
     alias: {
       react: path.resolve("./node_modules/react"),
+      "mephisto-core": path.resolve(
+        __dirname,
+        "../../../../../packages/mephisto-core"
+      ),
     },
   },
   module: {

@@ -106,13 +106,13 @@ While this is the "Architect API" most of the responsibilities for the architect
 
 The primary responsiblity of the router is to take incoming packets from client connections and direct them to the core Mephisto `ClientIOHandler` and to do the reverse as well. All packets will have a core `agent_id` field denoting either the sender or receiver of the packet, depending on the packet type. The only exception is the `PACKET_TYPE_ALIVE`, which is directed to the router and allows for any registration of an incoming connection.
 
-Secondarily, the router is responsible for converting RESTful `POST` requests from `mephisto-task` into socket messages, and relaying the response as a standard `POST` response. This behavior is _only_ for the `PACKET_TYPE_REGISTER_AGENT`, and `PACKET_TYPE_SUBMIT_ONBOARDING` packets, and both of them will be serviced by `PACKET_TYPE_AGENT_DETAILS` responses. For these it should be listening to `POST` requests at `/register_worker`, `/submit_onboarding`, and `/submit_task`. `POST` requests to `/log_error` should result in forwarding a `PACKET_TYPE_ERROR`.
+Secondarily, the router is responsible for converting RESTful `POST` requests from `mephisto-core` into socket messages, and relaying the response as a standard `POST` response. This behavior is _only_ for the `PACKET_TYPE_REGISTER_AGENT`, and `PACKET_TYPE_SUBMIT_ONBOARDING` packets, and both of them will be serviced by `PACKET_TYPE_AGENT_DETAILS` responses. For these it should be listening to `POST` requests at `/register_worker`, `/submit_onboarding`, and `/submit_task`. `POST` requests to `/log_error` should result in forwarding a `PACKET_TYPE_ERROR`.
 
 Third, the router is responsible for maintaining track of agent status, and acting as a cache for this information after disconnects. This allows for a worker to return to a task and have updated information about what has transpired, even when the main Mephisto server has cleaned up the related `TaskRunner` and live `Agent`.
 
 Fourth, the router is responsible for serving the static `task_config.json` file, which allows the frontend to load certain details about the full task before going through any registration handshakes.
 
-### `mephisto-task` responsibilities.
+### `mephisto-core` responsibilities.
 
 The `useMephistoTask` hook is responsible for allowing a worker to connect to a task and submit the relevant data. For this, it only needs to make `POST` requests related to the `PACKET_TYPE_SUBMIT_*` and `PACKET_TYPE_REGISTER_AGENT` events. The former should be triggered on `handleSubmit`, while the latter should trigger immediately on load.
 

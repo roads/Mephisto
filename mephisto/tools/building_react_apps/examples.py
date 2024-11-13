@@ -34,7 +34,7 @@ REMOTE_PROCEDURE_INTERACTIVE_IMAGE_GENERATION_EXAMPLE_PATH = os.path.join(
     "interactive_image_generation",
 )
 REMOTE_PROCEDURE_MNIST_EXAMPLE_PATH = os.path.join(EXAMPLES_PATH, "remote_procedure", "mnist")
-REMOTE_PROCEDURE_TEMPLATE_EXAMPLE_PATH = os.path.join(
+REMOTE_PROCEDURE_ELEMENTARY_REMOTE_PROCEDURE_EXAMPLE_PATH = os.path.join(
     EXAMPLES_PATH,
     "remote_procedure",
     "elementary_remote_procedure",
@@ -295,8 +295,11 @@ def clean_remote_procedure_mnist(remove_package_locks: bool, verbose: bool = Fal
     clean_single_react_app(webapp_path, remove_package_locks=remove_package_locks, verbose=verbose)
 
 
-def clean_remote_procedure_template(remove_package_locks: bool, verbose: bool = False):
-    webapp_path = os.path.join(REMOTE_PROCEDURE_TEMPLATE_EXAMPLE_PATH, "webapp")
+def clean_remote_procedure_elementary_remote_procedure(
+    remove_package_locks: bool,
+    verbose: bool = False,
+):
+    webapp_path = os.path.join(REMOTE_PROCEDURE_ELEMENTARY_REMOTE_PROCEDURE_EXAMPLE_PATH, "webapp")
     clean_single_react_app(webapp_path, remove_package_locks=remove_package_locks, verbose=verbose)
 
 
@@ -364,7 +367,7 @@ def build_remote_procedure_mnist(
     )
 
 
-def build_remote_procedure_template(
+def build_remote_procedure_elementary_remote_procedure(
     force_rebuild: bool = False,
     post_install_script: Optional[str] = None,
 ) -> None:
@@ -372,7 +375,7 @@ def build_remote_procedure_template(
 
     # Build Review UI for the application
     build_custom_bundle(
-        REMOTE_PROCEDURE_TEMPLATE_EXAMPLE_PATH,
+        REMOTE_PROCEDURE_ELEMENTARY_REMOTE_PROCEDURE_EXAMPLE_PATH,
         force_rebuild=force_rebuild,
         webapp_name="webapp",
         build_command="build:review",
@@ -380,7 +383,7 @@ def build_remote_procedure_template(
 
     # Build Task UI for the application
     build_custom_bundle(
-        REMOTE_PROCEDURE_TEMPLATE_EXAMPLE_PATH,
+        REMOTE_PROCEDURE_ELEMENTARY_REMOTE_PROCEDURE_EXAMPLE_PATH,
         force_rebuild=force_rebuild,
         post_install_script=post_install_script,
         build_command="build:remote_procedure",

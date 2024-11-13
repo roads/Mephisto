@@ -11,9 +11,8 @@ A set of UI components based on [Bootstrap v3](https://react-bootstrap-v3.netlif
 ## Installation
 
 ```bash
-npm install --save bootstrap-chat mephisto-task
+npm install --save bootstrap-chat
 
-# Note that `mephisto-task` is a peer-dependency of this library.
 ```
 
 Install from local folder (e.g. for local development):
@@ -145,7 +144,7 @@ This optional prop lets you provide some initial app settings for the `ChatApp`,
 
 All render props will receive the `mephistoContext` argument.
 
-This object is basically the return value of calling the `useMephistoLiveTask` hooks. Further documentation on these properties can be found in the [documentation for the `mephisto-task` package](https://github.com/facebookresearch/Mephisto/blob/main/packages/mephisto-task/README.md) under the `useMephistoLiveTask` section.
+This object is basically the return value of calling the `useMephistoLiveTask` hooks. Further documentation on these properties can be found in the [documentation for the `mephisto-core` package](https://github.com/facebookresearch/Mephisto/blob/main/packages/mephisto-core/README.md) under the `useMephistoLiveTask` section.
 
 ### The `appContext` argument
 

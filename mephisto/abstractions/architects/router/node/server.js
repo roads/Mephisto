@@ -7,7 +7,7 @@
 "use strict";
 
 const DEBUG = false;
-const CURR_MEPHISTO_TASK_VERSION = "2.0.4";
+const CURR_MEPHISTO_CORE_PACKAGE_VERSION = "1.5.1";
 
 // TODO add some testing to launch this server and communicate with it
 
@@ -594,23 +594,23 @@ app.post("/log_error", function (req, res) {
 });
 
 app.get("/task_config.json", function (req, res) {
-  const { mephisto_task_version } = req.query;
-  if (mephisto_task_version !== CURR_MEPHISTO_TASK_VERSION) {
+  const { mephisto_core_version } = req.query;
+  if (mephisto_core_version !== CURR_MEPHISTO_CORE_PACKAGE_VERSION) {
     mephisto_message_queue.push({
       packet_type: PACKET_TYPE_ERROR,
       subject_id: SYSTEM_SOCKET_ID,
       data: {
         error_type: "version-mismatch",
         text:
-          "Package `mephisto-task` version mismatch. Expected " +
+          "Package `mephisto-core` version mismatch. Expected " +
           "version " +
-          CURR_MEPHISTO_TASK_VERSION +
+          CURR_MEPHISTO_CORE_PACKAGE_VERSION +
           " but frontend is currently using " +
-          mephisto_task_version +
+          mephisto_core_version +
           ". This may cause unexpected errors, be sure to " +
-          "update your `mephisto-task` dependency with `npm " +
-          "install mephisto-task@" +
-          CURR_MEPHISTO_TASK_VERSION +
+          "update your `mephisto-core` dependency with `npm " +
+          "install mephisto-core@" +
+          CURR_MEPHISTO_CORE_PACKAGE_VERSION +
           " --save`. If this warning still persists or the " +
           "version isn't found, please open an issue at " +
           "https://github.com/facebookresearch/Mephisto/issues",

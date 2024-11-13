@@ -17,7 +17,7 @@ The toxicity of written text is calculated from the detoxify python library.
 
 ## Steps to run demo
 
-To run the demo first detoxify has to be installed. This can be done using 
+To run the demo first `detoxify` library has to be installed. This can be done using:
 
 ```bash
 pip install detoxify

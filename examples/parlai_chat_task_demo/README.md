@@ -6,7 +6,18 @@
 
 # ParlAI Chat Task
 
-This task exists to demonstrate both the out-of-the-box functionality of setting up a ParlAI chat on Mephisto, as well as more complicated tasks with custom frontend functionality. To get started you can run one of the following commands:
+This task exists to demonstrate both the out-of-the-box functionality of setting up a ParlAI chat on Mephisto, 
+as well as more complicated tasks with custom frontend functionality.
+
+To run the demo first `parlai` library has to be installed. This can be done using:
+
+```bash
+# Downgrade libs just for `parlai` as it has old dependencies
+pip install jsonschema==4.17.3
+pip install attrs~=20.2.0
+
+pip install parlai
+```
 
 The baseline chat example can be run from this directory with:
 ```console

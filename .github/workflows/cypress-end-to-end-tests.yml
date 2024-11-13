@@ -18,15 +18,14 @@ jobs:
       simple_static_task: ${{ steps.filter.outputs.simple_static_task }}
       static_react_task: ${{ steps.filter.outputs.static_react_task }}
       static_react_task_with_worker_opinion: ${{ steps.filter.outputs.static_react_task_with_worker_opinion }}
+      elementary_remote_procedure: ${{ steps.filter.outputs.elementary_remote_procedure }}
+      interactive_image_generation: ${{ steps.filter.outputs.interactive_image_generation }}
       mnist: ${{ steps.filter.outputs.mnist }}
-      template: ${{ steps.filter.outputs.template }}
       toxicity_detection: ${{ steps.filter.outputs.toxicity_detection }}
       abstractions: ${{ steps.filter.outputs.abstractions }}
       data_model: ${{ steps.filter.outputs.data_model }}
       operations: ${{ steps.filter.outputs.operations }}
       tools: ${{ steps.filter.outputs.tools }}
-      mephisto-task: ${{ steps.filter.outputs.mephisto-task }}
-      mephisto-worker-addons: ${{ steps.filter.outputs.mephisto-worker-addons }}
       mephisto-core: ${{ steps.filter.outputs.mephisto-core }}
       mephisto-addons: ${{ steps.filter.outputs.mephisto-addons }}
     steps:
@@ -44,16 +43,22 @@ jobs:
         id: filter
         with:
           filters: |
+            video_annotator_demo:
+              - 'examples/video_annotator_demo/**'
+            form_composer_demo:
+              - 'examples/form_composer_demo/**'
             simple_static_task:
               - 'examples/simple_static_task/**'
             static_react_task:
               - 'examples/static_react_task/**'
             static_react_task_with_worker_opinion:
               - 'examples/static_react_task_with_worker_opinion/**'
+            elementary_remote_procedure:
+              - 'examples/remote_procedure/elementary_remote_procedure/**'
+            interactive_image_generation:
+              - 'examples/remote_procedure/interactive_image_generation/**'
             mnist:
               - 'examples/remote_procedure/mnist/**'
-            template:
-              - 'examples/remote_procedure/template/**'
             toxicity_detection:
               - 'examples/remote_procedure/toxicity_detection/**'
             abstractions:
@@ -64,19 +69,122 @@ jobs:
               - 'mephisto/operations/**'
             tools:
               - 'mephisto/tools/**'
-            mephisto-task:
-              - 'packages/mephisto-task/src/**'
-            mephisto-worker-addons:
-              - 'packages/mephisto-worker-addons/src/**'
             mephisto-core:
               - 'packages/mephisto-core/src/**'
             mephisto-addons:
               - 'packages/mephisto-addons/src/**'
 
+  #  TODO: Add tests and enable
+  #  form_composer_demo:
+  #    needs: changes
+  #    if: ${{ (needs.changes.outputs.form_composer_demo == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.mephisto-addons == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: 🔀 Checking out repo
+  #        uses: actions/checkout@v2
+  #
+  #      - name: 🐍 Installing python
+  #        uses: actions/setup-python@v5
+  #        with:
+  #          python-version: 3.8
+  #
+  #      - name: 🪨 Setup Node
+  #        uses: actions/setup-node@v4
+  #        with:
+  #          node-version: 16.16.0
+  #
+  #      - name: 🤖 Install Mephisto
+  #        run: pip install -e .
+  #
+  #      - name: 🖋 Create data directory
+  #        run: mkdir -p ~/mephisto/data
+  #
+  #      - name: 📂 Set the data directory
+  #        run: mephisto config core.main_data_directory ~/mephisto/data
+  #
+  #      - name: 📦 Setting up mephisto-core package
+  #        run: |
+  #          cd packages/mephisto-core
+  #          yarn install
+  #          yarn build
+  #          npm link
+  #
+  #      - name: 📦 Setting up mephisto-addons package
+  #        run: |
+  #          cd packages/mephisto-addons
+  #          yarn install
+  #          yarn build
+  #          npm link
+  #
+  #      - name: ⌛️ Running cypress tests
+  #        uses: cypress-io/github-action@v6.7.1
+  #        with:
+  #          build: npm i -D cypress@11
+  #          install: false
+  #          browser: chrome
+  #          project: ./examples/form_composer_demo/webapp
+  #          config-file: ./cypress.config.js
+  #          start: python examples/form_composer_demo/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
+  #          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+  #          headless: true
+  #
+  #  video_annotator_demo:
+  #    needs: changes
+  #    if: ${{ (needs.changes.outputs.video_annotator_demo == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.mephisto-addons == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: 🔀 Checking out repo
+  #        uses: actions/checkout@v2
+  #
+  #      - name: 🐍 Installing python
+  #        uses: actions/setup-python@v5
+  #        with:
+  #          python-version: 3.8
+  #
+  #      - name: 🪨 Setup Node
+  #        uses: actions/setup-node@v4
+  #        with:
+  #          node-version: 16.16.0
+  #
+  #      - name: 🤖 Install Mephisto
+  #        run: pip install -e .
+  #
+  #      - name: 🖋 Create data directory
+  #        run: mkdir -p ~/mephisto/data
+  #
+  #      - name: 📂 Set the data directory
+  #        run: mephisto config core.main_data_directory ~/mephisto/data
+  #
+  #      - name: 📦 Setting up mephisto-core package
+  #        run: |
+  #          cd packages/mephisto-core
+  #          yarn install
+  #          yarn build
+  #          npm link
+  #
+  #      - name: 📦 Setting up mephisto-addons package
+  #        run: |
+  #          cd packages/mephisto-addons
+  #          yarn install
+  #          yarn build
+  #          npm link
+  #
+  #      - name: ⌛️ Running cypress tests
+  #        uses: cypress-io/github-action@v6.7.1
+  #        with:
+  #          build: npm i -D cypress@11
+  #          install: false
+  #          browser: chrome
+  #          project: ./examples/video_annotator_demo/webapp
+  #          config-file: ./cypress.config.js
+  #          start: python examples/video_annotator_demo/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
+  #          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+  #          headless: true
+
   # Learn more about this test here: https://github.com/facebookresearch/Mephisto/pull/881
   simple_static_task:
     needs: changes
-    if: ${{ (needs.changes.outputs.simple_static_task == 'true') || (needs.changes.outputs.mephisto-task == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
+    if: ${{ (needs.changes.outputs.simple_static_task == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -101,9 +209,9 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 📦 Setting up mephisto-task package
+      - name: 📦 Setting up mephisto-core package
         run: |
-          cd packages/mephisto-task
+          cd packages/mephisto-core
           yarn install
           yarn build
           npm link
@@ -123,7 +231,7 @@ jobs:
   # Learn more about this test here: https://github.com/facebookresearch/Mephisto/pull/795
   static-react-task:
     needs: changes
-    if: ${{ (needs.changes.outputs.static_react_task == 'true') || (needs.changes.outputs.mephisto-task == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
+    if: ${{ (needs.changes.outputs.static_react_task == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -148,9 +256,9 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 📦 Setting up mephisto-task package
+      - name: 📦 Setting up mephisto-core package
         run: |
-          cd packages/mephisto-task
+          cd packages/mephisto-core
           yarn install
           yarn build
           npm link
@@ -168,9 +276,9 @@ jobs:
           headless: true
 
   # Learn more about the remote_procedure_tests here: https://github.com/facebookresearch/Mephisto/pull/800
-  remote_procedure_template:
+  remote_procedure_elementary_remote_procedure:
     needs: changes
-    if: ${{ (needs.changes.outputs.template == 'true') || (needs.changes.outputs.mephisto-task == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
+    if: ${{ (needs.changes.outputs.elementary_remote_procedure == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -195,9 +303,12 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 📦 Setting up mephisto-task package
+      - name: 🖋 Create Inhouse provider
+        run: mephisto register inhouse
+
+      - name: 📦 Setting up mephisto-core package
         run: |
-          cd packages/mephisto-task
+          cd packages/mephisto-core
           yarn install
           yarn build
           npm link
@@ -208,15 +319,69 @@ jobs:
           build: npm i -D cypress@11
           install: false
           browser: chrome
-          project: ./examples/remote_procedure/template/webapp
+          project: ./examples/remote_procedure/elementary_remote_procedure/webapp
           config-file: ./cypress.config.js
-          start: python examples/remote_procedure/template/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
+          start: python examples/remote_procedure/elementary_remote_procedure/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
           wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
           headless: true
 
+  #  TODO: Add tests and enable
+  #  remote_procedure_interactive_image_generation:
+  #    needs: changes
+  #    if: ${{ (needs.changes.outputs.interactive_image_generation == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.mephisto-addons == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: 🔀 Checking out repo
+  #        uses: actions/checkout@v2
+  #
+  #      - name: 🐍 Installing python
+  #        uses: actions/setup-python@v5
+  #        with:
+  #          python-version: 3.8
+  #
+  #      - name: 🪨 Setup Node
+  #        uses: actions/setup-node@v4
+  #        with:
+  #          node-version: 16.16.0
+  #
+  #      - name: 🤖 Install Mephisto
+  #        run: pip install -e .
+  #
+  #      - name: 🖋 Create data directory
+  #        run: mkdir -p ~/mephisto/data
+  #
+  #      - name: 📂 Set the data directory
+  #        run: mephisto config core.main_data_directory ~/mephisto/data
+  #
+  #      - name: 📦 Setting up mephisto-core package
+  #        run: |
+  #          cd packages/mephisto-core
+  #          yarn install
+  #          yarn build
+  #          npm link
+  #
+  #      - name: 📦 Setting up mephisto-addons package
+  #        run: |
+  #          cd packages/mephisto-addons
+  #          yarn install
+  #          yarn build
+  #          npm link
+  #
+  #      - name: ⌛️ Running cypress tests
+  #        uses: cypress-io/github-action@v6.7.1
+  #        with:
+  #          build: npm i -D cypress@11
+  #          install: false
+  #          browser: chrome
+  #          project: ./examples/remote_procedure/interactive_image_generation/webapp
+  #          config-file: ./cypress.config.js
+  #          start: python examples/remote_procedure/interactive_image_generation/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
+  #          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+  #          headless: true
+
   remote_procedure_mnist:
     needs: changes
-    if: ${{ (needs.changes.outputs.mnist == 'true') || (needs.changes.outputs.mephisto-task == 'true') }}
+    if: ${{ (needs.changes.outputs.mnist == 'true') || (needs.changes.outputs.mephisto-core == 'true') }}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -243,9 +408,9 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 📦 Setting up mephisto-task package
+      - name: 📦 Setting up mephisto-core package
         run: |
-          cd packages/mephisto-task
+          cd packages/mephisto-core
           yarn install
           yarn build
           npm link
@@ -264,7 +429,7 @@ jobs:
 
   remote_procedure_toxicity_detection:
     needs: changes
-    if: ${{ (needs.changes.outputs.toxicity_detection == 'true') || (needs.changes.outputs.mephisto-task == 'true') }}
+    if: ${{ (needs.changes.outputs.toxicity_detection == 'true') || (needs.changes.outputs.mephisto-core == 'true') }}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -291,9 +456,12 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 📦 Setting up mephisto-task package
+      - name: 🖋 Create Inhouse provider
+        run: mephisto register inhouse
+
+      - name: 📦 Setting up mephisto-core package
         run: |
-          cd packages/mephisto-task
+          cd packages/mephisto-core
           yarn install
           yarn build
           npm link
@@ -306,14 +474,14 @@ jobs:
           browser: chrome
           project: ./examples/remote_procedure/toxicity_detection/webapp
           config-file: ./cypress.config.js
-          start: python examples/remote_procedure/toxicity_detection/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
+          start: python examples/remote_procedure/toxicity_detection/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
           wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
           headless: true
 
   # Learn more about this test here: https://github.com/facebookresearch/Mephisto/pull/833
   static_react_task_with_worker_opinion:
     needs: changes
-    if: ${{ (needs.changes.outputs.static_react_task_with_worker_opinion == 'true') || (needs.changes.outputs.mephisto-task == 'true') || (needs.changes.outputs.mephisto-addons == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
+    if: ${{ (needs.changes.outputs.static_react_task_with_worker_opinion == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.mephisto-addons == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -339,16 +507,16 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 📦 Setting up mephisto-task package
+      - name: 📦 Setting up mephisto-core package
         run: |
-          cd packages/mephisto-task
+          cd packages/mephisto-core
           yarn install
           yarn build
           npm link
 
-      - name: 📦 Setting up mephisto-worker-addons package
+      - name: 📦 Setting up mephisto-addons package
         run: |
-          cd packages/mephisto-worker-addons
+          cd packages/mephisto-addons
           yarn install
           yarn build
           npm link
@@ -362,7 +530,7 @@ jobs:
           project: ./examples/static_react_task_with_worker_opinion/webapp
           config-file: ./cypress.config.js
           spec: ./examples/static_react_task_with_worker_opinion/webapp/cypress/e2e/pre_submission_tests/*
-          start: python examples/static_react_task_with_worker_opinion/run_task.py mephisto.task.force_rebuild=true mephisto.task.post_install_script=link_packages.sh
+          start: python examples/static_react_task_with_worker_opinion/run_task.py mephisto.task.force_rebuild=true mephisto.task.post_install_script=link_mephisto_task.sh
           wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
           headless: true
 
@@ -436,7 +604,7 @@ jobs:
           project: ./examples/static_react_task_with_worker_opinion/webapp
           config-file: cypress.config.js
           spec: ./examples/static_react_task_with_worker_opinion/webapp/cypress/e2e/post_submission_tests/*
-          start: python examples/static_react_task_with_worker_opinion/run_task.py mephisto.task.post_install_script=link_packages.sh mephisto.task.force_rebuild=true
+          start: python examples/static_react_task_with_worker_opinion/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh mephisto.task.force_rebuild=true
           wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
           browser: chrome
           headless: true

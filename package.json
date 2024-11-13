@@ -15,8 +15,8 @@
     "build-all": "yarn workspaces foreach -ptAv run build"
   },
   "workspaces": [
-    "packages/mephisto-task",
-    "packages/mephisto-worker-addons",
+    "packages/mephisto-core",
+    "packages/mephisto-addons",
     "packages/bootstrap-chat",
     "packages/global-context-store",
     "docs/web"

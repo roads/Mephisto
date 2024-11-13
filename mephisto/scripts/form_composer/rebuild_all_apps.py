@@ -34,8 +34,8 @@ def _clean(remove_package_locks: bool):
     if verbose:
         logger.info("[blue]Started cleaning up all `build` and `node_modules` directories[/blue]")
 
-    packages.clean_mephisto_task_multipart_package(remove_package_locks, verbose=verbose)
-    packages.clean_mephisto_task_addons_package(remove_package_locks, verbose=verbose)
+    packages.clean_mephisto_core_package(remove_package_locks, verbose=verbose)
+    packages.clean_mephisto_addons_package(remove_package_locks, verbose=verbose)
 
     generators.clean_form_composer_generator(remove_package_locks, verbose=verbose)
 

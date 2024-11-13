@@ -67,7 +67,7 @@ function convertTaskDataToJson(task_data) {
 function handleSubmitToProvider(task_data) {
   alert(
     "Thank you for your submission.\n" +
-    "You may close this message to view the next task. "
+    "You may close this message to view the next task."
   );
   window.location.replace("/welcome");
   return true;

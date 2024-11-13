@@ -8,16 +8,12 @@
 # Update the version of a given package in the related package.json file
 # under "./examples" and "../mephisto/abstractions/blueprints"
 # Currently we support the update of the following packages:
-# * mephisto-task
+# * mephisto-core
 # * bootstrap-chat
 
 # Usage:
 # You can sync one package at a time like this:
-# ./sync_package_version.sh mephisto-task 1.0.13
 # ./sync_package_version.sh bootstrap-chat 1.0.7
-
-# You can also sync all packages together like this:
-# ./sync_package_version.sh mephisto-task 1.0.13 bootstrap-chat 1.0.7
 
 possible_dirs=`find ../mephisto/abstractions/blueprints ../examples ../packages -type d \( -name node_modules -o -name tmp -o -name runs -o -name _generated \) -prune -false -o -name 'package.json' -exec dirname {} \;`
 
@@ -39,11 +35,6 @@ while [ -n "$1" ];
 do
 
 	case "$1" in
-
-	mephisto-task)
-        sync_package_version $1 $2
-        shift
-        ;;
 
 	bootstrap-chat)
         sync_package_version $1 $2

@@ -28,7 +28,7 @@ class ParlAITaskConfig(build_default_task_config("example")):  # type: ignore
     turn_timeout: int = field(
         default=300,
         metadata={
-            "help": "Maximum response time before kicking " "a worker out, default 300 seconds"
+            "help": "Maximum response time before kicking " "a worker out, default 300 seconds",
         },
     )
 
@@ -40,7 +40,10 @@ def main(operator: "Operator", cfg: DictConfig) -> None:
         post_install_script=cfg.mephisto.task.post_install_script,
     )
 
-    world_opt = {"num_turns": cfg.num_turns, "turn_timeout": cfg.turn_timeout}
+    world_opt = {
+        "num_turns": cfg.num_turns,
+        "turn_timeout": cfg.turn_timeout,
+    }
 
     custom_bundle_path = cfg.mephisto.blueprint.get("custom_source_bundle", None)
     if custom_bundle_path is not None:
@@ -48,6 +51,7 @@ def main(operator: "Operator", cfg: DictConfig) -> None:
             "Must build the custom bundle with `npm install; npm run dev` from within "
             f"the {cfg.task_dir}/webapp directory in order to demo a custom bundle "
         )
+
         world_opt["send_task_data"] = True
 
     shared_state = SharedParlAITaskState(world_opt=world_opt, onboarding_world_opt=world_opt)

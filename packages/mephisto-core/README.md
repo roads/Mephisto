@@ -4,7 +4,7 @@
   LICENSE file in the root directory of this source tree.
 -->
 
-# mephisto-task
+# mephisto-core
 
 This package provides two hooks to faciliate React-based front-end development for Mephisto tasks.
 
@@ -12,24 +12,20 @@ Use `useMephistoTask` for simple, static tasks, `useMephistoLiveTask` for multi-
 
 ## Installation
 
-```bash
-npm install --save mephisto-task
-```
-
 Install from local folder (e.g. for local development):
 
 ```bash
-cd packages/mephisto-task
+cd packages/mephisto-core
 npm link
 
 cd <app folder>
-npm link mephisto-task
+npm link mephisto-core
 
 # If you're getting an invalid hooks error (https://reactjs.org/warnings/invalid-hook-call-warning.html),
 # you can also do the following to ensure that both the app
-# and mephisto-task are using the same version of React:
+# and mephisto-core are using the same version of React:
 # 
-# cd packages/mephisto-task
+# cd packages/mephisto-core
 # npm link ../<app folder>/node_modules/react
 ```
 
@@ -38,7 +34,7 @@ npm link mephisto-task
 To integrate Mephisto with a front-end task interface, the easiest way is to use the provided React hook:
 
 ```jsx
-import { useMephistoTask } from "mephisto-task";
+import { useMephistoTask } from "mephisto-core";
 
 function MyApp() {
     const {
@@ -138,7 +134,7 @@ A string-based code that when not null means that the current user is blocked fr
 A sentence description for the `blockedReason` can be looked up with the helper function `getBlockedExplanation()` as such:
 
 ```jsx
-import { getBlockedExplanation } from "mephisto-task";
+import { getBlockedExplanation } from "mephisto-core";
 
 // Normally you would get blockedReason from useMephistoTask instead of setting it, but just showing here for illustrative purposes
 const blockedReason = 'no_mobile':
@@ -163,7 +159,7 @@ The ID created for the worker by Mephisto.
 For socket-based "live" tasks that require updates from a server (as opposed to static tasks), we provide a `useMephistoLiveTask` React hook.
 
 ```jsx
-import { useMephistoLiveTask } from "mephisto-task";
+import { useMephistoLiveTask } from "mephisto-core";
 
 function MyApp() {
     const {
@@ -297,4 +293,5 @@ The response in both cases is a promise, for which the return value from the bac
 
 
 ### `disconnectIssueText`
-If this string is not `undefined`, it's because something has gone wrong with the task and it is now in a state that can no longer be completed. Further details can be seen in the `STATUS_TO_TEXT_MAP` constant provided by `mephisto-task`
+If this string is not `undefined`, it's because something has gone wrong with the task, and it is now in a state that can no longer be completed. 
+Further details can be seen in the `STATUS_TO_TEXT_MAP` constant provided by `mephisto-core`

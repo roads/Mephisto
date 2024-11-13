@@ -4,41 +4,34 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import os
+import types
+from dataclasses import dataclass
+from dataclasses import field
+from typing import Optional
+from typing import TYPE_CHECKING
+
+from omegaconf import DictConfig
+from omegaconf import MISSING
+
+from mephisto.abstractions.blueprint import Blueprint
 from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import (
-    StaticBlueprint,
-    StaticBlueprintArgs,
     SharedStaticTaskState,
 )
-from dataclasses import dataclass, field
-from omegaconf import MISSING, DictConfig
-from mephisto.abstractions.blueprint import Blueprint
+from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import StaticBlueprint
+from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import (
+    StaticBlueprintArgs,
+)
 from mephisto.abstractions.blueprints.static_html_task.static_html_task_builder import (
     StaticHTMLTaskBuilder,
 )
 from mephisto.operations.registry import register_mephisto_abstraction
 
-import os
-import time
-import csv
-import types
-
-from typing import ClassVar, List, Type, Any, Dict, Iterable, Optional, TYPE_CHECKING
-
 if TYPE_CHECKING:
-    from mephisto.data_model.task_run import TaskRun
     from mephisto.abstractions.blueprint import (
-        AgentState,
-        TaskRunner,
-        TaskBuilder,
         SharedTaskState,
     )
-    from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import (
-        SharedStaticTaskState,
-    )
-    from mephisto.data_model.assignment import Assignment
-    from mephisto.data_model.agent import OnboardingAgent
-    from mephisto.data_model.worker import Worker
-    from mephisto.data_model.unit import Unit
+    from mephisto.data_model.task_run import TaskRun
 
 BLUEPRINT_TYPE_STATIC_HTML = "static_task"
 
@@ -97,7 +90,9 @@ class StaticHTMLBlueprint(StaticBlueprint):
         assert isinstance(
             shared_state, SharedStaticTaskState
         ), "Cannot initialize with a non-static state"
+
         super().__init__(task_run, args, shared_state)
+
         self.html_file = os.path.expanduser(args.blueprint.task_source)
         if not os.path.exists(self.html_file):
             raise FileNotFoundError(
@@ -107,9 +102,11 @@ class StaticHTMLBlueprint(StaticBlueprint):
         self.onboarding_html_file = args.blueprint.get("onboarding_source", None)
         if self.onboarding_html_file is not None:
             self.onboarding_html_file = os.path.expanduser(self.onboarding_html_file)
+
             if not os.path.exists(self.onboarding_html_file):
                 raise FileNotFoundError(
-                    f"Specified onboarding html file {self.onboarding_html_file} was not found from {os.getcwd()}"
+                    f"Specified onboarding html file {self.onboarding_html_file} "
+                    f"was not found from {os.getcwd()}"
                 )
 
         task_file_name = os.path.basename(self.html_file)
@@ -121,11 +118,14 @@ class StaticHTMLBlueprint(StaticBlueprint):
         """Ensure that the data can be properly loaded"""
         Blueprint.assert_task_args(args, shared_state)
         blue_args = args.blueprint
+
         assert isinstance(
             shared_state, SharedStaticTaskState
         ), "Cannot assert args on a non-static state"
+
         if isinstance(shared_state.static_task_data, types.GeneratorType):
             raise AssertionError("You can't launch an HTML static task on a generator")
+
         if blue_args.get("data_csv", None) is not None:
             csv_file = os.path.expanduser(blue_args.data_csv)
             assert os.path.exists(csv_file), f"Provided csv file {csv_file} doesn't exist"
@@ -146,6 +146,7 @@ class StaticHTMLBlueprint(StaticBlueprint):
             assert blue_args.get("onboarding_source", None) is not None, (
                 "Must use onboarding html with an onboarding qualification to " "use onboarding."
             )
+
             assert shared_state.validate_onboarding is not None, (
                 "Must use an onboarding validation function to use onboarding " "with static tasks."
             )

@@ -152,7 +152,7 @@ function MainApp() {
     isOnboarding,
   } = useMephistoTask();
 ```
-Any Mephisto frontend task relies on either the `useMephistoTask` or `useMephistoLiveTask` hooks to get underlying state about the worker and the task. For now it's only important to note that we pull `initialTaskData` from Mephisto, as well as a `handleSubmit` function. (More details on usage of these hooks is available [here](https://github.com/facebookresearch/Mephisto/tree/main/packages/mephisto-task).)
+Any Mephisto frontend task relies on either the `useMephistoTask` or `useMephistoLiveTask` hooks to get underlying state about the worker and the task. For now it's only important to note that we pull `initialTaskData` from Mephisto, as well as a `handleSubmit` function. (More details on usage of these hooks is available [here](https://github.com/facebookresearch/Mephisto/tree/main/packages/mephisto-core).)
 ```javascript
   if (blockedReason !== null) {
     return ...

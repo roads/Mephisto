@@ -7,7 +7,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Button } from "react-bootstrap";
-import { useMephistoTask, postData } from "mephisto-task";
+import { useMephistoTask, postData } from "mephisto-core";
 import { useMephistoGlobalConfig } from "./hooks";
 const axios = require("axios");
 

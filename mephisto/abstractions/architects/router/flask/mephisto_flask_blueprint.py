@@ -4,30 +4,24 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from flask import (  # type: ignore
-    Flask,
-    Blueprint,
-    render_template,
-    abort,
-    request,
-    send_from_directory,
-    jsonify,
-)
-from geventwebsocket import (  # type: ignore
-    WebSocketServer,
-    WebSocketApplication,
-    Resource,
-    WebSocketError,
-)
-from uuid import uuid4
-import time
 import json
 import os
+import time
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import TYPE_CHECKING
+from uuid import uuid4
+
+from flask import abort  # type: ignore
+from flask import Blueprint
+from flask import jsonify
+from flask import request
+from flask import send_from_directory
+from geventwebsocket import Resource  # type: ignore
+from geventwebsocket import WebSocketApplication
 from werkzeug.utils import secure_filename  # type: ignore
-
-from threading import Event
-
-from typing import Dict, Tuple, List, Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from geventwebsocket.handler import Client  # type: ignore
@@ -35,7 +29,7 @@ if TYPE_CHECKING:
 
 # Constants
 
-CURR_MEPHISTO_TASK_VERSION = "2.0.4"
+CURR_MEPHISTO_CORE_PACKAGE_VERSION = "1.5.1"
 
 PACKET_TYPE_ALIVE = "alive"
 PACKET_TYPE_SUBMIT_ONBOARDING = "submit_onboarding"
@@ -91,7 +85,7 @@ def debug_log(*args):
 
 
 def js_time(python_time: float) -> int:
-    """Convert python time to js time, as the mephisto-task package expects"""
+    """Convert python time to js time, as the mephisto-core package expects"""
     return int(python_time * 1000)
 
 
@@ -147,7 +141,7 @@ def register_router_application(router: "MephistoRouter") -> "MephistoRouterStat
 class MephistoRouter(WebSocketApplication):
     """
     Base implementation of a websocket server that handles
-    all of the socket based IO for mephisto-task
+    all of the socket based IO for mephisto-core
     """
 
     def __init__(self, *args, **kwargs):
@@ -509,8 +503,8 @@ def show_index():
 @mephisto_router.route("/task_config.json")
 def get_task_config(res):
     args = request.args
-    mephisto_task_version = args.get("mephisto_task_version")
-    if mephisto_task_version != CURR_MEPHISTO_TASK_VERSION:
+    mephisto_core_version = args.get("mephisto_core_version")
+    if mephisto_core_version != CURR_MEPHISTO_CORE_PACKAGE_VERSION:
         _handle_forward(
             {
                 "packet_type": PACKET_TYPE_ERROR,
@@ -518,12 +512,12 @@ def get_task_config(res):
                 "data": {
                     "error_type": "version-mismatch",
                     "text": (
-                        "Package `mephisto-task` version mismatch. Expected "
-                        f"version {CURR_MEPHISTO_TASK_VERSION} but frontend is "
-                        f"currently using {mephisto_task_version}. This may "
+                        "Package `mephisto-core` version mismatch. Expected "
+                        f"version {CURR_MEPHISTO_CORE_PACKAGE_VERSION} but frontend is "
+                        f"currently using {mephisto_core_version}. This may "
                         "cause unexpected errors, be sure to update your "
-                        "`mephisto-task` dependency with `npm install "
-                        f"mephisto-task@{CURR_MEPHISTO_TASK_VERSION} --save`. "
+                        "`mephisto-core` dependency with `npm install "
+                        f"mephisto-core@{CURR_MEPHISTO_CORE_PACKAGE_VERSION} --save`. "
                         "If this warning still persists or the version isn't found, "
                         "please open an issue at "
                         "https://github.com/facebookresearch/Mephisto/issues"

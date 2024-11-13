@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: __dirname,
     filename: "build/bundle.js",
-    library: "mephisto-task",
+    library: "mephisto-core",
     libraryTarget: "umd",
   },
   target: "web",
