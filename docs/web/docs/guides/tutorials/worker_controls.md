@@ -21,14 +21,14 @@ cp -r examples/static_react_task/ tmp/onboarding_tutorial/
 cd tmp/onboarding_tutorial/
 ```
 
-The key for using onboarding is the `onboarding_qualification`, as we can see in `onboarding_example.yaml`:
+The key for using onboarding is the `onboarding_qualification`, as we can see in `example_with_onboarding__local__inhouse.yaml`:
 ```yaml
 # hydra_configs/conf/onboarding_example.yaml
 @package _global_
 defaults:
   - /mephisto/blueprint: static_react_task
   - /mephisto/architect: local
-  - /mephisto/provider: mock
+  - /mephisto/provider: inhouse
 mephisto:
   blueprint:
     ...
@@ -37,7 +37,7 @@ mephisto:
     ...
     task_name: onboarding-tutorial-iterating # Add a custom task name to group the results
 ```
-When Mephisto sees the `mephisto.blueprint.onboarding_qualification` argument, it adds a step to the task that requires workers pass onboarding in order to move on to the main task. Why don't we see it in action? You can launch the onboarding version of this task with `python run_task.py conf=onboarding_example`. Once launched, you can follow through to [`localhost:3000/?worker_id=x&assignment_id=1`](localhost:3000/?worker_id=x&assignment_id=1).
+When Mephisto sees the `mephisto.blueprint.onboarding_qualification` argument, it adds a step to the task that requires workers pass onboarding in order to move on to the main task. Why don't we see it in action? You can launch the onboarding version of this task with `python run_task__local__inhouse.py conf=example_with_onboarding__local__inhouse`. Once launched, you can follow through to [`localhost:3000/?worker_id=x&id=1`](localhost:3000/?worker_id=x&id=1).
 
 You should be greeted with a panel claiming it is the onboarding task, suggesting that you click a button to move to the main task. Clicking this button puts you into the example static react task. It's not a very informative task as is, so let's add some details into it! Shut down the server and we'll get back to it
 
@@ -156,7 +156,7 @@ function OnboardingComponent({ onboardingData, onSubmit }) {
   );
 }
 ```
-With this, let's launch again with `python run_task.py conf=onboarding_example`. Once launched, you can follow through to [`localhost:3000/?worker_id=y&assignment_id=1`](localhost:3000/?worker_id=y&assignment_id=1). **Note** that now we're accessing as worker `y`. We do this because worker `x` has already completed onboarding for our task name, and so they'd skip it! Onboarding is only surfaced the _first time_ a worker completes a task by a given `onboarding_qualification`.
+With this, let's launch again with `python run_task__local__inhouse.py conf=example_with_onboarding__local__inhouse`. Once launched, you can follow through to [`localhost:3000/?worker_id=y&assignment_id=1`](localhost:3000/?worker_id=y&id=1). **Note** that now we're accessing as worker `y`. We do this because worker `x` has already completed onboarding for our task name, and so they'd skip it! Onboarding is only surfaced the _first time_ a worker completes a task by a given `onboarding_qualification`.
 
 ![](/tutorial_onboarding_new_interface.png)
 
@@ -207,7 +207,7 @@ And that's it! Let's move forward to test that this works.
 
 ### 2.4 Testing
 
-Let's launch again with `python run_task.py conf=onboarding_example`. Once launched, we should open a tab for [`worker a`](localhost:3000/?worker_id=a&assignment_id=1) and [`worker b`](localhost:3000/?worker_id=b&assignment_id=1). Complete the onboarding correctly as one worker, and assert that you're able to make it through to the task! Complete it incorrectly as the other, and note that you are not qualified to work on the task. With this, you have a functioning basic onboarding task!
+Let's launch again with `python run_task__local__inhouse.py conf=example_with_onboarding__local__inhouse`. Once launched, we should open a tab for [`worker a`](localhost:3000/?worker_id=a&id=1) and [`worker b`](localhost:3000/?worker_id=b&id=1). Complete the onboarding correctly as one worker, and assert that you're able to make it through to the task! Complete it incorrectly as the other, and note that you are not qualified to work on the task. With this, you have a functioning basic onboarding task!
 
 ## 3. Reviews with onboarding
 

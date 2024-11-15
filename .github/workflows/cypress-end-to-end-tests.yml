@@ -124,8 +124,8 @@ jobs:
   #          browser: chrome
   #          project: ./examples/form_composer_demo/webapp
   #          config-file: ./cypress.config.js
-  #          start: python examples/form_composer_demo/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
-  #          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+  #          start: python examples/form_composer_demo/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
+  #          wait-on: "http://localhost:3000/?worker_id=x&=1"
   #          headless: true
   #
   #  video_annotator_demo:
@@ -177,8 +177,8 @@ jobs:
   #          browser: chrome
   #          project: ./examples/video_annotator_demo/webapp
   #          config-file: ./cypress.config.js
-  #          start: python examples/video_annotator_demo/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
-  #          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+  #          start: python examples/video_annotator_demo/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
+  #          wait-on: "http://localhost:3000/?worker_id=x&id=1"
   #          headless: true
 
   # Learn more about this test here: https://github.com/facebookresearch/Mephisto/pull/881
@@ -209,6 +209,9 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
+      - name: 🚚 Create Inhouse provider
+        run: mephisto register inhouse
+
       - name: 📦 Setting up mephisto-core package
         run: |
           cd packages/mephisto-core
@@ -224,12 +227,12 @@ jobs:
           browser: chrome
           project: ./mephisto/abstractions/blueprints/static_html_task/source
           config-file: ./cypress.config.js
-          start: python ./examples/simple_static_task/run_task.py
-          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+          start: python ./examples/simple_static_task/run_task__local__inhouse.py
+          wait-on: "http://localhost:3000/?worker_id=x&id=1"
           headless: true
 
   # Learn more about this test here: https://github.com/facebookresearch/Mephisto/pull/795
-  static-react-task:
+  static_react_task:
     needs: changes
     if: ${{ (needs.changes.outputs.static_react_task == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
     runs-on: ubuntu-latest
@@ -256,6 +259,9 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
+      - name: 🚚 Create Inhouse provider
+        run: mephisto register inhouse
+
       - name: 📦 Setting up mephisto-core package
         run: |
           cd packages/mephisto-core
@@ -271,8 +277,8 @@ jobs:
           browser: chrome
           project: ./examples/static_react_task/webapp
           config-file: ./cypress.config.js
-          start: python examples/static_react_task/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
-          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+          start: python examples/static_react_task/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
+          wait-on: "http://localhost:3000/?worker_id=x&id=1"
           headless: true
 
   # Learn more about the remote_procedure_tests here: https://github.com/facebookresearch/Mephisto/pull/800
@@ -303,7 +309,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🖋 Create Inhouse provider
+      - name: 🚚 Create Inhouse provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
@@ -322,7 +328,7 @@ jobs:
           project: ./examples/remote_procedure/elementary_remote_procedure/webapp
           config-file: ./cypress.config.js
           start: python examples/remote_procedure/elementary_remote_procedure/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
-          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+          wait-on: "http://localhost:3000/?worker_id=x&id=1"
           headless: true
 
   #  TODO: Add tests and enable
@@ -375,13 +381,13 @@ jobs:
   #          browser: chrome
   #          project: ./examples/remote_procedure/interactive_image_generation/webapp
   #          config-file: ./cypress.config.js
-  #          start: python examples/remote_procedure/interactive_image_generation/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
-  #          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+  #          start: python examples/remote_procedure/interactive_image_generation/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
+  #          wait-on: "http://localhost:3000/?worker_id=x&id=1"
   #          headless: true
 
   remote_procedure_mnist:
     needs: changes
-    if: ${{ (needs.changes.outputs.mnist == 'true') || (needs.changes.outputs.mephisto-core == 'true') }}
+    if: ${{ (needs.changes.outputs.mnist == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -408,6 +414,9 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
+      - name: 🚚 Create Inhouse provider
+        run: mephisto register inhouse
+
       - name: 📦 Setting up mephisto-core package
         run: |
           cd packages/mephisto-core
@@ -423,13 +432,13 @@ jobs:
           browser: chrome
           project: ./examples/remote_procedure/mnist/webapp
           config-file: ./cypress.config.js
-          start: python examples/remote_procedure/mnist/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh
-          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+          start: python examples/remote_procedure/mnist/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
+          wait-on: "http://localhost:3000/?worker_id=x&id=1"
           headless: true
 
   remote_procedure_toxicity_detection:
     needs: changes
-    if: ${{ (needs.changes.outputs.toxicity_detection == 'true') || (needs.changes.outputs.mephisto-core == 'true') }}
+    if: ${{ (needs.changes.outputs.toxicity_detection == 'true') || (needs.changes.outputs.mephisto-core == 'true') || (needs.changes.outputs.abstractions == 'true') || (needs.changes.outputs.data_model == 'true') || (needs.changes.outputs.operations == 'true') || (needs.changes.outputs.tools == 'true')}}
     runs-on: ubuntu-latest
     steps:
       - name: 🔀 Checking out repo
@@ -456,7 +465,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🖋 Create Inhouse provider
+      - name: 🚚 Create Inhouse provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
@@ -475,7 +484,7 @@ jobs:
           project: ./examples/remote_procedure/toxicity_detection/webapp
           config-file: ./cypress.config.js
           start: python examples/remote_procedure/toxicity_detection/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh
-          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+          wait-on: "http://localhost:3000/?worker_id=x&id=1"
           headless: true
 
   # Learn more about this test here: https://github.com/facebookresearch/Mephisto/pull/833
@@ -507,6 +516,9 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
+      - name: 🚚 Create Inhouse provider
+        run: mephisto register inhouse
+
       - name: 📦 Setting up mephisto-core package
         run: |
           cd packages/mephisto-core
@@ -530,8 +542,8 @@ jobs:
           project: ./examples/static_react_task_with_worker_opinion/webapp
           config-file: ./cypress.config.js
           spec: ./examples/static_react_task_with_worker_opinion/webapp/cypress/e2e/pre_submission_tests/*
-          start: python examples/static_react_task_with_worker_opinion/run_task.py mephisto.task.force_rebuild=true mephisto.task.post_install_script=link_mephisto_task.sh
-          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+          start: python examples/static_react_task_with_worker_opinion/run_task__local__inhouse.py mephisto.task.force_rebuild=true mephisto.task.post_install_script=link_mephisto_task.sh
+          wait-on: "http://localhost:3000/?worker_id=x&id=1"
           headless: true
 
       - name: 🔪 Killing the web server
@@ -604,7 +616,7 @@ jobs:
           project: ./examples/static_react_task_with_worker_opinion/webapp
           config-file: cypress.config.js
           spec: ./examples/static_react_task_with_worker_opinion/webapp/cypress/e2e/post_submission_tests/*
-          start: python examples/static_react_task_with_worker_opinion/run_task.py mephisto.task.post_install_script=link_mephisto_task.sh mephisto.task.force_rebuild=true
-          wait-on: "http://localhost:3000/?worker_id=x&assignment_id=1"
+          start: python examples/static_react_task_with_worker_opinion/run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh mephisto.task.force_rebuild=true
+          wait-on: "http://localhost:3000/?worker_id=x&id=1"
           browser: chrome
           headless: true

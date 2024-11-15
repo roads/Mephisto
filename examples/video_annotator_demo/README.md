@@ -8,7 +8,7 @@ These video annotators are example of VideoAnnotator task generator.
 2. SSH into running container to run server: `docker exec -it mephisto_dc bash`
 3. Inside the container, go to VideoAnnotator examples directory: `cd /mephisto/examples/video_annotator_demo`
 4. Inside the examples directory, run a desired example with one of these commands:
-    - Simple form: `python ./run_task.py`
+    - Simple form: `python ./run_task__local__inhouse.py`
 
 ---
 

@@ -23,10 +23,10 @@ We actively welcome your pull requests.
 6. If you haven't already, complete the Contributor License Agreement ("CLA").
 
 ## Cypress Testing
-For cypress testing the base url is: http://localhost:3000/?worker_id=x&assignment_id=1
+For cypress testing the base url is: http://localhost:3000/?worker_id=x&id=1
 
 ### Running end-to-end tests on a task:
-1. Run the task by running python run_task.py in the appropriate task folder
+1. Run the task by running python `run_task__local__inhouse.py` in the appropriate task folder
 2. In a separate terminal window go into the webapp directory and run `npm run test`
 3. This should open a cypress app
 4. It is advised to test in Chrome(Chrome, Electron, and Firefox are all the options) as this browser works well with Cypress.
@@ -40,7 +40,7 @@ Suppose you ran the toxicity detection task and then closed it. This would use a
 
 If you then ran the mnist task, for example, then assignmentId=3 and assignmentId=4 would be used. While this task is running you can choose to run cypress tests in a different terminal window by going into the webapp folder and running `npm run test`.
 
-These tests will fail because the base url of http://localhost:3000/?worker_id=x&assignment_id=1 is not associated with the mnist task, it is associated with the toxicity detection task. The correct react-elements will not show up.
+These tests will fail because the base url of http://localhost:3000/?worker_id=x&id=1 is not associated with the mnist task, it is associated with the toxicity detection task. The correct react-elements will not show up.
 
 There is a way to fix this:
 * You can change the base url(found in the cypress.config.js file in the webapp folder) to the current url that you are on. 
@@ -51,7 +51,7 @@ If you are modifying either the `mephisto-core` or `mephisto-addons` packages yo
 
 The easiest way to do this is to run a task by doing:
 ```bash
-python run_task.py mephisto.task.post_install_script=link_mephisto_task.sh mephisto.task.force_rebuild=true
+python run_task__local__inhouse.py mephisto.task.post_install_script=link_mephisto_task.sh mephisto.task.force_rebuild=true
 ```
 
 Setting `mephisto.task.force_rebuild=true` runs `npm build` before running your task. By default the task is only rebuilt if a file is changed in the webapp, not if a linked package is changed.
@@ -60,7 +60,7 @@ Setting `mephisto.task.post_install_script=link_mephisto_task.sh` runs the `link
 
 Alternatively, these values can be set in the task's hydra_configs/conf yaml file if you want to forgo typing the above and just type
 ```bash
-python run_task.py
+python run_task__local__inhouse.py
 ```
 instead.
 

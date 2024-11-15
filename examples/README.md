@@ -18,16 +18,16 @@ Let's launch Mephisto example tasks, starting from the easiest one
 
 A simple project with HTML-based UI task template [simple_static_task](/examples/simple_static_task)
 
-- Default config file: [/examples/simple_static_task/hydra_configs/conf/example.yaml]
+- Default config file: [/examples/simple_static_task/hydra_configs/conf/example__local__inhouse.yaml]
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/simple_static_task/static_test_script.py
+      python /mephisto/examples/simple_static_task/run_task__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1)
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1)
 - Browser page should display an image, instruction, select and file inputs, and a submit button.
 
 ---
@@ -36,16 +36,16 @@ A simple project with HTML-based UI task template [simple_static_task](/examples
 
 A simple project with React-based UI task template [static_react_task](/examples/static_react_task)
 
-- Default config file: [example.yaml](/examples/static_react_task/hydra_configs/conf/example.yaml).
+- Default config file: [example.yaml](/examples/static_react_task/hydra_configs/conf/example__local__inhouse.yaml).
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/static_react_task/run_task.py
+      python /mephisto/examples/static_react_task/run_task__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1).
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1).
 - Browser page should display an instruction line and two buttons (green and red).
 
 ---
@@ -64,9 +64,9 @@ A more complex example featuring worker-generated dynamic input: [mnist](/exampl
       apt install curl && \
       pip install grafana torch pillow numpy && \
       mephisto metrics install && \
-      python /mephisto/examples/remote_procedure/mnist/run_task.py
+      python /mephisto/examples/remote_procedure/mnist/run_task__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1).
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1).
 - Browser page should display instructions and a layout with 3 rectangle fields for drawing numbers with a mouse, each field having inputs at the bottom.
 
 ---
@@ -81,32 +81,32 @@ There are three FormComposer examples:
 
 This is a single-version form containing no variable tokens.
 
-- Default config file: [example_local_mock.yaml](/examples/form_composer_demo/hydra_configs/conf/example_local_mock.yaml).
+- Default config file: [example__local__inhouse.yaml](/examples/form_composer_demo/hydra_configs/conf/example__local__inhouse.yaml).
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task.py
+      python /mephisto/examples/form_composer_demo/run_task__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1).
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1).
 - You should see a Bootstrap-themed form with fields and sections corresponding to the form config in its [task_data.json](/examples/form_composer_demo/data/simple/task_data.json) file.
 
 ##### 3.2. Simple form with Gold Units
 
 Same example as 3.1, but one of the Units will be marked as Gold.
 
-- Default config file: [example_local_mock.yaml](/examples/form_composer_demo/hydra_configs/conf/example_local_mock_with_gold_unit.yaml).
+- Default config file: [example_with_gold_unit__local__inhouse.yaml](/examples/form_composer_demo/hydra_configs/conf/example_with_gold_unit__local__inhouse.yaml).
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task_with_gold_unit.py
+      python /mephisto/examples/form_composer_demo/run_task_with_gold_unit__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1).
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1).
 - You should see a Bootstrap-themed form with fields and sections corresponding to the form config in its [task_data.json](/examples/form_composer_demo/data/simple/task_data.json) file
 and Gold units made from [gold_units_data.json](/examples/form_composer_demo/data/simple/gold_units/gold_units_data.json)
 with special validation for them from [gold_units_validation.py](/examples/form_composer_demo/data/simple/gold_units/gold_units_validation.py).
@@ -115,16 +115,16 @@ with special validation for them from [gold_units_validation.py](/examples/form_
 
 Same example as 3.1, but before Units a Worker will see Onboarding widget.
 
-- Default config file: [example_local_mock.yaml](/examples/form_composer_demo/hydra_configs/conf/example_local_mock_with_oboarding.yaml).
+- Default config file: [example_with_onboarding__local__inhouse.yaml](/examples/form_composer_demo/hydra_configs/conf/example_with_onboarding__local__inhouse.yaml).
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task_with_onboarding.py
+      python /mephisto/examples/form_composer_demo/run_task_with_onboarding__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1).
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1).
 - You should see Onboarding widget and after answering the onboarding question you will be blocked or passed further and will see
 a Bootstrap-themed form with fields and sections corresponding to the form config in its [task_data.json](/examples/form_composer_demo/data/simple/task_data.json) file.
 
@@ -132,16 +132,16 @@ a Bootstrap-themed form with fields and sections corresponding to the form confi
 
 Same example as 3.1, but first time before real Units a Worker will see Screening units.
 
-- Default config file: [example_local_mock.yaml](/examples/form_composer_demo/hydra_configs/conf/example_local_mock_with_screening.yaml).
+- Default config file: [example_with_screening__local__inhouse.yaml](/examples/form_composer_demo/hydra_configs/conf/example_with_screening__local__inhouse.yaml).
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task_with_screening.py
+      python /mephisto/examples/form_composer_demo/run_task_with_screening__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1).
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1).
 - You should see Onboarding widget and after answering the onboarding question you will be blocked or passed further and will see
 a Bootstrap-themed form with fields and sections corresponding to the form config in its [task_data.json](/examples/form_composer_demo/data/simple/task_data.json) file
 and Screening units made from [screening_units_data.json](/examples/form_composer_demo/data/simple/screening_units/screening_units_data.json)
@@ -151,37 +151,37 @@ with special validation for them from [screening_units_validation.py](/examples/
 
 Same example as 3.1, but after completing a Unit, a Worker will see a form below the main form where they can leave their opinion and screenshots.
 
-- Default config file: [example_local_mock.yaml](/examples/form_composer_demo/hydra_configs/conf/example_local_mock_with_oboarding.yaml).
+- Default config file: [example__local__inhouse.yaml](/examples/form_composer_demo/hydra_configs/conf/example__local__inhouse.yaml).
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task_with_worker_opinion.py
+      python /mephisto/examples/form_composer_demo/run_task_with_worker_opinion__local__inhouse.py
   ```
-- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&assignment_id=1](http://localhost:3001/?worker_id=x&assignment_id=1).
+- Browser page (for the first task unit): [http://localhost:3001/?worker_id=x&id=1](http://localhost:3001/?worker_id=x&id=1).
 - You should see a Bootstrap-themed form with fields and sections corresponding to the form config in its [task_data.json](/examples/form_composer_demo/data/simple/task_data.json) file.
 
 ##### 3.6. Dynamic form
 
 Dynamic form means a multi-version form, where versions are generated by varying values of special tokens embedded into the form config.
 
-- Default config file: [dynamic_example_local_mock.yaml](/examples/form_composer_demo/hydra_configs/conf/dynamic_example_local_mock.yaml).
+- Default config file: [dynamic_example__local__inhouse.yaml](/examples/form_composer_demo/hydra_configs/conf/dynamic_example__local__inhouse.yaml).
 - Launch command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task_dynamic.py
+      python /mephisto/examples/form_composer_demo/run_task_dynamic__local__inhouse.py
   ```
 - Browser page is same as for the Simple form example
 
-There are variations of dynamic form config that use different providers. To try that, change `run_task_dynamic.py` in the launch command to:
+There are variations of dynamic form config that use different providers. To try that, change `run_task_dynamic__local__inhouse.py` in the launch command to:
 
-- `run_task_dynamic_ec2_prolific.py` for Prolific (requires valid EC2 credentials)
-- `run_task_dynamic_ec2_mturk_sandbox.py` for Mechanical Turk sandbox (requires valid EC2 credentials)
+- `run_task_dynamic__ec2__prolific.py` for Prolific (requires valid EC2 credentials)
+- `run_task_dynamic__ec2__mturk_sandbox.py` for Mechanical Turk sandbox (requires valid EC2 credentials)
 
 ##### 3.7. Dynamic form with presigned URLs
 
@@ -191,7 +191,7 @@ This example builds further upon the Dynamic form example. Here we use presigned
     - Required: valid AWS credentials: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_DEFAULT_REGION`
     - Required: a private S3 bucket with files that you will embed in the example form (either replace dummy URLs in the configs by hand, or automatically generate new ones with `mephisto form_composer config` command)
     - Optional: `S3_URL_EXPIRATION_MINUTES` (default value is 60 minutes)
-- Default config file: [dynamic_example_local_mock.yaml](/examples/form_composer_demo/hydra_configs/conf/dynamic_example_local_mock.yaml).
+- Default config file: [dynamic_example__local__inhouse.yaml](/examples/form_composer_demo/hydra_configs/conf/dynamic_example__local__inhouse.yaml).
 - Create config: see all options for `form_composer config` command [here](/mephisto/generators/form_composer/README.md#using-formcomposerconfig-utility). Example command:
   ```shell
   docker-compose -f docker/docker-compose.dev.yml run \
@@ -206,7 +206,7 @@ This example builds further upon the Dynamic form example. Here we use presigned
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task_dynamic_presigned_urls.py
+      python /mephisto/examples/form_composer_demo/run_task_dynamic_presigned_urls__ec2__prolific.py
   ```
 
 
@@ -214,7 +214,7 @@ This example builds further upon the Dynamic form example. Here we use presigned
 
 Putting it altogether, let's prepare and launch a task featuring a form containing one embedded file plus a few other fields. Here we'll assume working in directory `/mephisto/examples/form_composer_demo/data/dynamic_presigned_urls`.
 
-- Adjust `dynamic_presigned_urls_example_ec2_prolific.yaml` task config as needed
+- Adjust `dynamic_example_presigned_urls__ec2__prolific.yaml` task config as needed
 - Create `unit_config.json` file to define your form fields and layout
     - it should contain a token named `file_location`
     - for more details see `mephisto/generators/form_composer/README.md`
@@ -250,7 +250,7 @@ Putting it altogether, let's prepare and launch a task featuring a form containi
   ```
 - Launch your task:
   ```shell
-  cd /mephisto/examples/form_composer_demo && python run_task_dynamic_presigned_urls_ec2_prolific.py
+  cd /mephisto/examples/form_composer_demo && python run_task_dynamic_presigned_urls__ec2__prolific.py
   ```
 - After the Task is completed by all workers, launch task review app and acces it at  [http://localhost:8081](http://localhost:8081) (for more details see `mephisto/review_app/README.md`):
   ```shell

@@ -33,7 +33,7 @@ You can specify Prolific qualifications via Task config file, or directly in Tas
 
 ### Usage in shared state
 
-Shared state can handle Prolific-supported qualifications. Example in `run_task.py`:
+Shared state can handle Prolific-supported qualifications. Example in `run_task__ec2__prolific.py`:
 
 ```python
 shared_state.prolific_specific_qualifications = [

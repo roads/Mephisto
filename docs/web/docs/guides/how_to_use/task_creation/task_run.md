@@ -9,7 +9,8 @@ sidebar_position: 1
 
 # How task run works
 
-Let's understand basic components of the task launch, such as configs and the `run_task.py` script. This will help with customization of tash launch behaviors.
+Let's understand basic components of the task launch, such as configs and the `run_task__local__inhouse.py` script. 
+This will help with customization of tash launch behaviors.
 
 ### 3.1 Config registration
 
@@ -17,7 +18,7 @@ Mephisto wires up to configuration using standard Hydra syntax, but with both `y
 Here's the config we've set up for this example:
 
 ```python
-# examples/form_composer_demo/run_task.py
+# examples/form_composer_demo/run_task__local__inhouse.py
 import os
 
 from omegaconf import DictConfig
@@ -27,7 +28,7 @@ from mephisto.tools.scripts import build_custom_bundle
 from mephisto.tools.scripts import task_script
 
 
-@task_script(default_config_file="example_local_mock")
+@task_script(default_config_file="example__local__inhouse")
 def main(operator: Operator, cfg: DictConfig) -> None:
 ```
 
@@ -36,7 +37,7 @@ This is all you really *need* to launch a Mephisto task! The `@task_script` deco
 Of course, there's quite a bit of 'magic' happening underneath the hood thanks to the script utilities.
 This version is explicit to show where you may add customization, and re-ordered for understanding:
 ```python
-# modified examples/form_composer_demo/run_task.py
+# modified examples/form_composer_demo/run_task__local__inhouse.py
 import os
 from dataclasses import dataclass
 from typing import Any
@@ -49,7 +50,7 @@ from mephisto.tools.scripts import build_custom_bundle
 from mephisto.tools.scripts import task_script
 
 @dataclass
-class MyTaskConfig(build_default_task_config('example_local_mock')):
+class MyTaskConfig(build_default_task_config('example__local__inhouse')):
     custom_args: Any = 4
 
 @task_script(config=MyTaskConfig)
@@ -57,20 +58,20 @@ def main(operator: Operator, cfg: DictConfig) -> None:
 ```
 
 In this snippet, we do a few things:
-1. We set up the default [`conf`](https://hydra.cc/docs/tutorials/basic/your_first_app/config_file/) file to be `example_local_mock`,
+1. We set up the default [`conf`](https://hydra.cc/docs/tutorials/basic/your_first_app/config_file/) file to be `example__local__inhouse`,
 using `build_default_task_config`, which returns a `TaskConfig` that we can extend.
 2. We extend the returned `TaskConfig` with `MyTaskConfig`, which allows us to specify custom arguments.
 3. We decorate the main, noting that the correct config is `MyTaskConfig`.
 Note that the `default_config_file` version of this simply takes care of the above steps inline in the decorator.
 
-With all the above, we're able to just make edits to `example_local_mock.yaml` or make other configs in the `conf/` directory and route to them directly.
+With all the above, we're able to just make edits to `example__local__inhouse.yaml` or make other configs in the `conf/` directory and route to them directly.
 
 ### 3.2 Invoking Mephisto
 
 Mephisto itself is actually invoked just a little later:
 
 ```python
-@task_script(default_config_file="example_local_mock")
+@task_script(default_config_file="example__local__inhouse")
 def main(operator: Operator, cfg: DictConfig) -> None:
     # Build packages
     _build_custom_bundles(cfg)
@@ -89,17 +90,17 @@ To ensure we're not frozen, the operator takes in a `log_rate` in seconds to pri
 Again we can look back at the `example_local_mock.yaml` file to see this setup:
 
 ```yaml
-# examples/form_composer_demo/hydra_configs/conf/example_local_mock.yaml
+# examples/form_composer_demo/hydra_configs/conf/example__local__inhouse.yaml
 defaults:
   - /mephisto/blueprint: static_react_task
   - /mephisto/architect: local
-  - /mephisto/provider: mock
+  - /mephisto/provider: inhouse
 ```
 
-These ensure that, when not provided other arguments, we launch this task locally using a `LocalArchitect` and `MockProvider`.
-With these defaults, this and other example tasks are run using a "local" architect, and a "mock" requester without arguments.
+These ensure that, when not provided other arguments, we launch this task locally using a `LocalArchitect` and `InhouseProvider`.
+With these defaults, this and other example tasks are run using a "local" architect, and a "inhouse" requester without arguments.
 The "local" architect is reponsible for running a server on your local machine to host the task,
-and the "mock" requester lets *you* simulate a worker without using an external crowd-provider platform such as Prolific or MTurk to launch the task.
+and the "inhouse" requester lets *you* simulate a worker without using an external crowd-provider platform such as Prolific or MTurk to launch the task.
 
 ### 3.4 `Unit` creation explained
 
@@ -108,7 +109,7 @@ It's useful to understand how this happens.
 Taking a look at the config and data:
 
 ```yaml
-# examples/form_composer_demo/hydra_configs/conf/example_local_mock.yaml
+# examples/form_composer_demo/hydra_configs/conf/example__local__inhouse.yaml
 
 #@package _global_
 defaults:

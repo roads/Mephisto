@@ -23,7 +23,7 @@ To setup your local codebase to auto-lint and avoid lint test failures for your 
 This repo uses cypress to conduct frontend end-to-end tests. Tasks in the examples folder have cypress tests.
 
 To run the tests for a task:
-* Launch the task using `python run_task.py`.
+* Launch the task using `python run_task__local__inhouse.py`.
 * Open cypress by running `npm run test` in the tasks' webapp folder.
 * Choose the Chrome browser to run the tests (it is the most consistent).
 * Click one of the specs to run its tests.

@@ -114,7 +114,7 @@ Here's a list of steps on how to build and run your own custom data collection T
 In order to launch your own customized project, you will need to write a React app that will display instructions/inputs to workers. You can start by duplicating an existing Task App code (e.g. `examples/static_react_task` directory) and customizing it to your needs. The process goes like this:
 
 1. Copy `static_react_task` directory to your project directory within Mephisto repo
-2. Customize task's back-end code in `run_task.py` script to pass relevant data to `SharedStaticTaskState`, set `shared_state.prolific_specific_qualifications`, `shared_state.qualifications` (for custom qualifications), etc
+2. Customize task's back-end code in `run_task__local__inhouse.py` script to pass relevant data to `SharedStaticTaskState`, set `shared_state.prolific_specific_qualifications`, `shared_state.qualifications` (for custom qualifications), etc
 3. Customize task-related parameters variables in your `conf/<my_new_config>.yaml` file as needed.
   - Some examples of variables from `blueprint` category are:
     - `extra_source_dir`: optional path to sources that Task App may refer to (images, video, css, scripts, etc)
@@ -122,7 +122,7 @@ In order to launch your own customized project, you will need to write a React a
   - To see other configurable blueprint variables, type `mephisto wut blueprint=static_task`
 4. Customize task's front-end code, with starting point being `/<my_task_folder>/webapp/src/components/core_components.jsx` (you caninclude an onboarding step if you like).
 5. Add the ability to review results of your task app. In short, you need to implement additional component or logic to render json data that TaskReview app will provide. For more details, read this [doc](/mephisto/review_app/README.md).
-6. Run `run_task.py` to dry-run your task on localhost.
+6. Run `run_task__local__inhouse.py` to dry-run your task on localhost.
 7. Repeat 5 & 6 until you're happy with your task.
 8. Launch a small batch with a chosen crowd provider to see how real workers handle your task.
 9. Iterate more.
@@ -178,7 +178,8 @@ This is a sample YAML configuration to run your Task on **AWS EC2** architect wi
     For all available Prolific-specific parameters see `mephisto.abstractions.providers.prolific.prolific_provider.ProlificProviderArgs` class
     and [Prolific API Docs](https://docs.prolific.com/docs/api-docs/public/#tag/Studies).
 
-    Note that `prolific_eligibility_requirements` does not include custom worker qualifications, these are maintained in your local Mephisto database. These can be specified in a Task launching script (usually called `run_task.py`, for example, `examples/simple_static_task/run_task.py`)
+    Note that `prolific_eligibility_requirements` does not include custom worker qualifications, these are maintained in your local Mephisto database. 
+    These can be specified in a Task launching script (usually called `run_task__local__inhouse.py`, for example, `examples/simple_static_task/run_task__local__inhouse.py`)
 
 ---
 
@@ -197,7 +198,7 @@ or simply embed that command into your docker-compose entrypoint script.
         --build \
         --rm mephisto_dc \
         rm -rf /mephisto/tmp && \
-        HYDRA_FULL_ERROR=1 python /mephisto/examples/simple_static_task/run_task.py
+        HYDRA_FULL_ERROR=1 python /mephisto/examples/simple_static_task/run_task__local__inhouse.py
     ```
 
   This TaskRun script will spin up an EC2 server, upload your React Task App to it, and create a Study on Prolific. Now all eligible workers will see your Task Units (with links poiting to EC2 server) on Prolific, and can complete it.

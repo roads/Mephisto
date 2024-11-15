@@ -6,7 +6,7 @@
 
 # Simple Static React Task with Worker Opinion
 
-This task is essentially the same as the `static-react-task` task except that there is a worker opinon form after finishing a Task. 
+This task is essentially the same as the `static_react_task` task except that there is a worker opinon form after finishing a Task. 
 
 The [static-react-task README](../static_react_task/README.md) should be read before running this task.
 

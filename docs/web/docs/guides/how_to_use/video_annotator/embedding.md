@@ -11,7 +11,7 @@ sidebar_position: 4
 A few tips if you wish to embed VideoAnnotator in your custom application:
 
 - To extrapolate annotator config (and generate the `task_data.json` file), call the extrapolator function `mephisto.generators.generators_utils.config_validation.task_data_config.create_extrapolated_config`
-    - For a live example, you can explore the source code of [run_task_dynamic.py](https://github.com/facebookresearch/Mephisto/blob/main/examples/video_annotator_demo/run_task_dynamic.py) module
+    - For a live example, you can explore the source code of [run_task_dynamic.py](https://github.com/facebookresearch/Mephisto/blob/main/examples/video_annotator_demo/run_task_dynamic__local__inhouse.py) module
 - To use code insertions:
     - for custom validators:
         - Point `WEBAPP__GENERATOR__CUSTOM_VALIDATORS` backend env variable to the location of `custom_validators.js` module (before building all webapp applications)

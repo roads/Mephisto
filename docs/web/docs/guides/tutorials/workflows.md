@@ -36,7 +36,7 @@ Generally it's best to put the `task_name` _into_ your Hydra `.yaml` config and 
 defaults:
   - /mephisto/blueprint: static_react_task
   - /mephisto/architect: local
-  - /mephisto/provider: mock
+  - /mephisto/provider: inhouse
 mephisto:
   blueprint:
     ...
@@ -71,7 +71,7 @@ This also means you can go back and find the configuration details for a specifi
 
 For complex tasks with many configuration arguments, we make it possible to add arguments to your run script to simplify your workflows and allow for code reuse. For instance, say you had the following script:
 ```python
-# examples/static_react_task/run_task.py
+# examples/static_react_task/run_task__local__inhouse.py
 from mephisto.operations.operator import Operator
 from mephisto.tools.scripts import task_script, build_and_return_custom_bundle
 from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import (
@@ -81,7 +81,7 @@ from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint impo
 from omegaconf import DictConfig
 
 
-@task_script(default_config_file="example")
+@task_script(default_config_file="example__local__inhouse")
 def main(operator: Operator, cfg: DictConfig) -> None:
     def onboarding_always_valid(onboarding_data):
         return True

@@ -26,7 +26,7 @@ Now that we're here, we should also set up your config file
 defaults:
   - /mephisto/blueprint: static_react_task
   - /mephisto/architect: local
-  - /mephisto/provider: mock
+  - /mephisto/provider: inhouse
 mephisto:
   blueprint:
     task_source: ${task_dir}/webapp/build/bundle.js
@@ -50,13 +50,13 @@ From the current directory, you should be able to execute the run script and get
 
 You can update the `task_name` and `link_task_source` values in your config and run the task like below
 ```bash
-python run_task.py
+python run_task__local__inhouse.py
 ```
 
 or you can set them when you run the task:
 
 ```bash
-python run_task.py mephisto.task.task_name=custom-react-tutorial-iterating mephisto.blueprint.link_task_source=true
+python run_task__local__inhouse.py mephisto.task.task_name=custom-react-tutorial-iterating mephisto.blueprint.link_task_source=true
 ```
 This will launch a simple task where an annotator is supposed to note a sentence as being good or bad. Clicking a button auto-submits the task. In the next sections we'll add other content. 
 
@@ -123,7 +123,7 @@ static_task_data=[
 
 At this point you can run the task again.
 ```bash
-python run_task.py mephisto.task.task_name=custom-react-tutorial-iterating
+python run_task__local__inhouse.py mephisto.task.task_name=custom-react-tutorial-iterating
 ```
 Note the first one you work on displays your new edited text. But what about the new `edited_by_requester` field?
 
@@ -264,7 +264,7 @@ onClick={() => onSubmit({ rating: "bad", editedText: editedText })}
 
 Let's launch one last time.
 ```
-python run_task.py mephisto.task.task_name=custom-react-tutorial-iterating
+python run_task__local__inhouse.py mephisto.task.task_name=custom-react-tutorial-iterating
 ```
 And just like that we're able to see an input field:
 ![](/static_task_with_corrections_box.png)
