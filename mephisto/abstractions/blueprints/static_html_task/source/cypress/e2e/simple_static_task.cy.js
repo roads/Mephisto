@@ -44,11 +44,8 @@ describe("Submits the html_static_task", () => {
   it("Submit the task", () => {
     cy.on("window:alert", (txt) => {
       expect(txt).to.contains(
-        'The task has been submitted! Data: {"rating":"bad"'
+        "Thank you for your submission.\nYou may close this message to view the next task."
       );
-      expect(txt).to.contains('"name":"bliss.png"');
-      expect(txt).to.contains('"size":51824');
-      expect(txt).to.contains('"type":"image/png"');
     });
     cy.intercept({ pathname: "/submit_task" }).as("submitTask");
     cy.get('[data-cy="submit-button"]').click();

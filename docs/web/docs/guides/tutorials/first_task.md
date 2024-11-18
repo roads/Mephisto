@@ -27,23 +27,23 @@ docker-compose -f docker/docker-compose.dev.yml run \
   --build \
   --publish 3001:3000 \
   --rm mephisto_dc \
-  python /mephisto/examples/form_composer_demo/run_task.py
+  python /mephisto/examples/form_composer_demo/run_task__local__inhouse.py
 ```
 
 or without using Docker
 
 ```shell
 cd /mephisto/examples/form_composer_demo/
-python run_task.py
+python run_task__local__inhouse.py
 ```
 
 This will launch a local HTTP server with the task hosted, based on the default configuration options:
 ```yaml
-# examples/form_composer_demo/hydra_configs/conf/example_local_mock.yaml
+# examples/form_composer_demo/hydra_configs/conf/example__local__inhouse.yaml
 defaults:
   - /mephisto/blueprint: static_react_task
   - /mephisto/architect: local
-  - /mephisto/provider: mock
+  - /mephisto/provider: inhouse
 ```
 We'll dig into *how* this works [later](#33-default-abstraction-usage).
 
@@ -55,13 +55,13 @@ By default, the task should be hosted at [http://localhost:3000](http://localhos
 This default is set by the `LocalArchitect`, which is used based on the `- /mephisto/architect: local` line above.
 Navigating to this address should show you the preview view for the task.
 
-Actually being able to access this task is done by providing `worker_id` and `assignment_id` URL params, like `localhost:3000/?worker_id=x&assignment_id=1`.
-The `MockProvider` interprets these to be a test worker, which you can use to try out tasks.
+Actually being able to access this task is done by providing `worker_id` and `assignment_id` URL params, like `localhost:3000/?worker_id=x&id=1`.
+The `InhouseProvider` interprets these to be a test worker, which you can use to try out tasks.
 
 Try navigating here and completing a task by selecting a value (no need to use the file upload).
 After hitting submit you'll note that the window alerts you to the data that was sent to the Mephisto backend.
 
-To work on another task, you'll want to change the `assignment_id` in your url. This will let `Worker` "x" work on another task.
+To work on another task, you'll want to change the `id` in your url. This will let `Worker` "x" work on another task.
 Complete and submit this too.
 
 If you try to work on another task, you'll note that the system states you've worked on the maximum number of tasks.
@@ -138,7 +138,7 @@ For our given example task, the values we are using for these options are availa
 
 As a simple starting point, we can try launching the server on a different port. Right now the default is `3000`, but with the following command we can set that ourselves:
 ```
-python run_task.py mephisto.architect.port=1234
+python run_task__local__inhouse.py mephisto.architect.port=1234
 ```
 
 This should launch the same task, but now available on the port `1234` rather than `3000`.
@@ -151,7 +151,7 @@ Once we see the task is running, we can shut down with `Ctrl-C`.
 ### 2.3 Using yaml configurations
 
 While it makes sense to update some parameters on the command line while iterating, generally it's easier to extend the `conf` files directly, then apply all of the options by overriding `conf`.
-Try copying the `examples/form_composer_demo/hydra_configs/conf/example_local_mock.yaml` file into `examples/form_composer_demo/hydra_configs/conf/my_config.yaml`.
+Try copying the `examples/form_composer_demo/hydra_configs/conf/example__local__inhouse.yaml` file into `examples/form_composer_demo/hydra_configs/conf/my_config.yaml`.
 Also file `examples/form_composer_demo/data/simple/task_data.json` into `examples/form_composer_demo/data/simple/my_task_data.json`
 
 ```yaml
@@ -161,7 +161,7 @@ Also file `examples/form_composer_demo/data/simple/task_data.json` into `example
 defaults:
   - /mephisto/blueprint: static_react_task
   - /mephisto/architect: local
-  - /mephisto/provider: mock
+  - /mephisto/provider: inhouse
 
 mephisto:
   blueprint:
@@ -187,14 +187,14 @@ docker-compose -f docker/docker-compose.dev.yml run \
   --build \
   --publish 3001:3000 \
   --rm mephisto_dc \
-  python /mephisto/examples/form_composer_demo/run_task.py conf=my_config
+  python /mephisto/examples/form_composer_demo/run_task__local__inhouse.py conf=my_config
 ```
 
 or without using Docker
 
 ```bash
 cd /mephisto/examples/form_composer_demo/
-python run_task.py conf=my_config
+python run_task__local__inhouse.py conf=my_config
 ```
 
 Now you'll notice that Mephisto launches your task under the new task name:
@@ -205,16 +205,16 @@ Now you'll notice that Mephisto launches your task under the new task name:
 > **A note on `task_name`s:**
 > The `task_name` parameter is particularly important for setting up workflows. Many of Mephisto's features are shared under a specific `task_name` namespace, including review flows and unit completion maximums per worker per namespace. Later [guides](../workflows) go more in-depth on best practices.
 
-Navigating to a task (`localhost:3000/?worker_id=x&assignment_id=1` or woth Docker on `3001` port) should now show you a task loaded from a different data file.
+Navigating to a task (`localhost:3000/?worker_id=x&id=1` or woth Docker on `3001` port) should now show you a task loaded from a different data file.
 Completing this task will lead Mephisto to shut down cleanly.
 
 You can now review this task with the review script again, this time providing the task name `My first own task`.
 
 ### 2.4 (optional) Launch your task live
 
-So far we've been launching our task in a testing mode (with `local` architect and `mock` provider).
+So far we've been launching our task in a testing mode (with `local` architect and `inhouse` provider).
 
-To make your Task page accessible to the others (e.g. external workers), you will either need to obtain a publicly accessible static IP address for you machine, or launch the task with a non-`mock` human cloud platform and a non-`local` architect.
+To make your Task page accessible to the others (e.g. external workers), you will either need to obtain a publicly accessible static IP address for you machine, or launch the task with a non-`inhouse` human cloud platform and a non-`local` architect.
 
 In the below examples we consider an EC2 architect and a few common providers. This configuration is different from the testing mode:
 - EC2 architect will build a temporary EC2 server in the cloud, which will:
@@ -244,10 +244,10 @@ docker-compose -f docker/docker-compose.local.yml run \
   --build \
   --publish 3001:3000 \
   --rm mephisto_dc \
-  python /mephisto/examples/form_composer_demo/run_task_dynamic_ec2_mturk_sandbox.py
+  python /mephisto/examples/form_composer_demo/run_task_dynamic__ec2__mturk_sandbox.py
 ```
 
-Note that this command reads task parameters from task config file referenced within the `run_task_dynamic_ec2_mturk_sandbox.py` script.
+Note that this command reads task parameters from task config file referenced within the `run_task_dynamic__ec2__mturk_sandbox.py` script.
 
 Generally, you would want to adjust task config file to your needs.
 You don't need to do this step *right now*, however it's important for understanding how to take one of these tasks live.
@@ -298,14 +298,14 @@ docker-compose -f docker/docker-compose.dev.yml run \
   --build \
   --publish 3001:3000 \
   --rm mephisto_dc \
-  python /mephisto/examples/form_composer_demo/run_task_dynamic_ec2_mturk_sandbox.py conf=my_config
+  python /mephisto/examples/form_composer_demo/run_task_dynamic__ec2__mturk_sandbox.py conf=my_config
 ```
 
 or without using Docker
 
 ```bash
 cd /mephisto/examples/form_composer_demo/
-python run_task_dynamic_ec2_mturk_sandbox.py conf=my_config
+python run_task_dynamic__ec2__mturk_sandbox.py conf=my_config
 ```
 
 Mephisto should print out links to view your task on the mturk sandbox,
@@ -334,7 +334,7 @@ docker-compose -f docker/docker-compose.local.yml run \
   --build \
   --publish 3001:3000 \
   --rm mephisto_dc \
-  python /mephisto/examples/form_composer_demo/run_task_dynamic_ec2_prolific.py
+  python /mephisto/examples/form_composer_demo/run_task_dynamic__ec2__prolific.py
 ```
 
 The other steps are similar to launching on MTurk, just task config file is a bit different.

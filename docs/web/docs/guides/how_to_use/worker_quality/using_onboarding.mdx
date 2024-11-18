@@ -37,7 +37,7 @@ refer to [using screening units](../using_screen_units), as Mephisto doesn't pay
 
 ### Things to note in the showcase:
 
-- The `static_react_task` example is ran with the `onboarding_example` configuration enabled to ensure that onboarding page will be shown.
+- The `static_react_task` example is ran with the `example_with_onboarding__local__inhouse` configuration enabled to ensure that onboarding page will be shown.
 - Worker "x" clicks the "Get Blocked" button and this doesn't allow the worker to progress
 - Worker "y" clicks the "Move To Main Task" button and this allows the worker to go to the main task.
 
@@ -59,7 +59,7 @@ def handle_onboarding(onboarding_data):
         return True
     return False
 
-@task_script(default_config_file="example.yaml")
+@task_script(default_config_file="example__local__inhouse.yaml")
 def main(operator: Operator, cfg: DictConfig) -> None:
   ...
   shared_state = SharedStaticTaskState(
@@ -72,9 +72,9 @@ def main(operator: Operator, cfg: DictConfig) -> None:
   ...
 ```
 
-### See the full code [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/static_react_task/run_task.py)
+### See the full code [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/static_react_task/run_task__local__inhouse.py)
 
-### See hydra configuration [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/static_react_task/hydra_configs/conf/onboarding_example.yaml)
+### See hydra configuration [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/static_react_task/hydra_configs/conf/example_with_onboarding__local__inhouse.yaml)
 
 Unlike Screening and Gold units, Onboarding expects that you set up a custom frontend compared to your main task.
 You want to provide workers with an in-depth exploration of your task up-front

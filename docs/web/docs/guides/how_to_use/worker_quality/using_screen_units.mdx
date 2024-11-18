@@ -33,7 +33,7 @@ or on specific 'test' data you believe it's easier to validate on.
 
 ### Things to note in the showcase:
 
-- The `remote_procedure/mnist` example is ran with the `screening_example` configuration enabled to ensure that screening units are generated.
+- The `remote_procedure/mnist` example is ran with the `example_with_screening__local__inhouse` configuration enabled to ensure that screening units are generated.
 - When a worker goes to an assignment for the first time they see a screening unit.
 - Drawing a "3" gives the worker the passing qualification
 - Drawing any number other than "3" gives the worker the blocked qualification
@@ -64,7 +64,7 @@ to register the required qualifications and the screening validation function.
 A shortened version of the run script for the video above looks like:
 
 ```python
-# run_task.py
+# run_task__local__inhouse.py
 
 def my_screening_unit_generator():
     """
@@ -85,7 +85,7 @@ def validate_screening_unit(unit: Unit):
             return True
     return False
 
-@task_script(default_config_file="example.yaml")
+@task_script(default_config_file="example__local__inhouse.yaml")
 def main(operator: Operator, cfg: DictConfig) -> None:
   is_using_screening_units = cfg.mephisto.blueprint["use_screening_task"]
   tasks: List[Dict[str, Any]] = [{"isScreeningUnit": False}] * cfg.num_tasks
@@ -108,9 +108,9 @@ def main(operator: Operator, cfg: DictConfig) -> None:
   ...
 ```
 
-### See the full code [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/remote_procedure/mnist/run_task.py)
+### See the full code [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/remote_procedure/mnist/run_task__local__inhouse.py)
 
-### See hydra configuration [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/remote_procedure/mnist/hydra_configs/conf/screening_example.yaml)
+### See hydra configuration [here](https://github.com/facebookresearch/Mephisto/blob/main/examples/remote_procedure/mnist/hydra_configs/conf/example_with_screening__local__inhouse.yaml)
 
 ### Simple example of `ScreeningComponent`
 

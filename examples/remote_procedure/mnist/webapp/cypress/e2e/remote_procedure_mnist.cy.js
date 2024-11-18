@@ -34,7 +34,9 @@ describe("Loads remote_procedure_mnist", () => {
 
   it("Submitting with three corrected annotations", () => {
     cy.on("window:alert", (txt) => {
-      expect(txt).to.contain("The task has been submitted!");
+      expect(txt).to.contain(
+        "Thank you for your submission.\nYou may close this message to view the next task."
+      );
     });
 
     cy.get('[data-cy="clear-button-0"]').as("clearButton0");

@@ -5,17 +5,19 @@
 -->
 
 # Simple Static Task
-This example script is to demonstrate how to launch a simple task using a html file. The "static" nature of this task means that all of the content required for a worker to complete the task must be set before the task is launched, and must be able to be sent to the app upon initialization.
+This example script is to demonstrate how to launch a simple task using a html file. 
+The "static" nature of this task means that all of the content required for a worker to complete the task must be set before the task is launched, 
+and must be able to be sent to the app upon initialization.
 
 This specific example can be run with:
 ```console
-python run_task.py
+python run_task__local__inhouse.py
 ```
 
 and can additionally be launched with an onboarding step by specifying an onboarding qualification:
 
 ```console
-python run_task_with_onboarding.py
+python run_task_with_onboarding__local__inhouse.py
 ```
 
 ## Submit button customization
@@ -40,7 +42,7 @@ You can get window properties as such:
 To run tests locally you should first launch the task as follows:
 
 ```bash
-python run_task.py
+python run_task__local__inhouse.py
 ```
 This will run the task.
 

@@ -22,7 +22,7 @@ docker-compose -f docker/docker-compose.dev.yml run \
   --build \
   --publish 3001:3000 \
   --rm mephisto_dc \
-  python /mephisto/examples/form_composer_demo/run_task.py
+  python /mephisto/examples/form_composer_demo/run_task__local__inhouse.py
 ```
 
 ## Customizing Docker settings
@@ -50,5 +50,5 @@ docker-compose -f docker/docker-compose.local.yml run \
   --build \
   --publish 3001:3000 \
   --rm mephisto_dc \
-  python /mephisto/examples/form_composer_demo/run_task.py
+  python /mephisto/examples/form_composer_demo/run_task__local__inhouse.py
 ```

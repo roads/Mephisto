@@ -5,9 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 defaults:
-  - /mephisto/blueprint: parlai_chat
-  - /mephisto/architect: local
-  - /mephisto/provider: inhouse
+  - _base
 
 mephisto:
   blueprint:

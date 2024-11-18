@@ -7,17 +7,16 @@ These form-based questionnaires are example of FormComposer task generator.
 1. In repo root, launch containers: `docker-compose -f docker/docker-compose.dev.yml up`
 2. SSH into running container to run server: `docker exec -it mephisto_dc bash`
 3. Inside the container, go to FormComposer examples directory: `cd /mephisto/examples/form_composer_demo`
-4. Inside the examples directory, run a desired example with one of these commands:
-   - Simple form with Mock provider: `python ./run_task.py`
+4. Inside the `examples` directory, run a desired example with one of these commands:
    - Simple form with Inhouse provider: `python ./run_task__local__inhouse.py`
-   - Dynamic form with Mock provider: `python ./run_task_dynamic.py`
-   - Dynamic form with Mturk on EC2: `python ./run_task_dynamic_ec2_mturk_sandbox.py`
-   - Dynamic form with Prolific on EC2: `python ./run_task_dynamic_ec2_prolific.py`
-   - Dynamic form with Presigned URLs: `python ./run_task_dynamic_presigned_urls_ec2_prolific.py`
-   - Simple form with Gold Units: `python ./run_task_with_gold_unit.py`
-   - Simple form with Onboarding: `python ./run_task_with_onboarding.py`
-   - Simple form with Screening: `python ./run_task_with_screening.py`
-   - Simple form with Worker Opinion: `python ./run_task_with_worker_opinion.py`
+   - Dynamic form with Inhouse provider: `python ./run_task_dynamic__local__inhouse.py`
+   - Dynamic form with Mturk on EC2: `python ./run_task_dynamic__ec2__mturk_sandbox.py`
+   - Dynamic form with Prolific on EC2: `python ./run_task_dynamic__ec2__prolific.py`
+   - Dynamic form with Presigned URLs: `python ./run_task_dynamic_presigned_urls__ec2__prolific.py`
+   - Simple form with Gold Units: `python ./run_task_with_gold_unit__local__inhouse.py`
+   - Simple form with Onboarding: `python ./run_task_with_onboarding__local__inhouse.py`
+   - Simple form with Screening: `python ./run_task_with_screening__local__inhouse.py`
+   - Simple form with Worker Opinion: `python ./run_task_with_worker_opinion__local__inhouse.py`
 
 ---
 
@@ -58,5 +57,5 @@ mephisto form_composer config --directory /mephisto/examples/form_composer_demo/
 
 # 2b. Run the Task
 cd /mephisto/examples/form_composer_demo 
-python ./run_task_dynamic_presigned_urls_ec2_prolific.py
+python ./run_task_dynamic_presigned_urls__ec2__prolific.py
 ```

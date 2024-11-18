@@ -11,7 +11,7 @@ from mephisto.tools.building_react_apps import examples
 from mephisto.tools.scripts import task_script
 
 
-@task_script(default_config_file="example_local_inhouse")
+@task_script(default_config_file="example__local__inhouse")
 def main(operator: Operator, cfg: DictConfig) -> None:
     examples.build_form_composer_simple(
         force_rebuild=cfg.mephisto.task.force_rebuild,

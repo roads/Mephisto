@@ -24,9 +24,9 @@ sidebar_position: 1
       --build \
       --publish 3001:3000 \
       --rm mephisto_dc \
-      python /mephisto/examples/form_composer_demo/run_task.py
+      python /mephisto/examples/form_composer_demo/run_task__local__inhouse.py
     ```
-5. After the script finishes building, in your console output you will see URLs like this: `localhost:3000/?worker_id=x&assignment_id=1`. Each URL represents a unit of your Task. Copy them one-by-one into your browser, changing port from `3000` to `3001`.
+5. After the script finishes building, in your console output you will see URLs like this: `localhost:3000/?worker_id=x&id=1`. Each URL represents a unit of your Task. Copy them one-by-one into your browser, changing port from `3000` to `3001`.
 6. After completing all units, you will see your task automatically shut down
 7. Now we are ready to review Task results. Run command:
     ```shell

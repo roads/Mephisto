@@ -61,7 +61,7 @@ You can run an example project to try gold units for yourself.
 docker-compose -f docker/docker-compose.dev.yml up
 docker exec -it mephisto_dc bash
 cd /mephisto/examples/form_composer_demo
-python ./run_task_with_gold_unit.py
+python ./run_task_with_gold_unit__local__inhouse.py
 ```
 
 The first unit that you will see will be the gold one.
@@ -78,8 +78,8 @@ To get past these example gold units, provide these predefined values:
 
 For an in-depth look at code underlying this example, you can read these Python files in `examples/form_composer_demo` directory:
 
-- `run_task_with_gold_unit.py` - script to configure and launch this Task
-- `hydra_configs/conf/example_local_mock_with_gold_unit.yaml` - YAML configuration for this Task
+- `run_task_with_gold_unit__local__inhouse.py` - script to configure and launch this Task
+- `hydra_configs/conf/example_with_gold_unit__local__inhouse.yaml` - YAML configuration for this Task
 - `data/simple/gold_units/gold_units_data.json` - configuration for form that will be used specifically for gold units
 - `data/simple/gold_units/gold_units_validation.py` - logic of validating worker's output in gold unit form
 

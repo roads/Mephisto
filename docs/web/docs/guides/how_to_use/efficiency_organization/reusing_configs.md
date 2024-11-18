@@ -13,7 +13,7 @@ As you begin launching many Mephisto tasks, you may find that there are some spe
 
 Setting up profiles is pretty easy, and makes it so that you don't have to be writing architect and crowdprovider args on every launch:
 ```
-python run_task.py mephisto/architect=heroku mephisto/provider=mturk_sandbox mephisto.provider.requester_name=MY_REQUESTER
+python run_task__local__inhouse.py mephisto/architect=heroku mephisto/provider=mturk_sandbox mephisto.provider.requester_name=MY_REQUESTER
 ```
 
 Instead you can move these common configurations into a file in your `~/.mephisto/hydra_configs/profile` dir. 
@@ -61,9 +61,9 @@ mephisto:
 
 Then augmenting your launch configs is as easy as doing:
 ```
-python run_task.py +profile=local_testing
+python run_task__local__inhouse.py +profile=local_testing
 ...
-python run_task.py +profile=live_launch
+python run_task__local__inhouse.py +profile=live_launch
 ```
 
 Using `profile` can be an effective way to simplify the configuration for your most common workflows.
