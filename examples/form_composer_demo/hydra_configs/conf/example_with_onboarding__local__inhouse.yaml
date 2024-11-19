@@ -18,6 +18,9 @@ mephisto:
     extra_source_dir: ${task_dir}/webapp/src/static
     units_per_assignment: 1
     onboarding_qualification: onboarding-qualification # Required for Onboarding
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     task_name: "Sample Questionnaire"
     task_title: "Example how to easily create simple form-based Tasks with onboarding"

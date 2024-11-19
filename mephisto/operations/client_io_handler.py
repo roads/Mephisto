@@ -363,12 +363,11 @@ class ClientIOHandler:
         )
 
     def enqueue_agent_details(self, request_id: str, additional_data: Dict[str, Any]):
-        """
-        Synchronous method to enqueue a message sending the given agent details
-        """
+        """Synchronous method to enqueue a message sending the given agent details"""
         base_data = {"request_id": request_id}
         for key, val in additional_data.items():
             base_data[key] = val
+
         self.message_queue.put(
             Packet(
                 packet_type=PACKET_TYPE_AGENT_DETAILS,
@@ -378,6 +377,7 @@ class ClientIOHandler:
         )
         self.process_outgoing_queue(self.message_queue)
         self.log_metrics_for_packet(self.request_id_to_packet[request_id])
+
         # TODO Sometimes this request ID is lost, and we don't quite know why
         del self.request_id_to_channel_id[request_id]
         del self.request_id_to_packet[request_id]

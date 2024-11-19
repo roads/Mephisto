@@ -22,6 +22,9 @@ mephisto:
     min_golds: 1 # Required for Gold Units
     max_incorrect_golds: 1 # Required for Gold Units
     max_gold_units: 1 # Required for Gold Units
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     allowed_concurrent: 1 # Required for Gold Units
     task_name: "Sample Questionnaire"

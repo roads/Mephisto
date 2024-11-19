@@ -994,13 +994,16 @@ class MephistoDB(ABC):
         self,
         worker_id: Optional[str] = None,
         qualification_id: Optional[str] = None,
+        value: Optional[int] = None,
     ) -> List[GrantedQualification]:
         """
         Find granted qualifications.
         If nothing supplied, returns all granted qualifications.
         """
         return self._check_granted_qualifications(
-            worker_id=worker_id, qualification_id=qualification_id
+            worker_id=worker_id,
+            qualification_id=qualification_id,
+            value=value,
         )
 
     @abstractmethod
@@ -1040,7 +1043,9 @@ class MephistoDB(ABC):
         """
         warnings.warn("Use 'find_granted_qualifications' instead.", DeprecationWarning)
         return self._check_granted_qualifications(
-            qualification_id=qualification_id, worker_id=worker_id, value=value
+            qualification_id=qualification_id,
+            worker_id=worker_id,
+            value=value,
         )
 
     @abstractmethod

@@ -5,5 +5,5 @@
 # LICENSE file in the root directory of this source tree.
 
 migrations = {
-    # Add migrations here. See Inhouse provider as an example
+    # Add migrations here. See In-House provider as an example
 }

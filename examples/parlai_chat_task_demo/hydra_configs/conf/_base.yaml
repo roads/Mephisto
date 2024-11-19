@@ -8,6 +8,7 @@ defaults:
   - /mephisto/blueprint: parlai_chat
   - /mephisto/architect: local
   - /mephisto/provider: inhouse
+
 mephisto:
   blueprint:
     world_file: ${task_dir}/demo_worlds.py

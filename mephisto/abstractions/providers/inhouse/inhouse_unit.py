@@ -63,11 +63,12 @@ class InhouseUnit(Unit):
         return total_amount
 
     def launch(self, task_url: str) -> None:
-        """Publish this Unit on Inhouse (making it available)"""
+        """Publish this Unit on In-House (making it available)"""
         logger.debug(f"{self.log_prefix}Launching Unit")
         self.set_db_status(AssignmentState.LAUNCHED)
         task_run: TaskRun = self.get_task_run()
-        ui_base_url = task_run.args.provider.ui_base_url
+        provider_args = task_run.get_provider_args()
+        ui_base_url = provider_args.ui_base_url
         # This param `id` will only be used by `getAssignmentId` from `wrap_crowd_source.js`
         # as any random pseudo id to pass server validation
         unit_url = f"{ui_base_url}?worker_id=WORKER_USERNAME&id={self.assignment_id}"

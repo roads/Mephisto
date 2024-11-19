@@ -147,7 +147,7 @@ class Worker(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedABCMeta)
             return None
         return granted_qualifications[0]
 
-    def is_disqualified(self, qualification_name: str):
+    def is_disqualified(self, qualification_name: str) -> bool:
         """
         Find out if the given worker has been disqualified by the given qualification
 
@@ -157,9 +157,10 @@ class Worker(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedABCMeta)
         qualification = self.get_granted_qualification(qualification_name)
         if qualification is None:
             return False
+
         return not qualification.value
 
-    def is_qualified(self, qualification_name: str):
+    def is_qualified(self, qualification_name: str) -> bool:
         """
         Find out if the given worker has qualified by the given qualification
 
@@ -169,7 +170,12 @@ class Worker(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedABCMeta)
         qualification = self.get_granted_qualification(qualification_name)
         if qualification is None:
             return False
+
         return bool(qualification.value)
+
+    def is_authorized(self, task_run: "TaskRun") -> bool:
+        """Optional authorization. All workers are authorized by default"""
+        return True
 
     def revoke_qualification(
         self,
@@ -239,9 +245,6 @@ class Worker(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedABCMeta)
 
         return True
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.db_id})"
-
     # Children classes can implement the following methods
 
     def grant_crowd_qualification(self, qualification_name: str, value: int = 1) -> None:
@@ -309,3 +312,6 @@ class Worker(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedABCMeta)
         can be successfully created to have it put into the db.
         """
         raise NotImplementedError()
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.db_id})"

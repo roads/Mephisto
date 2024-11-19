@@ -14,6 +14,9 @@ mephisto:
     extra_source_dir: ${task_dir}/webapp/src/static
     units_per_assignment: 1
     onboarding_qualification: test-react-static-qualification
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     task_name: react-static-task-with-tips
     task_title: "Rating a sentence as good or bad. There is a tips button that can help when completing this task."

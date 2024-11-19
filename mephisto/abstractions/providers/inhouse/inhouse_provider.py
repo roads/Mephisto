@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from dataclasses import field
 from typing import Any
 from typing import ClassVar
+from typing import Optional
 from typing import Type
 from typing import TYPE_CHECKING
 
@@ -55,13 +56,29 @@ class InhouseProviderArgs(ProviderArgs):
             "required": False,
         },
     )
+    admit_workers_with_no_prior_qualification: Optional[bool] = field(
+        default=None,
+        metadata={
+            "help": (
+                "If task has required qualifications, but worker is newly created, "
+                "and this param is True, we allow this worker to complete this Task"
+            ),
+            "required": False,
+        },
+    )
+    authorization_csv: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "Path to csv file containing list of worker names",
+        },
+    )
 
 
 @register_mephisto_abstraction()
 class InhouseProvider(CrowdProvider):
     """
-    Inhouse implementation of a CrowdProvider that stores everything
-    in a local state in the class for use in tests.
+    Implementation of a CrowdProvider to run tasks
+    without any integration with third-party services
     """
 
     UnitClass: ClassVar[Type["Unit"]] = InhouseUnit
@@ -83,7 +100,7 @@ class InhouseProvider(CrowdProvider):
 
     @property
     def log_prefix(self) -> str:
-        return "[Inhouse Provider] "
+        return "[In-House Provider] "
 
     def setup_resources_for_task_run(
         self,
@@ -92,12 +109,12 @@ class InhouseProvider(CrowdProvider):
         shared_state: "SharedTaskState",
         server_url: str,
     ) -> None:
-        logger.debug(f"{self.log_prefix}Setting up Inhouse resources for TaskRun")
+        logger.debug(f"{self.log_prefix}Setting up In-House resources for TaskRun")
         return None
 
     def cleanup_resources_from_task_run(self, task_run: "TaskRun", server_url: str) -> None:
         """Cleanup all temporary data for this TaskRun"""
-        logger.debug(f"{self.log_prefix}Cleanning up Inhouse resources from TaskRun")
+        logger.debug(f"{self.log_prefix}Cleanning up In-House resources from TaskRun")
         return None
 
     @classmethod

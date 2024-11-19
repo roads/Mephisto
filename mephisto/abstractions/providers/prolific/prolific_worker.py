@@ -53,6 +53,20 @@ class ProlificWorker(Worker):
         """Get a Prolific client for usage with `prolific_utils`"""
         return self.datastore.get_client_for_requester(requester_name)
 
+    def _get_requester(self) -> "ProlificRequester":
+        requester: "ProlificRequester" = cast(
+            "ProlificRequester",
+            self.db.find_requesters(provider_type=self.provider_type)[-1],
+        )
+        return requester
+
+    def _get_last_task_run(self, requester: Optional["Requester"] = None) -> "TaskRun":
+        if not requester:
+            requester = self._get_requester()
+
+        task_runs: List[TaskRun] = requester.get_task_runs()
+        return task_runs[-1]
+
     @property
     def log_prefix(self) -> str:
         return f"[Worker {self.db_id}] "
@@ -102,11 +116,6 @@ class ProlificWorker(Worker):
 
         return True, ""
 
-    @staticmethod
-    def _get_first_task_run(requester: "Requester") -> "TaskRun":
-        task_runs: List[TaskRun] = requester.get_task_runs()
-        return task_runs[0]
-
     def block_worker(
         self,
         reason: str,
@@ -126,7 +135,7 @@ class ProlificWorker(Worker):
             task_run = unit.get_assignment().get_task_run()
             requester: "ProlificRequester" = cast("ProlificRequester", task_run.get_requester())
         else:
-            task_run = self._get_first_task_run(requester)
+            task_run = self._get_last_task_run(requester)
 
         logger.debug(f"{self.log_prefix}Task Run: {task_run}")
 
@@ -162,7 +171,7 @@ class ProlificWorker(Worker):
         """Unblock a blocked worker for the specified reason. Return success of unblock"""
         logger.debug(f"{self.log_prefix}Unlocking worker {self.worker_name}")
 
-        task_run = self._get_first_task_run(requester)
+        task_run = self._get_last_task_run(requester)
 
         logger.debug(f"{self.log_prefix}Task Run: {task_run}")
 
@@ -181,8 +190,7 @@ class ProlificWorker(Worker):
 
     def is_blocked(self, requester: "Requester") -> bool:
         """Determine if a worker is blocked"""
-        task_run = self._get_first_task_run(requester)
-        requester: "ProlificRequester" = cast("ProlificRequester", requester)
+        task_run = self._get_last_task_run(requester)
         is_blocked = self.datastore.get_worker_blocked(self.get_prolific_participant_id())
 
         logger.debug(
@@ -228,7 +236,8 @@ class ProlificWorker(Worker):
             ]
 
             for qualifications, prolific_participant_group_id in qualifications_groups:
-                if worker_is_qualified(self, qualifications):
+                task_run = self._get_last_task_run()
+                if worker_is_qualified(self, qualifications, task_run):
                     # Worker is still qualified or was upgraded, and so is eligible now
                     prolific_utils.give_worker_qualification(
                         client,
@@ -302,7 +311,6 @@ class ProlificWorker(Worker):
             "ProlificRequester",
             self.db.find_requesters(provider_type=self.provider_type)[-1],
         )
-        # assert isinstance(requester, ProlificRequester), "Must be an Prolific requester"
 
         client = self._get_client(requester.requester_name)
         datastore_unit = self.datastore.get_unit(unit.db_id)

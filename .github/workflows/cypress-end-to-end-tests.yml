@@ -209,7 +209,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🚚 Create Inhouse provider
+      - name: 🚚 Create In-House provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
@@ -259,7 +259,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🚚 Create Inhouse provider
+      - name: 🚚 Create In-House provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
@@ -309,7 +309,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🚚 Create Inhouse provider
+      - name: 🚚 Create In-House provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
@@ -414,7 +414,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🚚 Create Inhouse provider
+      - name: 🚚 Create In-House provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
@@ -465,7 +465,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🚚 Create Inhouse provider
+      - name: 🚚 Create In-House provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
@@ -516,7 +516,7 @@ jobs:
       - name: 📂 Set the data directory
         run: mephisto config core.main_data_directory ~/mephisto/data
 
-      - name: 🚚 Create Inhouse provider
+      - name: 🚚 Create In-House provider
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package

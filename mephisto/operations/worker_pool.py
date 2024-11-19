@@ -5,12 +5,20 @@
 # LICENSE file in the root directory of this source tree.
 
 import time
+from dataclasses import dataclass
+from dataclasses import fields
 from functools import partial
-from dataclasses import dataclass, fields
-from prometheus_client import Histogram, Gauge, Counter  # type: ignore
-from mephisto.data_model.worker import Worker
-from mephisto.data_model.agent import Agent, OnboardingAgent
-from mephisto.utils.qualifications import worker_is_qualified
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import TYPE_CHECKING
+from typing import Union
+
+from prometheus_client import Counter  # type: ignore
+from prometheus_client import Gauge
+from prometheus_client import Histogram
+
 from mephisto.abstractions.blueprint import AgentState
 from mephisto.abstractions.blueprints.mixins.onboarding_required import (
     OnboardingRequired,
@@ -19,28 +27,24 @@ from mephisto.abstractions.blueprints.mixins.screen_task_required import (
     ScreenTaskRequired,
 )
 from mephisto.abstractions.blueprints.mixins.use_gold_unit import UseGoldUnit
-from mephisto.operations.task_launcher import (
-    SCREENING_UNIT_INDEX,
-    GOLD_UNIT_INDEX,
-)
-from mephisto.operations.datatypes import LiveTaskRun, WorkerFailureReasons
-
-from typing import Sequence, Dict, Union, Optional, List, Any, TYPE_CHECKING
+from mephisto.data_model.agent import Agent
+from mephisto.data_model.agent import OnboardingAgent
+from mephisto.data_model.worker import Worker
+from mephisto.operations.datatypes import LiveTaskRun
+from mephisto.operations.datatypes import WorkerFailureReasons
+from mephisto.utils.logger_core import get_logger
+from mephisto.utils.qualifications import worker_is_qualified
 
 if TYPE_CHECKING:
-    from mephisto.data_model.unit import Unit
     from mephisto.abstractions.database import MephistoDB
-    from mephisto.data_model.task_run import TaskRun
-
-from mephisto.utils.logger_core import get_logger
-
-logger = get_logger(name=__name__)
+    from mephisto.data_model.unit import Unit
 
 
 AGENT_DETAILS_COUNT = Counter(
     "agent_details_responses", "Responses to agent details requests", ["response"]
 )
 AGENT_DETAILS_COUNT.labels(response="not_qualified")
+AGENT_DETAILS_COUNT.labels(response="not_authorized")
 AGENT_DETAILS_COUNT.labels(response="no_available_units")
 AGENT_DETAILS_COUNT.labels(response="agent_missing")
 AGENT_DETAILS_COUNT.labels(response="reconnection")
@@ -68,6 +72,8 @@ EXTERNAL_FUNCTION_LATENCY.labels(function="filter_units_for_worker")
 EXTERNAL_FUNCTION_LATENCY.labels(function="get_screening_unit_data")
 EXTERNAL_FUNCTION_LATENCY.labels(function="launch_screening_unit")
 EXTERNAL_FUNCTION_LATENCY.labels(function="get_gold_unit_data_for_worker")
+
+logger = get_logger(name=__name__)
 
 
 @dataclass
@@ -99,14 +105,17 @@ class WorkerPool:
 
     def __init__(self, db: "MephistoDB"):
         self.db = db
+
         # Tracked agents
         self.agents: Dict[str, "Agent"] = {}
         self.onboarding_agents: Dict[str, "OnboardingAgent"] = {}
         self.onboarding_infos: Dict[str, OnboardingInfo] = {}
         self.final_onboardings: Dict[str, "OnboardingAgent"] = {}
+
         # Agent status handling
         self.last_status_check = time.time()
 
+        # A mark that this pool is already shutdown
         self.is_shutdown = False
 
         # Deferred initializiation
@@ -117,12 +126,15 @@ class WorkerPool:
         assert (
             self._live_run is None
         ), "Cannot associate more than one live run to a worker pool at a time"
+
         self._live_run = live_run
 
     def get_live_run(self) -> "LiveTaskRun":
         """Get the associated live run for this worker pool, asserting it's set"""
         live_run = self._live_run
+
         assert live_run is not None, "Live run must be registered to use this"
+
         return live_run
 
     def get_agent_for_id(self, agent_id: str) -> Optional[Union["Agent", "OnboardingAgent"]]:
@@ -134,23 +146,25 @@ class WorkerPool:
         elif agent_id in self.final_onboardings:
             logger.debug(f"Found agent id {agent_id} in final_onboardings for get_agent_for_id")
             return self.final_onboardings[agent_id]
+
         return None
 
     async def register_worker(self, crowd_data: Dict[str, Any], request_id: str) -> None:
-        """
-        First process the worker registration, then hand off for
-        registering an agent
-        """
+        """First process the worker registration, then hand off for registering an agent"""
         live_run = self.get_live_run()
         loop = live_run.loop_wrap.loop
         crowd_provider = live_run.provider
-        is_sandbox = crowd_provider.is_sandbox()
         worker_name = crowd_data["worker_name"]
+
+        # 1. Append postfix to Worker name if current provider is sandbox
         if crowd_provider.is_sandbox():
             # TODO(WISH) there are better ways to get rid of this designation
             worker_name += "_sandbox"
+
+        # 2. Get or create Worker
         workers = await loop.run_in_executor(
-            None, partial(self.db.find_workers, worker_name=worker_name)
+            None,
+            partial(self.db.find_workers, worker_name=worker_name),
         )
         if len(workers) == 0:
             worker = await loop.run_in_executor(
@@ -164,16 +178,34 @@ class WorkerPool:
         else:
             worker = workers[0]
 
+        # 3. Check if Worker is authorized to work on this task
+        is_authorized = await loop.run_in_executor(
+            None,
+            partial(worker.is_authorized, live_run.task_run),
+        )
+        if not is_authorized:
+            # 3a. If not, we send an error message and do not continue
+            AGENT_DETAILS_COUNT.labels(response="not_authorized").inc()
+            live_run.client_io.enqueue_agent_details(
+                request_id,
+                AgentDetails(failure_reason=WorkerFailureReasons.NOT_AUTHORIZED).to_dict(),
+            )
+            return
+
+        # 4. Check if Worker qualified to work on this task
         is_qualified = await loop.run_in_executor(
-            None, partial(worker_is_qualified, worker, live_run.qualifications)
+            None,
+            partial(worker_is_qualified, worker, live_run.qualifications, live_run.task_run),
         )
         if not is_qualified:
+            # 4a. Send an error message to the client
             AGENT_DETAILS_COUNT.labels(response="not_qualified").inc()
             live_run.client_io.enqueue_agent_details(
                 request_id,
                 AgentDetails(failure_reason=WorkerFailureReasons.NOT_QUALIFIED).to_dict(),
             )
         else:
+            # 4b. Proceed other steps (register Agent)
             await self.register_agent(crowd_data, worker, request_id)
 
     async def _assign_unit_to_agent(
@@ -191,10 +223,12 @@ class WorkerPool:
 
         logger.debug(f"Worker {worker.db_id} is being assigned one of {len(units)} units.")
 
+        unit = None
         reserved_unit = None
         while len(units) > 0 and reserved_unit is None:
             unit = units.pop(0)
             reserved_unit = task_run.reserve_unit(unit)
+
         if reserved_unit is None:
             AGENT_DETAILS_COUNT.labels(response="no_available_units").inc()
             live_run.client_io.enqueue_agent_details(
@@ -271,6 +305,7 @@ class WorkerPool:
 
                 # Mypy not-null cast
                 non_null_agents = [a for a in agents if a is not None]
+
                 # Launch the backend for this assignment
                 registered_agents = [
                     self.agents[a.get_agent_id()] for a in non_null_agents if a is not None
@@ -309,6 +344,7 @@ class WorkerPool:
             )
 
         assert blueprint.onboarding_qualification_name is not None
+
         worker.grant_qualification(blueprint.onboarding_qualification_name, int(worker_passed))
         if not worker_passed:
             ONBOARDING_OUTCOMES.labels(outcome="failed").inc()
@@ -325,6 +361,7 @@ class WorkerPool:
             units = await loop.run_in_executor(
                 None, partial(live_run.task_run.get_valid_units_for_worker, worker)
             )
+
         with EXTERNAL_FUNCTION_LATENCY.labels(function="filter_units_for_worker").time():
             usable_units = await loop.run_in_executor(
                 None,
@@ -371,6 +408,7 @@ class WorkerPool:
         loop = live_run.loop_wrap.loop
         task_runner = live_run.task_runner
         agent = self.get_agent_for_id(agent_id)
+
         if agent is None:
             logger.info(f"Looking for reconnecting agent {agent_id} but none found locally")
             AGENT_DETAILS_COUNT.labels(response="agent_missing").inc()
@@ -381,6 +419,7 @@ class WorkerPool:
                 ).to_dict(),
             )
             return
+
         worker = agent.get_worker()
         AGENT_DETAILS_COUNT.labels(response="reconnection").inc()
         if isinstance(agent, OnboardingAgent):
@@ -400,7 +439,9 @@ class WorkerPool:
                 )
             else:
                 blueprint = live_run.blueprint
+
                 assert isinstance(blueprint, OnboardingRequired) and blueprint.use_onboarding
+
                 onboard_data = blueprint.get_onboarding_data(worker.db_id)
                 live_run.client_io.enqueue_agent_details(
                     request_id,
@@ -420,6 +461,7 @@ class WorkerPool:
                         agent,
                     ),
                 )
+
             live_run.client_io.enqueue_agent_details(
                 request_id,
                 AgentDetails(
@@ -449,11 +491,14 @@ class WorkerPool:
                     screening_data = await loop.run_in_executor(
                         None, blueprint.get_screening_unit_data
                     )
+
                 if screening_data is not None:
                     launcher = live_run.task_launcher
+
                     assert (
                         launcher is not None
                     ), "LiveTaskRun must have launcher to use screening tasks"
+
                     with EXTERNAL_FUNCTION_LATENCY.labels(function="launch_screening_unit").time():
                         screen_unit = await loop.run_in_executor(
                             None,
@@ -474,6 +519,7 @@ class WorkerPool:
                     )
                     logger.debug(f"No screening units left for {agent_registration_id}.")
                     return
+
         # Check golds
         if isinstance(blueprint, UseGoldUnit) and blueprint.use_golds:
             if blueprint.should_produce_gold_for_worker(worker):
@@ -483,6 +529,7 @@ class WorkerPool:
                     gold_data = await loop.run_in_executor(
                         None, partial(blueprint.get_gold_unit_data_for_worker, worker)
                     )
+
                 if gold_data is not None:
                     launcher = live_run.task_launcher
                     gold_unit = await loop.run_in_executor(
@@ -532,16 +579,20 @@ class WorkerPool:
             )
             logger.debug(f"agent_registration_id {agent_registration_id}, had no valid units.")
             return
+
         with EXTERNAL_FUNCTION_LATENCY.labels(function="filter_units_for_worker").time():
             units = await loop.run_in_executor(
                 None,
                 partial(live_run.task_runner.filter_units_for_worker, units, worker),
             )
+
         # If there's onboarding, see if this worker has already been disqualified
         blueprint = live_run.blueprint
         if isinstance(blueprint, OnboardingRequired) and blueprint.use_onboarding:
             qual_name = blueprint.onboarding_qualification_name
+
             assert qual_name is not None, "Cannot be using onboarding and have a null qual"
+
             if worker.is_disqualified(qual_name):
                 AGENT_DETAILS_COUNT.labels(response="not_qualified").inc()
                 live_run.client_io.enqueue_agent_details(
@@ -611,6 +662,7 @@ class WorkerPool:
         """
         if self.is_shutdown:
             return  # We don't push when shutdown
+
         status = agent.db_status
         if isinstance(agent, OnboardingAgent):
             if status in [AgentState.STATUS_APPROVED, AgentState.STATUS_REJECTED]:
@@ -634,22 +686,29 @@ class WorkerPool:
             if status not in AgentState.valid():
                 logger.warning(f"Invalid status for agent {agent_id}: {status}")
                 continue
+
             if agent_id in self.final_onboardings:
                 # no longer tracking this onboarding
                 continue
+
             agent = self.get_agent_for_id(agent_id)
             if agent is None:
                 # no longer tracking agent
                 continue
+
             db_status = agent.get_status()
             if status != db_status:
                 if status == AgentState.STATUS_COMPLETED:
                     # Frontend agent completed but hasn't confirmed yet
                     continue
+
                 if status != AgentState.STATUS_DISCONNECT:
                     # Stale or reconnect, send a status update
                     live_run.loop_wrap.execute_coro(self.push_status_update(agent))
-                    continue  # Only DISCONNECT can be marked remotely, rest are mismatch (except STATUS_COMPLETED)
+                    # Only DISCONNECT can be marked remotely, rest are mismatch
+                    # (except STATUS_COMPLETED)
+                    continue
+
                 agent.update_status(status)
         pass
 
@@ -661,6 +720,7 @@ class WorkerPool:
         for agent in self.agents.values():
             if agent.get_status() not in AgentState.complete():
                 agent.update_status(AgentState.STATUS_DISCONNECT)
+
         for onboarding_agent in self.onboarding_agents.values():
             onboarding_agent.update_status(AgentState.STATUS_DISCONNECT)
 

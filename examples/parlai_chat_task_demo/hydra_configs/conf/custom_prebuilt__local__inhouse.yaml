@@ -10,6 +10,9 @@ defaults:
 mephisto:
   blueprint:
     custom_source_bundle: ${task_dir}/webapp/build/bundle.js
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     task_name: parlai-chat-example
     task_title: "Test ParlAI Prebuilt Chat Task"

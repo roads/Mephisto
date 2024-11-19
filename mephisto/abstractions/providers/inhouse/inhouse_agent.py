@@ -67,7 +67,7 @@ class InhouseAgent(Agent):
         bookkeeping information from a crowd provider for this agent
         """
         logger.debug(
-            f"{cls.log_prefix}Registering Inhouse Submission in datastore from Inhouse. "
+            f"{cls.log_prefix}Registering In-House Submission in datastore from Inhouse. "
             f"Data: {provider_data}"
         )
 
@@ -139,7 +139,7 @@ class InhouseAgent(Agent):
 
     def mark_done(self) -> None:
         """
-        Inhouse agents are marked as done on the side of Inhouse, so if this agent
+        In-House agents are marked as done on the side of Inhouse, so if this agent
         is marked as done there's nothing else we need to do as the task has been
         submitted.
         """

@@ -15,6 +15,9 @@ mephisto:
     link_task_source: false
     extra_source_dir: ${task_dir}/webapp/src/static
     units_per_assignment: 1
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     task_name: react-static-task-example
     task_title: "Rating a sentence as good or bad"

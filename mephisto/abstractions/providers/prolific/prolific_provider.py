@@ -13,6 +13,7 @@ from typing import Any
 from typing import cast
 from typing import ClassVar
 from typing import List
+from typing import Optional
 from typing import Type
 from typing import TYPE_CHECKING
 
@@ -140,10 +141,7 @@ class ProlificProviderArgs(ProviderArgs):
 
 @register_mephisto_abstraction()
 class ProlificProvider(CrowdProvider):
-    """
-    Prolific implementation of a CrowdProvider that stores everything
-    in a local state in the class for use in tests.
-    """
+    """Implementation of a CrowdProvider that interfaces with Prolific"""
 
     UnitClass: ClassVar[Type["Unit"]] = ProlificUnit
 
@@ -170,6 +168,20 @@ class ProlificProvider(CrowdProvider):
         """Get a Prolific client"""
         return self.datastore.get_client_for_requester(requester_name)
 
+    def _get_requester(self) -> "ProlificRequester":
+        requester: "ProlificRequester" = cast(
+            "ProlificRequester",
+            self.db.find_requesters(provider_type=self.provider_type)[-1],
+        )
+        return requester
+
+    def _get_last_task_run(self, requester: Optional["Requester"] = None) -> "TaskRun":
+        if not requester:
+            requester = self._get_requester()
+
+        task_runs: List[TaskRun] = requester.get_task_runs()
+        return task_runs[-1]
+
     def _get_qualified_workers(
         self,
         qualifications: List[QualificationType],
@@ -181,7 +193,8 @@ class ProlificProvider(CrowdProvider):
         available_workers = [w for w in workers if w.worker_name not in bloked_participant_ids]
 
         for worker in available_workers:
-            if worker_is_qualified(worker, qualifications):
+            task_run = self._get_last_task_run()
+            if worker_is_qualified(worker, qualifications, task_run):
                 qualified_workers.append(worker)
 
         return qualified_workers
