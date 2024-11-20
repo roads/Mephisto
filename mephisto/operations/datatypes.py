@@ -9,21 +9,22 @@ This file contains the various datatypes that are used on the operations layer
 to facilitate executing task runs.
 """
 
-from dataclasses import dataclass
 import asyncio
-from functools import partial
-from typing import Dict, Set, Optional, List, Any, Union, TYPE_CHECKING
 import threading
+from dataclasses import dataclass
+from functools import partial
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from mephisto.data_model.task_run import TaskRun
+    from mephisto.abstractions.architect import Architect
     from mephisto.abstractions.blueprint import TaskRunner, Blueprint
     from mephisto.abstractions.crowd_provider import CrowdProvider
-    from mephisto.abstractions.architect import Architect
-    from mephisto.operations.task_launcher import TaskLauncher
-    from mephisto.abstractions._subcomponents.channel import Channel
-    from mephisto.data_model.agent import Agent, OnboardingAgent
+    from mephisto.data_model.task_run import TaskRun
     from mephisto.operations.client_io_handler import ClientIOHandler
+    from mephisto.operations.task_launcher import TaskLauncher
     from mephisto.operations.worker_pool import WorkerPool
 
 
@@ -80,7 +81,17 @@ class LiveTaskRun:
 
 class WorkerFailureReasons:
     NOT_QUALIFIED = "You are not currently qualified to work on this task..."
+    NOT_AUTHORIZED = "You are not authorized to work on this task..."
     NO_AVAILABLE_UNITS = "There is currently no available work, please try again later..."
-    TOO_MANY_CONCURRENT = "You are currently working on too many tasks concurrently to accept another, please finish your current work."
-    MAX_FOR_TASK = "You have already completed the maximum amount of tasks the requester has set for this task."
-    TASK_MISSING = "You appear to have already completed this task, or have disconnected long enough for your session to clear..."
+    TOO_MANY_CONCURRENT = (
+        "You are currently working on too many tasks concurrently to accept another, "
+        "please finish your current work."
+    )
+    MAX_FOR_TASK = (
+        "You have already completed the maximum amount of tasks "
+        "the requester has set for this task."
+    )
+    TASK_MISSING = (
+        "You appear to have already completed this task, "
+        "or have disconnected long enough for your session to clear..."
+    )

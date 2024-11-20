@@ -4,34 +4,27 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-
-import os
 from datetime import datetime
-from shutil import copytree
+from typing import Any
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import TYPE_CHECKING
 
 from dateutil.parser import parse
 
+from mephisto.data_model._db_backed_meta import MephistoDataModelComponentMixin
+from mephisto.data_model._db_backed_meta import MephistoDBBackedMeta
 from mephisto.data_model.project import Project
-from mephisto.data_model._db_backed_meta import (
-    MephistoDBBackedMeta,
-    MephistoDataModelComponentMixin,
-)
 from mephisto.utils.dirs import get_dir_for_task
-
-from functools import reduce
-
-from typing import List, Optional, Mapping, TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from mephisto.abstractions.database import MephistoDB
     from mephisto.data_model.assignment import Assignment
-    from mephisto.data_model.worker import Worker
-    from mephisto.data_model.unit import Unit
     from mephisto.data_model.task_run import TaskRun
-    from mephisto.abstractions.crowd_provider import CrowdProvider
 
 
-def assert_task_is_valid(dir_name, task_type) -> None:
+def assert_task_is_valid(dir_name: str, task_type: str) -> None:
     """
     Go through the given task directory and ensure it is valid under the
     given task type
@@ -59,10 +52,14 @@ class Task(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedMeta):
                 "Direct Task and data model access via Task(db, id) is "
                 "now deprecated in favor of calling Task.get(db, id). "
             )
+
         self.db: "MephistoDB" = db
+
         if row is None:
             row = db.get_task(db_id)
+
         assert row is not None, f"Given db_id {db_id} did not exist in given db"
+
         self.db_id: str = row["task_id"]
         self.task_name: str = row["task_name"]
         self.task_type: str = row["task_type"]
@@ -71,13 +68,11 @@ class Task(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedMeta):
         self.creation_date: Optional[datetime] = parse(row["creation_date"])
 
     def get_project(self) -> Optional[Project]:
-        """
-        Get the project for this task, if it exists
-        """
+        """Get the project for this task, if it exists"""
         if self.project_id is not None:
             return Project.get(self.db, self.project_id)
-        else:
-            return None
+
+        return None
 
     def set_project(self, project: Project) -> None:
         if self.project_id != project.db_id:
@@ -85,15 +80,11 @@ class Task(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedMeta):
             raise NotImplementedError()
 
     def get_runs(self) -> List["TaskRun"]:
-        """
-        Return all of the runs of this task that have been launched
-        """
+        """Return all of the runs of this task that have been launched"""
         return self.db.find_task_runs(task_id=self.db_id)
 
     def get_assignments(self) -> List["Assignment"]:
-        """
-        Return all of the assignments for all runs of this task
-        """
+        """Return all of the assignments for all runs of this task"""
         return self.db.find_assignments(task_id=self.db_id)
 
     def get_total_spend(self) -> float:
@@ -101,8 +92,10 @@ class Task(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedMeta):
         Return the total amount of funding spent for this task.
         """
         total_spend = 0.0
+
         for task_run in self.get_runs():
             total_spend += task_run.get_total_spend()
+
         return total_spend
 
     @staticmethod
@@ -124,11 +117,13 @@ class Task(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedMeta):
         ), f"A task named {task_name} already exists!"
 
         new_task_dir = get_dir_for_task(task_name, not_exists_ok=True)
+
         assert new_task_dir is not None, "Should always be able to make a new task dir"
+
         assert_task_is_valid(new_task_dir, task_type)
 
         db_id = db.new_task(task_name, task_type)
         return Task.get(db, db_id)
 
-        def __repr__(self):
-            return f"Task-{self.task_name} [{self.task_type}]"
+    def __repr__(self):
+        return f"Task-{self.task_name} [{self.task_type}]"

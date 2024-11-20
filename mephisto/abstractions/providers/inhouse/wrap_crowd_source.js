@@ -24,16 +24,16 @@ const UNIT_URL_WORKER_ID_PARAM = 'worker_id';
 const UNIT_URL_PSEUDO_ASSIGNMENT_ID_PARAM = 'id';
 
 
-// Inhouse IMPLEMENTATION
+// In-House IMPLEMENTATION
 function getWorkerName() {
-  // Inhouse worker name is passed via url params as UNIT_URL_WORKER_ID_PARAM
+  // In-House worker name is passed via url params as UNIT_URL_WORKER_ID_PARAM
   let urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(UNIT_URL_WORKER_ID_PARAM);
 }
 
 
 function getAssignmentId() {
-  // Inhouse assignment ID is passed via url params as UNIT_URL_PSEUDO_ASSIGNMENT_ID_PARAM
+  // In-House assignment ID is passed via url params as UNIT_URL_PSEUDO_ASSIGNMENT_ID_PARAM
   // We are not using this id and only insert it to pass server validation
   let urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(UNIT_URL_PSEUDO_ASSIGNMENT_ID_PARAM);
@@ -41,7 +41,7 @@ function getAssignmentId() {
 
 
 function getAgentRegistration() {
-  // Inhouse agents are created using the Mephisto `worker_id` and Inhouse `submission_id`
+  // In-House agents are created using the Mephisto `worker_id` and In-House `submission_id`
   return {
     worker_name: getWorkerName(),
     agent_registration_id: getAssignmentId() + "-" + getWorkerName(),

@@ -18,5 +18,5 @@ def export_datastore(
     task_run_ids: Optional[List[str]] = None,
     **kwargs,
 ) -> dict:
-    """Logic of collecting export data from Inhouse datastore"""
+    """Logic of collecting export data from In-House datastore"""
     return {}

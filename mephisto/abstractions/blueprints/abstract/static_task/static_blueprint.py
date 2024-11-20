@@ -4,53 +4,51 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from mephisto.abstractions.blueprint import (
-    Blueprint,
-    BlueprintArgs,
-    SharedTaskState,
+import csv
+import json
+import os
+import types
+from dataclasses import dataclass
+from dataclasses import field
+from typing import Any
+from typing import ClassVar
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Type
+from typing import TYPE_CHECKING
+
+from omegaconf import DictConfig
+from omegaconf import MISSING
+
+from mephisto.abstractions.blueprint import Blueprint
+from mephisto.abstractions.blueprint import BlueprintArgs
+from mephisto.abstractions.blueprint import SharedTaskState
+from mephisto.abstractions.blueprints.abstract.static_task.empty_task_builder import (
+    EmptyStaticTaskBuilder,
 )
-from mephisto.abstractions.blueprints.mixins.onboarding_required import (
-    OnboardingRequired,
-    OnboardingSharedState,
-    OnboardingRequiredArgs,
-)
-from dataclasses import dataclass, field
-from omegaconf import MISSING, DictConfig
-from mephisto.abstractions.blueprints.mixins.screen_task_required import (
-    ScreenTaskRequired,
-    ScreenTaskRequiredArgs,
-    ScreenTaskSharedState,
-)
-from mephisto.abstractions.blueprints.mixins.use_gold_unit import (
-    UseGoldUnit,
-    UseGoldUnitArgs,
-    GoldUnitSharedState,
-)
-from mephisto.data_model.assignment import InitializationData
 from mephisto.abstractions.blueprints.abstract.static_task.static_agent_state import (
     StaticAgentState,
 )
 from mephisto.abstractions.blueprints.abstract.static_task.static_task_runner import (
     StaticTaskRunner,
 )
-from mephisto.abstractions.blueprints.abstract.static_task.empty_task_builder import (
-    EmptyStaticTaskBuilder,
-)
-
-import os
-import csv
-import json
-import types
-
-from typing import ClassVar, Type, Any, Dict, Iterable, TYPE_CHECKING
+from mephisto.abstractions.blueprints.mixins.onboarding_required import OnboardingRequired
+from mephisto.abstractions.blueprints.mixins.onboarding_required import OnboardingRequiredArgs
+from mephisto.abstractions.blueprints.mixins.onboarding_required import OnboardingSharedState
+from mephisto.abstractions.blueprints.mixins.screen_task_required import ScreenTaskRequired
+from mephisto.abstractions.blueprints.mixins.screen_task_required import ScreenTaskRequiredArgs
+from mephisto.abstractions.blueprints.mixins.screen_task_required import ScreenTaskSharedState
+from mephisto.abstractions.blueprints.mixins.use_gold_unit import GoldUnitSharedState
+from mephisto.abstractions.blueprints.mixins.use_gold_unit import UseGoldUnit
+from mephisto.abstractions.blueprints.mixins.use_gold_unit import UseGoldUnitArgs
+from mephisto.data_model.assignment import InitializationData
 
 if TYPE_CHECKING:
+    from mephisto.abstractions.blueprint import AgentState
+    from mephisto.abstractions.blueprint import TaskBuilder
+    from mephisto.abstractions.blueprint import TaskRunner
     from mephisto.data_model.task_run import TaskRun
-    from mephisto.abstractions.blueprint import (
-        AgentState,
-        TaskRunner,
-        TaskBuilder,
-    )
 
 
 BLUEPRINT_TYPE_STATIC = "abstract_static"
@@ -140,9 +138,13 @@ class StaticBlueprint(ScreenTaskRequired, OnboardingRequired, UseGoldUnit, Bluep
         shared_state: "SharedStaticTaskState",
     ):
         super().__init__(task_run, args, shared_state)
+
         # Originally just a list of dicts, but can also be a generator of dicts
-        self._initialization_data_dicts: Iterable[Dict[str, Any]] = []
+        self._initialization_data_dicts: List[Dict[str, Any]] = []
+
         blue_args = args.blueprint
+
+        # CSV
         if blue_args.get("data_csv", None) is not None:
             csv_file = os.path.expanduser(blue_args.data_csv)
             with open(csv_file, "r", encoding="utf-8-sig") as csv_fp:
@@ -153,12 +155,16 @@ class StaticBlueprint(ScreenTaskRequired, OnboardingRequired, UseGoldUnit, Bluep
                     for i, col in enumerate(row):
                         row_data[headers[i]] = col
                     self._initialization_data_dicts.append(row_data)
+
+        # JSON
         elif blue_args.get("data_json", None) is not None:
             json_file = os.path.expanduser(blue_args.data_json)
             with open(json_file, "r", encoding="utf-8-sig") as json_fp:
                 json_data = json.load(json_fp)
             for jd in json_data:
                 self._initialization_data_dicts.append(jd)
+
+        # JSONL
         elif blue_args.get("data_jsonl", None) is not None:
             jsonl_file = os.path.expanduser(blue_args.data_jsonl)
             with open(jsonl_file, "r", encoding="utf-8-sig") as jsonl_fp:
@@ -167,6 +173,8 @@ class StaticBlueprint(ScreenTaskRequired, OnboardingRequired, UseGoldUnit, Bluep
                     j = json.loads(line)
                     self._initialization_data_dicts.append(j)
                     line = jsonl_fp.readline()
+
+        # Task data (dynamically passed as `static_task_data` argument - not from files)
         elif shared_state.static_task_data is not None:
             self._initialization_data_dicts = shared_state.static_task_data
         else:
@@ -181,20 +189,33 @@ class StaticBlueprint(ScreenTaskRequired, OnboardingRequired, UseGoldUnit, Bluep
         assert isinstance(
             shared_state, SharedStaticTaskState
         ), "Must use SharedStaticTaskState for static blueprints"
+
         blue_args = args.blueprint
+
+        # CSV
         if blue_args.get("data_csv", None) is not None:
             csv_file = os.path.expanduser(blue_args.data_csv)
+
             assert os.path.exists(csv_file), f"Provided csv file {csv_file} doesn't exist"
+
+        # JSON
         elif blue_args.get("data_json", None) is not None:
             json_file = os.path.expanduser(blue_args.data_json)
+
             assert os.path.exists(json_file), f"Provided JSON file {json_file} doesn't exist"
+
+        # JSONL
         elif blue_args.get("data_jsonl", None) is not None:
             jsonl_file = os.path.expanduser(blue_args.data_jsonl)
+
             assert os.path.exists(jsonl_file), f"Provided JSON-L file {jsonl_file} doesn't exist"
+
+        # Task data (dynamically passed as `static_task_data` argument - not from files)
         elif shared_state.static_task_data is not None:
             if isinstance(shared_state.static_task_data, types.GeneratorType):
                 # TODO(#97) can we check something about this?
-                # Some discussion here: https://stackoverflow.com/questions/661603/how-do-i-know-if-a-generator-is-empty-from-the-start
+                #  Some discussion here:
+                #  https://stackoverflow.com/questions/661603/how-do-i-know-if-a-generator-is-empty-from-the-start
                 pass
             else:
                 assert (
@@ -204,9 +225,7 @@ class StaticBlueprint(ScreenTaskRequired, OnboardingRequired, UseGoldUnit, Bluep
             raise AssertionError("Must provide one of a data csv, json, json-L, or a list of tasks")
 
     def get_initialization_data(self) -> Iterable["InitializationData"]:
-        """
-        Return the InitializationData retrieved from the specified stream
-        """
+        """Return the InitializationData retrieved from the specified stream"""
         if isinstance(self._initialization_data_dicts, types.GeneratorType):
 
             def data_generator() -> Iterable["InitializationData"]:
@@ -220,7 +239,8 @@ class StaticBlueprint(ScreenTaskRequired, OnboardingRequired, UseGoldUnit, Bluep
         else:
             return [
                 InitializationData(
-                    shared=d, unit_data=[{}] * self.args.blueprint.units_per_assignment
+                    shared=d,
+                    unit_data=[{}] * self.args.blueprint.units_per_assignment,
                 )
                 for d in self._initialization_data_dicts
             ]

@@ -4,58 +4,92 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import List, Optional, Dict, TYPE_CHECKING, Any
-from mephisto.data_model.qualification import (
-    QUAL_EXISTS,
-    QUAL_NOT_EXIST,
-    COMPARATOR_OPERATIONS,
-    SUPPORTED_COMPARATORS,
-    QUAL_GREATER,
-    QUAL_LESS,
-    QUAL_GREATER_EQUAL,
-    QUAL_LESS_EQUAL,
-    QUAL_IN_LIST,
-    QUAL_NOT_IN_LIST,
-)
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import TYPE_CHECKING
+
+from mephisto.data_model.qualification import COMPARATOR_OPERATIONS
+from mephisto.data_model.qualification import QUAL_EXISTS
+from mephisto.data_model.qualification import QUAL_GREATER
+from mephisto.data_model.qualification import QUAL_GREATER_EQUAL
+from mephisto.data_model.qualification import QUAL_IN_LIST
+from mephisto.data_model.qualification import QUAL_LESS
+from mephisto.data_model.qualification import QUAL_LESS_EQUAL
+from mephisto.data_model.qualification import QUAL_NOT_EXIST
+from mephisto.data_model.qualification import QUAL_NOT_IN_LIST
+from mephisto.data_model.qualification import SUPPORTED_COMPARATORS
+from mephisto.utils.logger_core import get_logger
 
 if TYPE_CHECKING:
     from mephisto.abstractions.database import MephistoDB
+    from mephisto.data_model.task_run import TaskRun
     from mephisto.data_model.worker import Worker
 
-from mephisto.utils.logger_core import get_logger
-
-QualificationType = Dict[str, Any]
 logger = get_logger(name=__name__)
 
+QualificationType = Dict[str, Any]
 
-def worker_is_qualified(worker: "Worker", qualifications: List[QualificationType]):
+
+def worker_is_qualified(
+    worker: "Worker",
+    shared_state_qualifications: List[QualificationType],
+    task_run: Optional["TaskRun"] = None,
+):
     db = worker.db
-    for qualification in qualifications:
-        qual_name = qualification["qualification_name"]
-        qual_objs = db.find_qualifications(qual_name)
-        if not qual_objs:
+
+    # 1. Check if provider has `admit_workers_with_no_prior_qualification` setting
+    provider_args = task_run.get_provider_args()
+    admit_with_no_prior_qualification = provider_args.get(
+        "admit_workers_with_no_prior_qualification"
+    )
+    all_worker_granted_qualifications = db.find_granted_qualifications(worker_id=worker.db_id)
+    worker_has_granted_qualifications = len(all_worker_granted_qualifications) > 0
+    task_run_has_qualifications = len(shared_state_qualifications) > 0
+    if (
+        admit_with_no_prior_qualification is True
+        and task_run_has_qualifications
+        and not worker_has_granted_qualifications
+    ):
+        # If TaskRun has quelifications and Worker has no granted qualifications,
+        # they should be considered as quailified
+        return True
+
+    # 2. Check Worker's qualification
+    for shared_state_qualification in shared_state_qualifications:
+        qualification_name = shared_state_qualification["qualification_name"]
+        qualifications = db.find_qualifications(qualification_name)
+
+        if not qualifications:
             logger.warning(
-                f"Expected to create qualification for {qual_name}, but none found... skipping."
+                f"Expected to create qualification for {qualification_name}, "
+                f"but none found... skipping."
             )
             continue
-        qual_obj = qual_objs[0]
-        granted_quals = db.check_granted_qualifications(
-            qualification_id=qual_obj.db_id, worker_id=worker.db_id
+
+        qualification = qualifications[0]
+        granted_qualifications = db.find_granted_qualifications(
+            qualification_id=qualification.db_id,
+            worker_id=worker.db_id,
         )
-        comp = qualification["comparator"]
-        compare_value = qualification["value"]
-        if comp == QUAL_EXISTS and not granted_quals:
+        comparator = shared_state_qualification["comparator"]
+        compare_value = shared_state_qualification["value"]
+
+        if comparator == QUAL_EXISTS and not granted_qualifications:
             return False
-        elif comp == QUAL_NOT_EXIST and granted_quals:
+        elif comparator == QUAL_NOT_EXIST and granted_qualifications:
             return False
-        elif comp in [QUAL_EXISTS, QUAL_NOT_EXIST]:
+        elif comparator in [QUAL_EXISTS, QUAL_NOT_EXIST]:
             continue
         else:
-            if not granted_quals:
+            if not granted_qualifications:
                 return False
-            granted_qual = granted_quals[0]
-            if not COMPARATOR_OPERATIONS[comp](granted_qual.value, compare_value):
+
+            granted_qualification = granted_qualifications[0]
+            if not COMPARATOR_OPERATIONS[comparator](granted_qualification.value, compare_value):
                 return False
+
     return True
 
 

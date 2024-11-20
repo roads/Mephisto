@@ -21,6 +21,9 @@ mephisto:
     block_qualification: blocked-qualification # Required for Screening
     use_screening_task: true # Required for Screening
     max_screening_units: 1 # Required for Screening
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     allowed_concurrent: 1 # Required for Screening
     task_name: "Sample Questionnaire"

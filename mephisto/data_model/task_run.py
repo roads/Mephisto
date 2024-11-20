@@ -375,6 +375,9 @@ class TaskRun(MephistoDataModelComponentMixin, metaclass=MephistoDBBackedMeta):
     def get_task_args(self) -> "DictConfig":
         return self.args.task
 
+    def get_provider_args(self) -> "DictConfig":
+        return self.args.provider
+
     def get_requester(self) -> Requester:
         """
         Return the requester that started this task.

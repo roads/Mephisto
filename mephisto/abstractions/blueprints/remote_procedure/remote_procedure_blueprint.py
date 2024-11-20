@@ -245,9 +245,7 @@ class RemoteProcedureBlueprint(ScreenTaskRequired, OnboardingRequired, UseGoldUn
         )
 
     def get_initialization_data(self) -> Iterable["InitializationData"]:
-        """
-        Return the InitializationData retrieved from the specified stream
-        """
+        """Return the InitializationData retrieved from the specified stream"""
         if isinstance(self._initialization_data_dicts, types.GeneratorType):
 
             def data_generator() -> Iterable["InitializationData"]:

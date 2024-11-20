@@ -8,8 +8,8 @@ These form-based questionnaires are example of FormComposer task generator.
 2. SSH into running container to run server: `docker exec -it mephisto_dc bash`
 3. Inside the container, go to FormComposer examples directory: `cd /mephisto/examples/form_composer_demo`
 4. Inside the `examples` directory, run a desired example with one of these commands:
-   - Simple form with Inhouse provider: `python ./run_task__local__inhouse.py`
-   - Dynamic form with Inhouse provider: `python ./run_task_dynamic__local__inhouse.py`
+   - Simple form with In-House provider: `python ./run_task__local__inhouse.py`
+   - Dynamic form with In-House provider: `python ./run_task_dynamic__local__inhouse.py`
    - Dynamic form with Mturk on EC2: `python ./run_task_dynamic__ec2__mturk_sandbox.py`
    - Dynamic form with Prolific on EC2: `python ./run_task_dynamic__ec2__prolific.py`
    - Dynamic form with Presigned URLs: `python ./run_task_dynamic_presigned_urls__ec2__prolific.py`
@@ -56,6 +56,6 @@ mephisto form_composer config --directory /mephisto/examples/form_composer_demo/
 mephisto form_composer config --directory /mephisto/examples/form_composer_demo/data/dynamic_presigned_urls/ --extrapolate-token-sets
 
 # 2b. Run the Task
-cd /mephisto/examples/form_composer_demo 
+cd /mephisto/examples/form_composer_demo
 python ./run_task_dynamic_presigned_urls__ec2__prolific.py
 ```

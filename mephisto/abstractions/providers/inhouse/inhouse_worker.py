@@ -4,6 +4,8 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import csv
+import os
 from typing import Any
 from typing import cast
 from typing import List
@@ -68,7 +70,7 @@ class InhouseWorker(Worker):
 
         logger.debug(
             f"{self.log_prefix}Trying to pay bonuses. "
-            f"But with Inhouse provider you need to do this manually"
+            f"But with In-House provider you need to do this manually"
         )
 
         return True, ""
@@ -107,9 +109,33 @@ class InhouseWorker(Worker):
         """Determine if this worker is eligible for the given task run"""
         return DEFAULT_IS_ELIGIBLE
 
+    def is_authorized(self, task_run: "TaskRun") -> bool:
+        provider_args = task_run.get_provider_args()
+
+        # 1. If `authorization_csv` was not specified in config, we authorize all by default
+        if provider_args.get("authorization_csv", None) is None:
+            return super().is_authorized(task_run)
+
+        # 2. Check if the name of current Worker is in the CSV file
+        try:
+            csv_file = os.path.expanduser(provider_args.authorization_csv)
+            with open(csv_file, "r", encoding="utf-8-sig") as csv_fp:
+                csv_reader = csv.reader(csv_fp)
+                authorized_worker_names = [row[0] for row in csv_reader]
+
+                if self.worker_name not in authorized_worker_names:
+                    return False
+        except (csv.Error, ValueError, OSError):
+            logger.exception(f"{self.log_prefix}Could not read authorization CSV file")
+            raise
+
+        return super().is_authorized(task_run)
+
     def send_feedback_message(self, text: str, unit: "Unit") -> bool:
         """Send feedback message to a worker"""
-        logger.debug(f"Inhouse sending feedback message to worker: '{text}'. Unit: {unit}")
+        logger.debug(
+            f"{self.log_prefix}In-House sending feedback message to worker: '{text}'. Unit: {unit}"
+        )
         return True
 
     @staticmethod

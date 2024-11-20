@@ -10,6 +10,9 @@ defaults:
 mephisto:
   blueprint:
     onboarding_qualification: test-parlai-chat-qualification
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     task_name: parlai-chat-example
     task_title: "Test ParlAI Chat Task"

@@ -17,6 +17,9 @@ mephisto:
     block_qualification: "test-react-static-blocked-qualification"
     use_screening_task: true
     max_screening_units: 3
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     task_name: react-static-task-example
     task_title: "Rating a sentence as good or bad"

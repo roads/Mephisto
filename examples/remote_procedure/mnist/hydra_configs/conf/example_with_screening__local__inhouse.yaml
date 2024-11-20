@@ -18,6 +18,9 @@ mephisto:
     block_qualification: "test-mnist-blocked-qualification"
     use_screening_task: true
     max_screening_units: 3
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     task_name: remote-procedure-mnist
     task_title: "Provide feedback on our MNIST model"

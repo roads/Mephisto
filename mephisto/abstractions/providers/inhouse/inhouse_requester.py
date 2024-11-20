@@ -61,18 +61,18 @@ class InhouseRequester(Requester):
         return "[Inhouse Requester] "
 
     def register(self, args: Optional[InhouseRequesterArgs] = None) -> None:
-        logger.debug(f"{self.log_prefix}Registering Inhouse requester")
+        logger.debug(f"{self.log_prefix}Registering In-House requester")
         return None
 
     def is_registered(self) -> bool:
         """Return whether this requester has registered yet"""
         logger.debug(
-            f"{self.log_prefix}Check if Inhouse requester is registered: {DEFAULT_IS_REGISTERED}"
+            f"{self.log_prefix}Check if In-House requester is registered: {DEFAULT_IS_REGISTERED}"
         )
         return DEFAULT_IS_REGISTERED
 
     def get_available_budget(self) -> float:
-        logger.debug(f"{self.log_prefix}Check if Inhouse requester is registered: true")
+        logger.debug(f"{self.log_prefix}Check if In-House requester is registered: true")
         return DEFAULT_AVAILABLE_BUDGET
 
     @staticmethod

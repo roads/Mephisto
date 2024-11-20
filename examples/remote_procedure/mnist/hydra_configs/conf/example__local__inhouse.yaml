@@ -16,6 +16,9 @@ mephisto:
     # NOTE pick something based on your task
     block_qualification: test_qual_block
     units_per_assignment: 1
+  log_level: "debug"
+  provider:
+    ui_base_url: "http://localhost:3001"
   task:
     allowed_concurrent: 1
     task_name: remote-procedure-mnist
