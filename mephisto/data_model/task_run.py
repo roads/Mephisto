@@ -161,6 +161,17 @@ class TaskRunArgs:
         metadata={"help": "Resume incomplete or interrupted TaskRun if it exists."},
     )
 
+    auto_submit_before_expiration_sec: Optional[int] = field(
+        default=0,
+        metadata={
+            "help": (
+                "In case if you need to save worker's job even if task is incomplete. "
+                "This parameter will tell UI to auto-sumbit data "
+                "before it will be marked as expired."
+            )
+        },
+    )
+
     aux_parameters: Optional[dict] = field(
         default_factory=dict,
         metadata={"help": "Any auxiliary parameter you need to pass for your task."},

@@ -193,22 +193,30 @@ class _AgentBase(ABC):
         if self.pending_actions.empty():
             if self.is_shutdown:
                 raise AgentShutdownError(self.db_id)
+
             # various disconnect cases
             status = self.get_status()
+
             logger.debug(f"Handling Agent status (get_live_update) - have `{status}`")
+
             if status == AgentState.STATUS_DISCONNECT:
                 raise AgentDisconnectedError(self.db_id)
             elif status == AgentState.STATUS_RETURNED:
                 raise AgentReturnedError(self.db_id)
+
             self.update_status(AgentState.STATUS_TIMEOUT)
+
             raise AgentTimeoutError(timeout, self.db_id)
+
         assert not self.pending_actions.empty(), "has_live_update released without an action!"
 
         act = self.pending_actions.get()
 
         if self.pending_actions.empty():
             self.has_live_update.clear()
+
         self.state.update_data(act)
+
         return act
 
     def act(self, timeout: Optional[int] = None) -> Optional[Dict[str, Any]]:
@@ -231,7 +239,9 @@ class _AgentBase(ABC):
 
         def _raise_if_disconnected():
             status = self.get_status()
+
             logger.debug(f"Handling Agent status (await_submit) - have `{status}`")
+
             if status == AgentState.STATUS_DISCONNECT:
                 raise AgentDisconnectedError(self.db_id)
             elif status == AgentState.STATUS_RETURNED:
@@ -242,13 +252,16 @@ class _AgentBase(ABC):
         if timeout is not None:
             # Handle disconnect possibilities first
             _raise_if_disconnected()
+
             # Wait for the status change
             self.did_submit.wait(timeout=timeout)
             if not self.did_submit.is_set():
                 # If released without submit, raise timeout
                 raise AgentTimeoutError(timeout, self.db_id)
+
             # Check disconnect possibilities again
             _raise_if_disconnected()
+
         return self.did_submit.is_set()
 
     def handle_submit(self, submit_data: Dict[str, Any]) -> None:

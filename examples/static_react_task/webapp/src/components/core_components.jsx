@@ -38,6 +38,21 @@ function OnboardingComponent({ onSubmit }) {
   );
 }
 
+function Instructions() {
+  return (
+    <div className="card bg-primary mb-4">
+      <div className="card-body pt-xl-5 pb-xl-5">
+        <h2 className="text-white">
+          This is an incredibly simple React task working with Mephisto!
+        </h2>
+        <h5 className="text-white">
+          Inside you'll be asked to rate a given sentence as good or bad.
+        </h5>
+      </div>
+    </div>
+  );
+}
+
 function LoadingScreen() {
   return <Directions>Loading...</Directions>;
 }
@@ -50,7 +65,12 @@ function Directions({ children }) {
   );
 }
 
-function SimpleFrontend({ taskData, isOnboarding, onSubmit, onError }) {
+function StaticReactTaskFrontend({
+  taskData,
+  isOnboarding,
+  onSubmit,
+  onError,
+}) {
   const [resonseSubmitted, setResonseSubmitted] = useState(false);
 
   return (
@@ -100,4 +120,9 @@ function SimpleFrontend({ taskData, isOnboarding, onSubmit, onError }) {
   );
 }
 
-export { LoadingScreen, SimpleFrontend as BaseFrontend, OnboardingComponent };
+export {
+  Instructions,
+  LoadingScreen,
+  OnboardingComponent,
+  StaticReactTaskFrontend,
+};

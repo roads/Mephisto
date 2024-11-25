@@ -52,14 +52,15 @@ const useMephistoLiveTask = function (props) {
   const [agentStatus, setAgentStatus] = React.useState(null);
 
   const defaultConnectionHook = useMephistoSocket;
-  const useConnectionHook = props.customConnectionHook || defaultConnectionHook;
+  const useConnectionHook =
+    props?.customConnectionHook || defaultConnectionHook;
 
   const taskProps = useMephistoTask();
 
   const { initialTaskData } = taskProps;
 
   function handleLiveUpdate(liveUpdate) {
-    props.onLiveUpdate && props.onLiveUpdate(liveUpdate);
+    props?.onLiveUpdate && props?.onLiveUpdate(liveUpdate);
   }
 
   React.useEffect(() => {
@@ -76,7 +77,7 @@ const useMephistoLiveTask = function (props) {
     },
     onStatusUpdate: ({ status }) => {
       setAgentStatus(status);
-      props.onStatusUpdate && props.onStatusUpdate({ status });
+      props?.onStatusUpdate && props?.onStatusUpdate({ status });
     },
     onLiveUpdate: handleLiveUpdate,
   });

@@ -4,14 +4,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { ErrorBoundary, useMephistoTask } from "mephisto-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
-  BaseFrontend,
-  OnboardingComponent,
+  Instructions,
   LoadingScreen,
+  OnboardingComponent,
+  StaticReactTaskFrontend,
 } from "./components/core_components.jsx";
-import { useMephistoTask, ErrorBoundary } from "mephisto-core";
 
 /* ================= Application Components ================= */
 
@@ -38,18 +39,7 @@ function MainApp() {
   }
 
   if (isPreview) {
-    return (
-      <div className="card bg-primary mb-4">
-        <div className="card-body pt-xl-5 pb-xl-5">
-          <h2 className="text-white">
-            This is an incredibly simple React task working with Mephisto!
-          </h2>
-          <h5 className="text-white">
-            Inside you'll be asked to rate a given sentence as good or bad.
-          </h5>
-        </div>
-      </div>
-    );
+    return <Instructions />;
   }
   if (isLoading || !initialTaskData) {
     return <LoadingScreen />;
@@ -61,7 +51,9 @@ function MainApp() {
   return (
     <div>
       <ErrorBoundary handleError={handleFatalError}>
-        <BaseFrontend
+        <Instructions />
+
+        <StaticReactTaskFrontend
           taskData={initialTaskData}
           onSubmit={handleSubmit}
           isOnboarding={isOnboarding}

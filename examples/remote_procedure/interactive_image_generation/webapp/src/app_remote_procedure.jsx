@@ -21,6 +21,7 @@ function MainApp() {
     remoteProcedure,
     handleSubmit,
     handleFatalError,
+    setTaskSubmitData,
   } = useMephistoRemoteProcedureTask();
 
   if (isLoading || !initialTaskData) {
@@ -40,6 +41,7 @@ function MainApp() {
           onSubmit={handleSubmit}
           onError={handleFatalError}
           remoteProcedure={remoteProcedure}
+          setTaskSubmitData={setTaskSubmitData}
         />
       </ErrorBoundary>
     </div>

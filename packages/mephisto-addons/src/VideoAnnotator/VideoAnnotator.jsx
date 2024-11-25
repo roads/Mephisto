@@ -6,6 +6,7 @@
 
 import { Popover } from "bootstrap";
 import React from "react";
+import { isMobile } from "react-device-detect";
 import { VIDEO_TYPES_BY_EXT } from "../constants";
 import { getFormatStringWithTokensFunction } from "../FormComposer/utils";
 import TaskInstructionButton from "../TaskInstructionModal/TaskInstructionButton.jsx";
@@ -21,7 +22,6 @@ import {
 import { getExtFromFilePath } from "./helpers";
 import "./VideoAnnotator.css";
 import VideoPlayer from "./VideoPlayer.jsx";
-import { isMobile } from "react-device-detect";
 
 function VideoAnnotator({
   data,
@@ -30,6 +30,7 @@ function VideoAnnotator({
   setRenderingErrors,
   customValidators,
   customTriggers,
+  setTaskSubmitData,
 }) {
   const videoAnnotatorConfig = data;
 
@@ -263,6 +264,13 @@ function VideoAnnotator({
       popovers.map((p) => p.dispose());
     };
   }, [segmentIsValid]);
+
+  React.useEffect(() => {
+    // In case if Auto-submission enabled
+    if (setTaskSubmitData) {
+      setTaskSubmitData(annotationTracksData);
+    }
+  }, [annotationTracksData]);
 
   return (
     <div

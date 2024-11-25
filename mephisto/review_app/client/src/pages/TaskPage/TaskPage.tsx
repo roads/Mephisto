@@ -11,6 +11,7 @@ import ResultsCollapsable from "components/ResultsCollapsable/ResultsCollapsable
 import VideoAnnotatorWebVTTCollapsable from "components/VideoAnnotatorWebVTTCollapsable/VideoAnnotatorWebVTTCollapsable";
 import WorkerOpinionCollapsable from "components/WorkerOpinionCollapsable/WorkerOpinionCollapsable";
 import {
+  AUTO_SUBMIT_MARK_KEY,
   MESSAGES_IFRAME_DATA_KEY,
   MESSAGES_IN_REVIEW_FILE_DATA_KEY,
   ReviewType,
@@ -21,10 +22,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  postQualificationGrantWorker,
-  postQualificationRevokeWorker,
-} from "requests/qualifications";
+import { postQualificationRevokeWorker } from "requests/qualifications";
 import { getStats } from "requests/stats";
 import { getTask, getTaskWorkerUnitsIds } from "requests/tasks";
 import {
@@ -128,6 +126,10 @@ function TaskPage(props: TaskPagePropsType) {
   const [inReviewFileModalData, setInReviewFileModalData] = React.useState<
     InReviewFileModalDataType
   >({});
+
+  const taskIsAutoSubmitted: boolean = [true, "true"].includes(
+    (currentUnitDetails?.outputs || {})[AUTO_SUBMIT_MARK_KEY]
+  );
 
   const onError = (response: ErrorResponseType) =>
     setResponseErrors(props.setErrors, response);
@@ -644,6 +646,13 @@ function TaskPage(props: TaskPagePropsType) {
       <div className={"content"}>
         {/* Preloader when we request tasks */}
         <Preloader loading={loading} />
+
+        {taskIsAutoSubmitted && (
+          <div className={"alert alert-warning"} role={"alert"}>
+            <b>NOTE</b>: Worker wasn't able to complete the Task in time and it
+            was auto-submitted according to the Task settings
+          </div>
+        )}
 
         {/* Initial Unit parameters */}
         {currentUnitDetails?.inputs && (
