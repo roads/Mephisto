@@ -4,8 +4,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
 import Bowser from "bowser";
+import React from "react";
+
 const axios = require("axios");
 
 /*
@@ -129,27 +130,36 @@ export function getTaskConfig() {
 
 export function postProviderRequest(endpoint, data) {
   var url = new URL(window.location.origin + endpoint).toString();
-  return postData(url, { provider_data: data, client_timestamp: pythonTime() });
+  return postData(url, {
+    provider_data: data,
+    client_timestamp: getNowTimeSec(),
+  });
 }
 
 export function requestAgent() {
   return postProviderRequest("/request_agent", getAgentRegistration());
 }
 
-export function postCompleteOnboarding(agent_id, onboarding_data) {
+export function postCompleteOnboarding(agentId, onboardingData) {
   return postProviderRequest(urls.submitOnboarding, {
-    USED_AGENT_ID: agent_id,
-    onboarding_data: onboarding_data,
+    USED_AGENT_ID: agentId,
+    onboarding_data: onboardingData,
   });
 }
 
-export function postCompleteTask(agent_id, complete_data, multipart) {
-  const clientTimestamp = pythonTime();
+export function postCompleteTask(
+  agentId,
+  completeData,
+  multipart,
+  isAutoSubmitted
+) {
+  const clientTimestamp = getNowTimeSec();
 
   if (multipart) {
-    const formData = complete_data;
-    formData.append("USED_AGENT_ID", agent_id);
+    const formData = completeData;
+    formData.append("USED_AGENT_ID", agentId);
     formData.append("client_timestamp", clientTimestamp);
+    formData.append("is_auto_submitted", isAutoSubmitted);
 
     return postMultipartData(urls.submitTask, formData)
       .then((data) => {
@@ -162,13 +172,16 @@ export function postCompleteTask(agent_id, complete_data, multipart) {
         console.log("Submitted");
       });
   } else {
-    return postData(urls.submitTask, {
-      USED_AGENT_ID: agent_id,
-      final_data: complete_data,
+    const _data = {
+      USED_AGENT_ID: agentId,
+      final_data: completeData,
       client_timestamp: clientTimestamp,
-    })
+      is_auto_submitted: isAutoSubmitted,
+    };
+
+    return postData(urls.submitTask, _data)
       .then((data) => {
-        handleSubmitToProvider(complete_data);
+        handleSubmitToProvider(completeData);
         return data;
       })
       .then(function (data) {
@@ -177,12 +190,12 @@ export function postCompleteTask(agent_id, complete_data, multipart) {
   }
 }
 
-export function postMetadata(agent_id, metadata, multipart) {
-  const clientTimestamp = pythonTime();
+export function postMetadata(agentId, metadata, multipart) {
+  const clientTimestamp = getNowTimeSec();
 
   if (multipart) {
     const formData = metadata;
-    formData.set("USED_AGENT_ID", agent_id);
+    formData.set("USED_AGENT_ID", agentId);
     formData.set("metadata", metadata.get("data"));
     formData.set("client_timestamp", clientTimestamp);
 
@@ -192,7 +205,7 @@ export function postMetadata(agent_id, metadata, multipart) {
     });
   } else {
     return postData(urls.submitMetadata, {
-      USED_AGENT_ID: agent_id,
+      USED_AGENT_ID: agentId,
       metadata: metadata,
       client_timestamp: clientTimestamp,
     }).then(function (data) {
@@ -202,11 +215,11 @@ export function postMetadata(agent_id, metadata, multipart) {
   }
 }
 
-export function postErrorLog(agent_id, complete_data) {
+export function postErrorLog(agentId, completeData) {
   return postData(urls.logError, {
-    USED_AGENT_ID: agent_id,
-    error_data: complete_data,
-    client_timestamp: pythonTime(),
+    USED_AGENT_ID: agentId,
+    error_data: completeData,
+    client_timestamp: getNowTimeSec(),
   }).then(function (data) {
     // console.log("Error log sent to server");
   });
@@ -267,6 +280,21 @@ export const libVersion = preval`
   module.exports = version
 `;
 
-export function pythonTime() {
+export function getNowTimeSec() {
   return Date.now() / 1000;
+}
+
+export function getNowUtcSec() {
+  const now = new Date();
+  return (
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      now.getUTCHours(),
+      now.getUTCMinutes(),
+      now.getUTCSeconds(),
+      now.getUTCMilliseconds()
+    ) / 1000
+  );
 }

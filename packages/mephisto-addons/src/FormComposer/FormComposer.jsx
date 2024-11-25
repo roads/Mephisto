@@ -39,6 +39,7 @@ function FormComposer({
   customValidators,
   customTriggers,
   remoteProcedureCollection,
+  setTaskSubmitData,
 }) {
   const formComposerConfig = data;
 
@@ -263,6 +264,14 @@ function FormComposer({
       setSubmitErrors(serverSubmitErrors);
     }
   }, [serverSubmitErrors]);
+
+  React.useEffect(() => {
+    // In case if Auto-submission enabled
+    if (setTaskSubmitData) {
+      const formData = prepareFormDataForSubmit(formState, formFields);
+      setTaskSubmitData(formData);
+    }
+  }, [formState]);
 
   return (
     <form

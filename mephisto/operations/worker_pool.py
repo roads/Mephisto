@@ -90,6 +90,7 @@ class AgentDetails:
     agent_id: Optional[str] = None
     init_task_data: Optional[Dict[str, Any]] = None
     failure_reason: Optional[str] = None
+    submission_deadline_utc: Optional[Union[int, float]] = None
 
     def to_dict(self):
         return dict((field.name, getattr(self, field.name)) for field in fields(self))
@@ -120,6 +121,30 @@ class WorkerPool:
 
         # Deferred initializiation
         self._live_run: Optional["LiveTaskRun"] = None
+
+    def _get_submission_deadline_utc(self, agent: Agent):
+        submission_deadline_utc = None
+
+        task_run_args = self.get_live_run().task_run.get_task_args()
+        assignment_duration_sec = task_run_args.get("assignment_duration_in_seconds")
+        auto_submit_sec = task_run_args.get("auto_submit_before_expiration_sec")
+        if auto_submit_sec:
+            task_start_sec = agent.state.get_task_start()
+
+            if task_start_sec:
+                expiration_time_timestamp = task_start_sec + assignment_duration_sec
+                count_auto_submit_timestamp = expiration_time_timestamp - auto_submit_sec
+                submission_deadline_utc = min(
+                    expiration_time_timestamp,
+                    count_auto_submit_timestamp,
+                )
+
+                logger.debug(
+                    f"Task is going to be auto-submitted {auto_submit_sec} seconds "
+                    f"before completion to prevent loss of workers data"
+                )
+
+        return submission_deadline_utc
 
     def register_run(self, live_run: "LiveTaskRun") -> None:
         """Register a live run for this worker pool"""
@@ -274,6 +299,7 @@ class WorkerPool:
                     worker_id=worker.db_id,
                     agent_id=agent.get_agent_id(),
                     init_task_data=init_task_data,
+                    submission_deadline_utc=self._get_submission_deadline_utc(agent),
                 ).to_dict(),
             )
 
@@ -468,6 +494,7 @@ class WorkerPool:
                     worker_id=worker.db_id,
                     agent_id=agent.get_agent_id(),
                     init_task_data=init_task_data,
+                    submission_deadline_utc=self._get_submission_deadline_utc(agent),
                 ).to_dict(),
             )
 

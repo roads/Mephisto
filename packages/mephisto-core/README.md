@@ -53,6 +53,8 @@ function MyApp() {
         // advanced usage:
         providerWorkerId,
         mephistoWorkerId,
+        setTaskSubmitData,
+        submit,
     } = useMephistoTask();
 }
 ```
@@ -151,6 +153,23 @@ The ID created for the worker by the provider, e.g. mTurk.
 ### `mephistoWorkerId` (advanced usage)
 
 The ID created for the worker by Mephisto.
+
+### `submit` (advanced usage)
+
+Shortcut for `handleSubmit` if you use `setTaskSubmitData`. No need to pass data, just call `submit()`.
+
+### `setTaskSubmitData` (advanced usage)
+
+We recommend always set actual your Task data into this state.
+It will be easier to maintain your task, in case if you decide to use `auto_submit_before_expiration_sec` Task-parameter, for example.
+That means that you have nothing else to add in your code, it will work automatically.
+
+Example, how to use `setTaskSubmitData`:
+```jsx
+React.useEffect(() => {
+  setTaskSubmitData(yourTaskDataState);
+}, [yourTaskDataState]);
+```
 
 ---
 

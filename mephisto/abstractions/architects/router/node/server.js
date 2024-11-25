@@ -22,6 +22,8 @@ const task_directory_name = "static";
 
 const PORT = process.env.PORT || 3000;
 
+const AUTO_SUBMIT_MARK_KEY = "_is_auto_submitted";
+
 // Generate a random id
 function uuidv4() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -296,6 +298,7 @@ function send_status_for_agent(agent_id) {
 wss.on("connection", function (socket) {
   socket.id = uuidv4();
   console.log("Client connected");
+
   // Disconnects are logged
   socket.on("disconnect", function () {
     console.log("socket disconnected");
@@ -359,6 +362,7 @@ wss.on("connection", function (socket) {
           agent.is_alive = true;
           agent.last_ping = Date.now();
           packet.data.status = agent.status;
+
           if (
             agent_id_to_socket[agent.agent_id] !== socket &&
             agent_id_to_socket[agent.agent_id] !== undefined
@@ -369,6 +373,7 @@ wss.on("connection", function (socket) {
             socket_id_to_agent[socket.id] = agent;
           }
         }
+
         forward_to_agent(packet);
       }
     } catch (error) {
@@ -477,21 +482,22 @@ app.post("/submit_onboarding", function (req, res) {
 // NOTE: `upload.any()` allows to pass not only JSON, but FormData as well
 app.post("/submit_task", upload.any(), function (req, res) {
   const {
-    USED_AGENT_ID: agent_id,
-    final_data: final_data,
-    final_string_data: final_string_data,
-    client_timestamp: client_timestamp,
+    USED_AGENT_ID: agentId,
+    final_data: finalData,
+    final_string_data: finalStringData,
+    client_timestamp: clientTimestamp,
+    is_auto_submitted: isAutoSubmitted,
   } = req.body;
 
-  let extracted_data = final_data;
+  let extractedData = finalData;
 
   // `extracted_data` must be JSON. If request is FormData, is must be a string
-  if (final_string_data) {
-    extracted_data = JSON.parse(final_string_data);
+  if (finalStringData) {
+    extractedData = JSON.parse(finalStringData);
   }
 
   if (req.files) {
-    extracted_data.files = req.files;
+    extractedData.files = req.files;
 
     // Group files by fieldname to link them with fields
     const filesByFields = {};
@@ -502,15 +508,20 @@ app.post("/submit_task", upload.any(), function (req, res) {
       fileByFieldPrev.push(_file);
       filesByFields[file.fieldname] = fileByFieldPrev;
     });
-    extracted_data.filesByFields = filesByFields;
+    extractedData.filesByFields = filesByFields;
+  }
+
+  // If task was auto-submitted, send server a mark that researchers could distinguish them
+  if (isAutoSubmitted) {
+    extractedData[AUTO_SUBMIT_MARK_KEY] = isAutoSubmitted;
   }
 
   // Prepare WebSocket packet
   let submit_packet = {
     packet_type: PACKET_TYPE_SUBMIT_UNIT,
-    subject_id: agent_id,
-    data: extracted_data,
-    client_timestamp: client_timestamp ? Number(client_timestamp) : null,
+    subject_id: agentId,
+    data: extractedData,
+    client_timestamp: clientTimestamp ? Number(clientTimestamp) : null,
     router_incoming_timestamp: pythonTime(),
   };
 
@@ -520,13 +531,13 @@ app.post("/submit_task", upload.any(), function (req, res) {
   res.json({ status: "Submitted!" });
 
   // Cleanup local state for a task that's already submitted
-  if (agent_id in agent_id_to_agent) {
-    delete agent_id_to_agent[agent_id];
+  if (agentId in agent_id_to_agent) {
+    delete agent_id_to_agent[agentId];
   }
 
-  if (agent_id in agent_id_to_socket) {
-    let socket_id = agent_id_to_socket[agent_id].id;
-    delete agent_id_to_socket[agent_id];
+  if (agentId in agent_id_to_socket) {
+    let socket_id = agent_id_to_socket[agentId].id;
+    delete agent_id_to_socket[agentId];
     delete socket_id_to_agent[socket_id];
   }
 });

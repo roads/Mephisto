@@ -68,3 +68,5 @@ export const STATUS_COLOR_CLASS_MAPPING = {
   rejected: "text-danger",
   soft_rejected: "text-warning",
 };
+
+export const AUTO_SUBMIT_MARK_KEY = "_is_auto_submitted";

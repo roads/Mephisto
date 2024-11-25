@@ -298,6 +298,10 @@ export function prepareFormData(
 }
 
 function _prepareRemoteProceduresForPresignUrls(remoteProcedureCollection) {
+  if (!remoteProcedureCollection) {
+    return;
+  }
+
   window[ProcedureName.GET_PRESIGNED_URL] = remoteProcedureCollection(
     ProcedureName.GET_PRESIGNED_URL
   );

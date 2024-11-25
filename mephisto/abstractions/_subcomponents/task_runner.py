@@ -173,7 +173,9 @@ class TaskRunner(ABC):
         ).track_inprogress(), EXECUTION_DURATION_SECONDS.labels(thread_type="onboarding").time():
             live_run = onboarding_agent.get_live_run()
             onboarding_id = onboarding_agent.get_agent_id()
+
             logger.debug(f"Launching onboarding for {onboarding_agent}")
+
             try:
                 self.run_onboarding(onboarding_agent)
             except (
@@ -185,13 +187,16 @@ class TaskRunner(ABC):
                 if onboarding_agent.get_status() not in AgentState.complete():
                     # Absent agents at this stage should be disconnected
                     onboarding_agent.update_status(AgentState.STATUS_DISCONNECT)
+
                 self.cleanup_onboarding(onboarding_agent)
             except Exception as e:
                 logger.exception(
                     f"Unhandled exception in onboarding {onboarding_agent}",
                     exc_info=True,
                 )
+
                 self.cleanup_onboarding(onboarding_agent)
+
             del self.running_onboardings[onboarding_id]
 
             # Onboarding now complete
@@ -207,6 +212,7 @@ class TaskRunner(ABC):
                     f"Onboarding agent {onboarding_id} disconnected or errored, "
                     f"final status {onboarding_agent.get_status()}."
                 )
+
                 live_run.loop_wrap.execute_coro(cleanup_after())
 
     def execute_unit(
@@ -218,6 +224,7 @@ class TaskRunner(ABC):
         if unit.db_id in self.running_units:
             logger.debug(f"{unit} is already running")
             return
+
         unit_thread = threading.Thread(
             target=self._launch_and_run_unit,
             args=(unit, agent),
@@ -249,8 +256,11 @@ class TaskRunner(ABC):
             if agent.get_status() != AgentState.STATUS_COMPLETED:
                 if unit.unit_index == SCREENING_UNIT_INDEX:
                     blueprint = self.task_run.get_blueprint(args=self.args)
+
                     assert isinstance(blueprint, ScreenTaskRequired)
+
                     blueprint.screening_units_launched -= 1
+
                 unit.expire()
 
     def _launch_and_run_unit(
@@ -272,14 +282,17 @@ class TaskRunner(ABC):
             ) as e:
                 # A returned Unit can be worked on again by someone else.
                 logger.exception(f"Handled exception in unit {unit}")
+
                 if unit.get_status() != AssignmentState.EXPIRED:
                     unit_agent = unit.get_assigned_agent()
                     if unit_agent is not None and unit_agent.db_id == agent.db_id:
                         logger.debug(f"Clearing {agent} from {unit} due to {e}")
                         unit.clear_assigned_agent()
+
                     if agent.get_status() not in AgentState.complete():
                         # Absent agents at this stage should be disconnected
                         agent.update_status(AgentState.STATUS_DISCONNECT)
+
                 self.cleanup_unit(unit)
             except Exception as e:
                 logger.exception(f"Unhandled exception in unit {unit}", exc_info=True)
@@ -291,6 +304,7 @@ class TaskRunner(ABC):
                 if not agent.await_submit(timeout=None):
                     # Wait for a submit to occur
                     agent.await_submit(timeout=self.args.task.submission_timeout)
+
                 agent.update_status(AgentState.STATUS_COMPLETED)
                 agent.mark_done()
 
@@ -316,6 +330,7 @@ class TaskRunner(ABC):
         if assignment.db_id in self.running_assignments:
             logger.debug(f"Assignment {assignment} is already running")
             return
+
         assign_thread = threading.Thread(
             target=self._launch_and_run_assignment,
             args=(assignment, agents),
@@ -329,6 +344,7 @@ class TaskRunner(ABC):
             agents=agents,
             thread=assign_thread,
         )
+
         assign_thread.start()
         return
 
@@ -359,6 +375,7 @@ class TaskRunner(ABC):
                         # Must expire the disconnected unit so that
                         # new workers aren't shown it
                         agent.get_unit().expire()
+
                         if agent.get_status() not in AgentState.complete():
                             agent.update_status(AgentState.STATUS_DISCONNECT)
                 self.cleanup_assignment(assignment)
@@ -375,6 +392,7 @@ class TaskRunner(ABC):
                     if not agent.await_submit(timeout=None):
                         # Wait for a submit to occur
                         agent.await_submit(timeout=self.args.task.submission_timeout)
+
                     agent.update_status(AgentState.STATUS_COMPLETED)
                     agent.mark_done()
 
@@ -386,6 +404,7 @@ class TaskRunner(ABC):
                         f"Unhandled exception in on_unit_submitted for {unit}",
                         exc_info=True,
                     )
+
             del self.running_assignments[assignment.db_id]
 
             # Clear reservations
@@ -398,16 +417,12 @@ class TaskRunner(ABC):
 
     @staticmethod
     def get_data_for_assignment(assignment: "Assignment") -> "InitializationData":
-        """
-        Finds the right data to get for the given assignment.
-        """
+        """Finds the right data to get for the given assignment."""
         return assignment.get_assignment_data()
 
     @abstractmethod
     def get_init_data_for_agent(self, agent: "Agent"):
-        """
-        Return the data that an agent will need for their task.
-        """
+        """Return the data that an agent will need for their task."""
         raise NotImplementedError()
 
     def filter_units_for_worker(self, units: List["Unit"], worker: "Worker"):
@@ -433,17 +448,21 @@ class TaskRunner(ABC):
         # Shut down the agents
         for running_unit in running_units:
             running_unit.agent.shutdown()
+
         for running_assignment in running_assignments:
             for agent in running_assignment.agents:
                 agent.shutdown()
+
         for running_onboarding in running_onboardings:
             running_onboarding.onboarding_agent.shutdown()
 
         # Join the threads
         for running_unit in running_units:
             running_unit.thread.join()
+
         for running_assignment in running_assignments:
             running_assignment.thread.join()
+
         for running_onboarding in running_onboardings:
             running_onboarding.thread.join()
 

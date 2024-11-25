@@ -56,6 +56,7 @@ function FormComposerBaseFrontend({
   onError,
   finalResults = null,
   remoteProcedure,
+  setTaskSubmitData,
 }) {
   const [loadingFormData, setLoadingFormData] = React.useState(false);
   const [formData, setFormData] = React.useState(null);
@@ -95,6 +96,7 @@ function FormComposerBaseFrontend({
         <FormComposer
           data={formData}
           onSubmit={onSubmit}
+          setTaskSubmitData={setTaskSubmitData}
           finalResults={finalResults}
           setRenderingErrors={setFormComposerRenderingErrors}
           remoteProcedureCollection={remoteProcedure}

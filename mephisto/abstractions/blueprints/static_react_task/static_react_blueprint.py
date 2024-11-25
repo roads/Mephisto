@@ -4,36 +4,42 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from dataclasses import dataclass, field
+import os
+from dataclasses import dataclass
+from dataclasses import field
+from typing import ClassVar
+from typing import Type
+from typing import TYPE_CHECKING
+
 from omegaconf import MISSING
+
+from mephisto.abstractions.blueprint import (
+    SharedTaskState,
+)
 from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import (
-    StaticBlueprint,
-    StaticBlueprintArgs,
     SharedStaticTaskState,
+)
+from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import StaticBlueprint
+from mephisto.abstractions.blueprints.abstract.static_task.static_blueprint import (
+    StaticBlueprintArgs,
 )
 from mephisto.abstractions.blueprints.static_react_task.static_react_task_builder import (
     StaticReactTaskBuilder,
 )
 from mephisto.operations.registry import register_mephisto_abstraction
-
-import os
-
-from typing import ClassVar, Type, TYPE_CHECKING
-from mephisto.abstractions.blueprint import (
-    SharedTaskState,
-)
 from mephisto.utils.logger_core import (
     get_logger,
 )
 
 if TYPE_CHECKING:
-    from mephisto.data_model.task_run import TaskRun
     from mephisto.abstractions.blueprint import (
         TaskBuilder,
     )
+    from mephisto.data_model.task_run import TaskRun
     from omegaconf import DictConfig
 
 BLUEPRINT_TYPE_STATIC_REACT = "static_react_task"
+
 logger = get_logger(name=__name__)
 
 

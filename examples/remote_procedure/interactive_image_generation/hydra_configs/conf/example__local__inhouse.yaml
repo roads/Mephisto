@@ -28,5 +28,7 @@ mephisto:
     task_tags: "test,simple,form,form-composer,interactive-image-prompts"
     force_rebuild: true
     max_num_concurrent_units: 1
+    auto_submit_before_expiration_sec: 10
+    assignment_duration_in_seconds: 120
     aux_parameters:
       max_answer_loops: 3

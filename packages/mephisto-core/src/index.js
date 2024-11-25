@@ -6,15 +6,16 @@
 
 import React from "react";
 import {
-  getTaskConfig,
-  requestAgent,
-  isMobile,
-  postCompleteTask,
-  postCompleteOnboarding,
-  getBlockedExplanation,
-  postErrorLog,
   ErrorBoundary,
+  getBlockedExplanation,
+  getNowUtcSec,
+  getTaskConfig,
+  isMobile,
+  postCompleteOnboarding,
+  postCompleteTask,
+  postErrorLog,
   postMetadata,
+  requestAgent,
 } from "./utils";
 
 export * from "./MephistoContext";
@@ -34,6 +35,9 @@ const useMephistoTask = function () {
   const providerWorkerId = getWorkerName();
   const assignmentId = getAssignmentId();
   const isPreview = providerWorkerId === null || assignmentId === null;
+
+  const [taskSubmitData, setTaskSubmitData] = React.useState({});
+  const [autoSubmit, setAutoSubmit] = React.useState(false);
 
   const reducerFn = (state, action) => ({
     ...state,
@@ -57,18 +61,23 @@ const useMephistoTask = function () {
   const [state, setState] = React.useReducer(reducerFn, initialState);
 
   const handleSubmit = React.useCallback(
-    (data) => {
+    (data, _autoSubmit) => {
       if (state.isOnboarding) {
         postCompleteOnboarding(state.agentId, data).then((packet) => {
           afterAgentRegistration(packet);
         });
       } else {
         const isMultipart = data instanceof FormData;
-        postCompleteTask(state.agentId, data, isMultipart);
+        postCompleteTask(state.agentId, data, isMultipart, _autoSubmit);
       }
     },
     [state.agentId]
   );
+
+  function submit() {
+    // Shortcut for `handleSubmit` if `setTaskSubmitData` was used in task
+    handleSubmit(taskSubmitData);
+  }
 
   const handleMetadataSubmit = React.useCallback(
     (metadata) => {
@@ -101,7 +110,10 @@ const useMephistoTask = function () {
     const workerId = dataPacket.data.worker_id;
     const agentId = dataPacket.data.agent_id;
     const isOnboarding = agentId !== null && agentId.startsWith("onboarding");
+
+    // Update main state
     setState({ agentId: agentId, isOnboarding: isOnboarding });
+
     if (agentId === null) {
       setState({
         mephistoWorkerId: workerId,
@@ -117,11 +129,36 @@ const useMephistoTask = function () {
         loaded: true,
       });
     }
+
+    // Initiate auto-submission
+    if (!isOnboarding && agentId) {
+      const submissionDeadlineUtc = dataPacket.data.submission_deadline_utc;
+      if (submissionDeadlineUtc !== null) {
+        const nowUTC = getNowUtcSec();
+        const autoSubmitLeftTimeSec = Math.round(
+          submissionDeadlineUtc - nowUTC
+        );
+        console.log(`Auto-submission in ${autoSubmitLeftTimeSec} seconds...`);
+        runAutoSubmitTimer(autoSubmitLeftTimeSec);
+      }
+    }
+  }
+
+  function runAutoSubmitTimer(autoSubmitTimerSec) {
+    setTimeout(() => setAutoSubmit(true), autoSubmitTimerSec * 1000);
   }
 
   React.useEffect(() => {
     getTaskConfig().then((data) => handleIncomingTaskConfig(data));
   }, []);
+
+  React.useEffect(() => {
+    if (autoSubmit) {
+      console.log("Worker incomplete task is being auto-submitted");
+
+      handleSubmit(taskSubmitData, true);
+    }
+  }, [autoSubmit]);
 
   return {
     ...state,
@@ -132,6 +169,8 @@ const useMephistoTask = function () {
     handleSubmit,
     handleMetadataSubmit,
     handleFatalError,
+    setTaskSubmitData,
+    submit,
   };
 };
 
