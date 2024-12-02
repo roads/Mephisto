@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src/",
+    "jsx": "react",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "./build/",
+    "paths": {
+      "mephisto-core": ["../../../../packages/mephisto-core"],
+      "mephisto-addons": ["../../../../packages/mephisto-addons"],
+      "custom-validators": ["../../data/insertions/custom_validators.js"],
+      "custom-triggers": ["../../data/insertions/custom_triggers.js"]
+    },
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "es2020",
+    "typeRoots": ["node_modules/@types", "src/types"]
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/**/*", "../../../../packages/mephisto-addons/src/types/*"]
+}

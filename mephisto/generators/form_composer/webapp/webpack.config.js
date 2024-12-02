@@ -8,12 +8,13 @@ var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/main.js",
+  entry: "./src/main.ts",
   output: {
     path: __dirname,
     filename: "build/bundle.js",
   },
   resolve: {
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
     alias: {
       react: path.resolve("./node_modules/react"),
       // Use local library with code that can submit FormData
@@ -42,6 +43,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts(x?)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "ts-loader",
+          },
+        ],
+      },
       {
         test: /\.(js|jsx)$/i,
         loader: "babel-loader",

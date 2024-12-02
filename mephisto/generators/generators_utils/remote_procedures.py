@@ -6,6 +6,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
 from typing import Tuple
+from typing import TypedDict
 from typing import Union
 
 from mephisto.abstractions.blueprints.remote_procedure.remote_procedure_agent_state import (
@@ -18,6 +19,10 @@ from mephisto.utils.logger_core import get_logger
 MAX_THREADS = 10
 
 logger = get_logger(name=__name__)
+
+
+class GetMultiplePresignedUrlsArgsType(TypedDict):
+    urls: List[str]
 
 
 class ProcedureName:
@@ -50,15 +55,26 @@ def _get_presigned_url_for_thread(url: str) -> Tuple[str, Union[str, None], Unio
 
 def _get_multiple_presigned_urls(
     request_id: str,
-    urls: List[str],
+    args: GetMultiplePresignedUrlsArgsType,
     agent_state: RemoteProcedureAgentState,
-) -> List[Tuple[str, str]]:
-    logger.debug(f"Presigning S3 URLs '{', '.join(urls)}' ({request_id=})")
+) -> Union[List[Tuple[str, str]], None]:
+    logger.debug(
+        f"Request '{request_id}' for presigning S3 URLs. "
+        f"Args: {args}. "
+        f"AgentState: {agent_state}"
+    )
+
+    if not isinstance(args, dict) and "urls" not in args:
+        logger.error(
+            "Incorrect data was sent. It must be a dictionary with 'urls' rapameter "
+            "that is list of strings"
+        )
+        return
 
     # Request all URLs asynchronously
     threads_results = []
     with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-        for url in urls:
+        for url in args["urls"]:
             threads_results.append(executor.submit(_get_presigned_url_for_thread, url))
 
     # Separate successful results from errors

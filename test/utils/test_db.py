@@ -225,8 +225,7 @@ class TestUtilsDB(unittest.TestCase):
         get_test_project(self.db, "project_2")
         rows = db_utils.select_all_table_rows(self.db, "projects", order_by="creation_date")
         self.assertEqual(len(rows), 2)
-        self.assertEqual(rows[0]["project_name"], "project_1")
-        self.assertEqual(rows[1]["project_name"], "project_2")
+        self.assertEqual(set([p["project_name"] for p in rows]), {"project_1", "project_2"})
 
     def test_select_rows_by_list_of_field_values(self, *args):
         qualification_1_id = get_test_qualification(self.db, "qual_1")

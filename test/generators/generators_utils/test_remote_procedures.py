@@ -127,7 +127,7 @@ class TestRemoteProcedures(unittest.TestCase):
         mock_get_s3_presigned_url.side_effect = Exception("Error")
 
         with self.assertRaises(ValueError) as cm:
-            _get_multiple_presigned_urls("random-string", [test_url], None)
+            _get_multiple_presigned_urls("random-string", {"urls": [test_url]}, None)
 
         self.assertEqual(
             cm.exception.__str__(),
@@ -146,6 +146,6 @@ class TestRemoteProcedures(unittest.TestCase):
 
         mock_get_s3_presigned_url.return_value = presigned_url_expected
 
-        result = _get_multiple_presigned_urls("random-string", [test_url], None)
+        result = _get_multiple_presigned_urls("random-string", {"urls": [test_url]}, None)
 
         self.assertEqual(result, [(test_url, presigned_url_expected)])

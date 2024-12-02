@@ -37,8 +37,8 @@ jobs:
         continue-on-error: true
       - uses: actions/setup-node@v4
         with:
-          cache: "yarn"
-          node-version: 16
+          cache: yarn
+          node-version: 20.18.1
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -86,12 +86,12 @@ jobs:
   #      - name: 🐍 Installing python
   #        uses: actions/setup-python@v5
   #        with:
-  #          python-version: 3.8
+  #          python-version: 3.9
   #
   #      - name: 🪨 Setup Node
   #        uses: actions/setup-node@v4
   #        with:
-  #          node-version: 16.16.0
+  #          node-version: 20.18.1
   #
   #      - name: 🤖 Install Mephisto
   #        run: pip install -e .
@@ -139,12 +139,12 @@ jobs:
   #      - name: 🐍 Installing python
   #        uses: actions/setup-python@v5
   #        with:
-  #          python-version: 3.8
+  #          python-version: 3.9
   #
   #      - name: 🪨 Setup Node
   #        uses: actions/setup-node@v4
   #        with:
-  #          node-version: 16.16.0
+  #          node-version: 20.18.1
   #
   #      - name: 🤖 Install Mephisto
   #        run: pip install -e .
@@ -193,12 +193,12 @@ jobs:
       - name: 🐍 Installing python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: 🪨 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 20.18.1
 
       - name: 🤖 Install Mephisto
         run: pip install -e .
@@ -213,8 +213,11 @@ jobs:
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
         run: |
           cd packages/mephisto-core
+          yarn cache clean --all
           yarn install
           yarn build
           npm link
@@ -243,12 +246,12 @@ jobs:
       - name: 🐍 Installing python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: 🪨 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 20.18.1
 
       - name: 🤖 Install Mephisto
         run: pip install -e .
@@ -263,8 +266,11 @@ jobs:
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
         run: |
           cd packages/mephisto-core
+          yarn cache clean --all
           yarn install
           yarn build
           npm link
@@ -293,12 +299,12 @@ jobs:
       - name: 🐍 Installing python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: 🪨 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 20.18.1
 
       - name: 🤖 Install Mephisto
         run: pip install -e .
@@ -313,8 +319,11 @@ jobs:
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
         run: |
           cd packages/mephisto-core
+          yarn cache clean --all
           yarn install
           yarn build
           npm link
@@ -343,12 +352,12 @@ jobs:
   #      - name: 🐍 Installing python
   #        uses: actions/setup-python@v5
   #        with:
-  #          python-version: 3.8
+  #          python-version: 3.9
   #
   #      - name: 🪨 Setup Node
   #        uses: actions/setup-node@v4
   #        with:
-  #          node-version: 16.16.0
+  #          node-version: 20.18.1
   #
   #      - name: 🤖 Install Mephisto
   #        run: pip install -e .
@@ -396,12 +405,12 @@ jobs:
       - name: 🐍 Installing python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: 🪨 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 20.18.1
 
       - name: 🤖 Install Mephisto
         run: |
@@ -418,8 +427,11 @@ jobs:
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
         run: |
           cd packages/mephisto-core
+          yarn cache clean --all
           yarn install
           yarn build
           npm link
@@ -447,12 +459,12 @@ jobs:
       - name: 🐍 Installing python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: 🪨 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 20.18.1
 
       - name: 🤖 Install Mephisto
         run: |
@@ -469,8 +481,11 @@ jobs:
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
         run: |
           cd packages/mephisto-core
+          yarn cache clean --all
           yarn install
           yarn build
           npm link
@@ -495,15 +510,16 @@ jobs:
     steps:
       - name: 🔀 Checking out repo
         uses: actions/checkout@v2
+
       - name: 🐍 Installing python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: 🪨 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 20.18.1
 
       - name: 🤖 Install Mephisto
         run: |
@@ -520,15 +536,21 @@ jobs:
         run: mephisto register inhouse
 
       - name: 📦 Setting up mephisto-core package
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
         run: |
           cd packages/mephisto-core
+          yarn cache clean --all
           yarn install
           yarn build
           npm link
 
       - name: 📦 Setting up mephisto-addons package
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
         run: |
           cd packages/mephisto-addons
+          yarn cache clean --all
           yarn install
           yarn build
           npm link
@@ -548,17 +570,10 @@ jobs:
 
       - name: 🔪 Killing the web server
         run: |
-          lsof -nPi :3000
-          lsof -i -P -n | grep LISTEN | grep python | awk '{print $2}'
-          kill -INT $(lsof -i -P -n | grep LISTEN | grep python | awk '{print $2}')
-          echo "killed 1"
-          sleep 0.5
-          kill -INT $(lsof -i -P -n | grep LISTEN | grep python | awk '{print $2}')
-          echo "killed 2"
-          lsof -i -P -n | grep LISTEN | grep node | awk '{print $2}'
-          kill -INT $(lsof -i -P -n | grep LISTEN | grep node | awk '{print $2}')
-          sleep 30
-          echo "30 seconds passed"
+          sudo apt install procps -y  # Installing `pkill`
+          sudo pkill -9 python
+          sudo pkill -9 node
+          echo "Web server killed"
 
       - name: 🥛 Expiring units
         run: |

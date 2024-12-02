@@ -69,7 +69,11 @@ function handleSubmitToProvider(task_data) {
     "Thank you for your submission.\n" +
     "You may close this message to view the next task."
   );
-  window.location.replace("/welcome");
+
+  // Redirect only if there's no after submission action (e.g. WorkerOpinion)
+  if (!window.PREVENT_AFTER_SUBMIT_REDIRECT) {
+    window.location.replace("/welcome");
+  }
   return true;
 }
 
