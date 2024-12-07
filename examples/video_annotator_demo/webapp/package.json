@@ -1,6 +1,6 @@
 {
   "name": "video_annotator_demo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
@@ -14,13 +14,18 @@
   "keywords": [],
   "author": "",
   "dependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/webpack-env": "^1.18.5",
     "bootstrap": "^4.6.2",
     "bootstrap-select": "^1.13.18",
     "jquery": "^3.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-overlay": "^6.0.11",
-    "react-router-dom": "^6.26.0"
+    "react-router-dom": "^6.26.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",

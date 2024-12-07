@@ -8,7 +8,7 @@ var path = require("path");
 var webpack = require("webpack");
 
 var dynamicAliases = {};
-var entry = "./src/review_simple.js";
+var entry = "./src/review_simple.ts";
 if (process.env.type !== "simple") {
   dynamicAliases = {
     // Required for custom validators
@@ -20,7 +20,7 @@ if (process.env.type !== "simple") {
       process.env.WEBAPP__GENERATOR__CUSTOM_TRIGGERS
     ),
   };
-  entry = "./src/review_dynamic.js";
+  entry = "./src/review_dynamic.ts";
 }
 
 module.exports = {
@@ -30,6 +30,7 @@ module.exports = {
     filename: "build/bundle.review.js",
   },
   resolve: {
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
     alias: {
       react: path.resolve("./node_modules/react"),
       // Use local library with code that can submit FormData
@@ -51,6 +52,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts(x?)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "ts-loader",
+          },
+        ],
+      },
       {
         test: /\.(js|jsx)$/,
         loader: "babel-loader",

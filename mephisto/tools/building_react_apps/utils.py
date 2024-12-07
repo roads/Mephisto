@@ -13,6 +13,22 @@ from mephisto.utils.console_writer import ConsoleWriter
 logger = ConsoleWriter()
 
 
+def clean_main_node_modules(
+    main_path: str,
+    remove_package_locks: bool = False,
+    verbose: bool = False,
+):
+    if verbose:
+        logger.info(f"[blue]Cleaning main 'node_modules'[/blue]")
+
+    node_modules_path = os.path.join(main_path, "node_modules")
+    package_locks_path = os.path.join(main_path, "package-lock.json")
+    shutil.rmtree(node_modules_path, ignore_errors=True)
+
+    if remove_package_locks:
+        Path(package_locks_path).unlink(missing_ok=True)
+
+
 def clean_single_react_app(
     webapp_path: str,
     remove_package_locks: bool = False,

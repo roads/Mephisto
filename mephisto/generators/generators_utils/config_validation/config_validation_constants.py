@@ -47,6 +47,10 @@ COMMON_AVAILABLE_FIELD_ATTRS: AvailableAttrsType = {
         "type": str,
         "required": False,
     },
+    "icon": {
+        "type": str,
+        "required": False,
+    },
     "id": {
         "type": str,
         "required": False,

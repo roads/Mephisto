@@ -298,3 +298,13 @@ export function getNowUtcSec() {
     ) / 1000
   );
 }
+
+export function isWorkerOpinionEnabled() {
+  let withWorkerOpinion = false;
+  try {
+    withWorkerOpinion = process.env.REACT_APP__WITH_WORKER_OPINION === "true";
+    // Set global constant for `wrap_crowd_source.js`
+    window.PREVENT_AFTER_SUBMIT_REDIRECT = withWorkerOpinion;
+  } catch {}
+  return withWorkerOpinion;
+}

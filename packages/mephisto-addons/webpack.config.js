@@ -8,7 +8,7 @@ var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/index.jsx",
+  entry: "./src/index.ts",
   output: {
     path: __dirname,
     filename: "build/bundle.js",
@@ -20,6 +20,7 @@ module.exports = {
     react: "react",
   },
   resolve: {
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
     alias: {
       "mephisto-core": path.resolve(__dirname, "../../packages/mephisto-core"),
     },
@@ -30,6 +31,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts(x?)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "ts-loader",
+          },
+        ],
+      },
       {
         test: /\.(js|jsx)$/,
         loader: "babel-loader",

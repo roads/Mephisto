@@ -8,6 +8,7 @@ import argparse
 
 from mephisto.tools.building_react_apps import examples
 from mephisto.tools.building_react_apps import generators
+from mephisto.tools.building_react_apps import main
 from mephisto.tools.building_react_apps import packages
 from mephisto.tools.building_react_apps import review_app
 from mephisto.utils.console_writer import ConsoleWriter
@@ -20,6 +21,8 @@ def _clean(remove_package_locks: bool):
 
     if verbose:
         logger.info("[blue]Started cleaning up all `build` and `node_modules` directories[/blue]")
+
+    main.clean_main(remove_package_locks, verbose=verbose)
 
     # TODO: --- Cannot be built (maybe outdated configs). Fix and uncomment later ---
     # packages.clean_annotated_bbox_package(remove_package_locks, verbose=verbose)
@@ -92,6 +95,7 @@ def _build():
     examples.build_form_composer_dynamic(force_rebuild=force_rebuild)
     examples.build_form_composer_dynamic_presigned_urls_ec2_prolific(force_rebuild=force_rebuild)
     examples.build_video_annotator_simple(force_rebuild=force_rebuild)
+    examples.build_video_annotator_dynamic(force_rebuild=force_rebuild)
     examples.build_parlai_chat_task_demo(force_rebuild=force_rebuild)
     examples.build_remote_procedure_interactive_image_generation(force_rebuild=force_rebuild)
     examples.build_remote_procedure_mnist(force_rebuild=force_rebuild)

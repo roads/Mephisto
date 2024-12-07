@@ -8,7 +8,7 @@ var path = require("path");
 var webpack = require("webpack");
 
 var dynamicAliases = {};
-var entry = "./src/main_simple.js";
+var entry = "./src/main_simple.ts";
 if (process.env.type !== "simple") {
   dynamicAliases = {
     // Required for custom validators
@@ -20,7 +20,7 @@ if (process.env.type !== "simple") {
       process.env.WEBAPP__GENERATOR__CUSTOM_TRIGGERS
     ),
   };
-  entry = "./src/main_dynamic.js";
+  entry = "./src/main_dynamic.ts";
 }
 
 module.exports = {
@@ -31,6 +31,7 @@ module.exports = {
     publicPath: "/",
   },
   resolve: {
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
     alias: {
       react: path.resolve("./node_modules/react"),
       // Use local library with code that can submit FormData
@@ -52,6 +53,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts(x?)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "ts-loader",
+          },
+        ],
+      },
       {
         test: /\.(js|jsx)$/,
         loader: "babel-loader",

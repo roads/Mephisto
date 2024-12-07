@@ -24,17 +24,22 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v4
         env:
           FORCE_COLOR: 0
         with:
-          node-version: 16
+          node-version: 20.18.1
 
       - name: Install yarn 3
         run: npm i -g yarn
 
       - name: Install package dependencies
-        run: yarn install
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false # prevents error YN0028 during build
+        run: |
+          yarn cache clean --all
+          yarn install
 
       - name: Test that docusarus compiles
         run: |
