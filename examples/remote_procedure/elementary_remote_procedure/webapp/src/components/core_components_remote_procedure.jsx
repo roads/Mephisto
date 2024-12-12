@@ -6,16 +6,16 @@
 
 import React from "react";
 
-function LoadingScreen() {
-  return <Directions>Loading...</Directions>;
-}
-
 function Directions({ children }) {
   return (
     <div className={"card mb-4"}>
       <div className={"card-body container"}>{children}</div>
     </div>
   );
+}
+
+function LoadingScreen() {
+  return <Directions>Loading...</Directions>;
 }
 
 function Instructions() {
@@ -44,15 +44,15 @@ function ElementaryRemoteProcedureTaskFrontend({
 }) {
   const inReviewState = finalResults !== null;
 
-  if (!inReviewState && !taskData) {
-    return <LoadingScreen />;
-  }
-
   const [queryCount, setQueryCount] = React.useState(0);
   let canSubmit = queryCount > 3;
 
   const disabledQueryButton = inReviewState;
   const disabledSubmitButton = inReviewState || !canSubmit;
+
+  if (!inReviewState && !taskData) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div>

@@ -73,6 +73,10 @@ type ScreeningComponentPropsType = {
 };
 
 function ScreeningComponent({ taskData }: ScreeningComponentPropsType) {
+  if (!taskData) {
+    return "";
+  }
+
   return (
     <div className="alert alert-primary">
       Screening Unit. Please, enter "{taskData.expecting_answers.name_first}" in
@@ -97,7 +101,7 @@ function FormComposerBaseFrontend({
   onError,
   finalResults = null,
 }: FormComposerBaseFrontendPropsType) {
-  let initialConfigFormData: ConfigFormType = taskData.form;
+  let initialConfigFormData: ConfigFormType = taskData?.form;
 
   if (!initialConfigFormData) {
     return <div>Passed form data is invalid... Recheck your task config.</div>;
@@ -106,7 +110,7 @@ function FormComposerBaseFrontend({
   return (
     <div>
       {/* Screening banner */}
-      {taskData.isScreeningUnit && <ScreeningComponent taskData={taskData} />}
+      {taskData?.isScreeningUnit && <ScreeningComponent taskData={taskData} />}
 
       <FormComposer
         data={initialConfigFormData}

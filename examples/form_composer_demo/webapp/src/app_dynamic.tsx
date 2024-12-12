@@ -4,7 +4,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ErrorBoundary, useMephistoTask } from "mephisto-core";
+import { MephistoApp } from "mephisto-addons";
+import { useMephistoTask } from "mephisto-core";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {
@@ -12,36 +13,38 @@ import {
   LoadingScreen,
 } from "./components/core_components_dynamic";
 
-/* ================= Application Components ================= */
-
-function MainApp() {
+function App() {
   const {
-    isLoading,
-    initialTaskData,
-    handleSubmit,
     handleFatalError,
+    handleSubmit,
+    initialTaskData,
+    isLoading,
+    providerType,
   }: {
-    isLoading: boolean;
-    initialTaskData: ConfigTaskType;
-    handleSubmit: Function;
     handleFatalError: Function;
+    handleSubmit: Function;
+    initialTaskData: ConfigTaskType;
+    isLoading: boolean;
+    providerType: string;
   } = useMephistoTask();
 
-  if (isLoading || !initialTaskData) {
+  if (isLoading) {
     return <LoadingScreen />;
   }
 
   return (
-    <div>
-      <ErrorBoundary handleError={handleFatalError}>
-        <FormComposerBaseFrontend
-          taskData={initialTaskData}
-          onSubmit={handleSubmit}
-          onError={handleFatalError}
-        />
-      </ErrorBoundary>
-    </div>
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!initialTaskData?.form}
+      providerType={providerType}
+    >
+      <FormComposerBaseFrontend
+        taskData={initialTaskData}
+        onSubmit={handleSubmit}
+        onError={handleFatalError}
+      />
+    </MephistoApp>
   );
 }
 
-ReactDOM.render(<MainApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

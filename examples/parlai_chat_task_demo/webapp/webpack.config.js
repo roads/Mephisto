@@ -20,6 +20,10 @@ module.exports = {
         __dirname,
         "../../../packages/mephisto-core"
       ),
+      "mephisto-addons": path.resolve(
+        __dirname,
+        "../../../packages/mephisto-addons"
+      ),
     },
     fallback: {
       net: false,

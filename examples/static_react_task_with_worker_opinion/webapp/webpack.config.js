@@ -16,12 +16,10 @@ module.exports = {
   resolve: {
     alias: {
       react: path.resolve("./node_modules/react"),
-      // Use local library with code that can submit metadata with files
       "mephisto-core": path.resolve(
         __dirname,
         "../../../packages/mephisto-core"
       ),
-      // Use local library with code that can submit Worker Opinion
       "mephisto-addons": path.resolve(
         __dirname,
         "../../../packages/mephisto-addons"
@@ -55,4 +53,5 @@ module.exports = {
       },
     ],
   },
+  plugins: [new webpack.EnvironmentPlugin({ ...process.env })],
 };

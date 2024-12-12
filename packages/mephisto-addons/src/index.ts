@@ -4,6 +4,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import MephistoApp from "./apps/MephistoApp";
+import ReviewApp from "./apps/ReviewApp";
 import * as constants from "./constants";
 import {
   TOKEN_END_REGEX,
@@ -28,12 +30,12 @@ import { prepareVideoAnnotatorData } from "./VideoAnnotator/utils";
 import VideoAnnotator from "./VideoAnnotator/VideoAnnotator";
 import VideoPlayer from "./VideoAnnotator/VideoPlayer";
 import WorkerOpinion from "./WorkerOpinion/WorkerOpinion";
-import ReviewApp from "./apps/ReviewApp";
 
 export {
   FormComposer,
   FormComposerFields,
   ListErrors,
+  MephistoApp,
   ReviewApp,
   TOKEN_END_REGEX,
   TOKEN_END_SYMBOLS,

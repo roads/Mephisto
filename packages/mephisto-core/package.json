@@ -1,6 +1,6 @@
 {
   "name": "mephisto-core",
-  "version": "1.5.1",
+  "version": "1.5.4",
   "description": "Core Mephisto logic, related to websockets (successor of `mephisto-task`)",
   "main": "build/bundle.js",
   "scripts": {

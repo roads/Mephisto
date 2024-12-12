@@ -4,35 +4,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { MephistoApp } from "mephisto-addons";
+import {
+  MephistoContext,
+  PROVIDER_TYPE,
+  useMephistoRemoteProcedureTask,
+} from "mephisto-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
-  ToxicityTaskFrontend,
-  LoadingScreen,
   Instructions,
+  LoadingScreen,
+  ToxicityTaskFrontend,
 } from "./components/core_components_remote_procedure.jsx";
 
-import {
-  MephistoContext,
-  useMephistoRemoteProcedureTask,
-  ErrorBoundary,
-} from "mephisto-core";
-
-function RemoteProcedureApp() {
+function App() {
   let mephistoProps = useMephistoRemoteProcedureTask({});
 
   let {
-    blockedReason,
     blockedExplanation,
-    isPreview,
-    isLoading,
-    handleSubmit,
-    remoteProcedure,
-    isOnboarding,
+    blockedReason,
     handleFatalError,
+    handleSubmit,
+    initialTaskData,
+    isLoading,
+    isOnboarding,
+    isPreview,
+    providerType,
+    remoteProcedure,
   } = mephistoProps;
 
   const handleToxicityCalculation = remoteProcedure("determine_toxicity");
+
+  const isInhouseProvider = providerType === PROVIDER_TYPE.INHOUSE;
+
+  let _initialTaskData = initialTaskData;
+  if (initialTaskData && initialTaskData.hasOwnProperty("task_data")) {
+    _initialTaskData = initialTaskData.task_data;
+  }
 
   if (isOnboarding) {
     return <h1>This task doesn't currently have an onboarding example set</h1>;
@@ -43,12 +52,16 @@ function RemoteProcedureApp() {
   if (isLoading) {
     return <LoadingScreen />;
   }
-  if (isPreview) {
+  if (isPreview && !isInhouseProvider) {
     return <Instructions />;
   }
 
   return (
-    <ErrorBoundary handleError={handleFatalError}>
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!_initialTaskData?.has_data}
+      providerType={providerType}
+    >
       <MephistoContext.Provider value={mephistoProps}>
         <div className={"container"} id={"ui-container"}>
           <ToxicityTaskFrontend
@@ -57,8 +70,8 @@ function RemoteProcedureApp() {
           />
         </div>
       </MephistoContext.Provider>
-    </ErrorBoundary>
+    </MephistoApp>
   );
 }
 
-ReactDOM.render(<RemoteProcedureApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

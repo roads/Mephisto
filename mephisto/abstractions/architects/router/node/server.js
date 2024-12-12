@@ -7,7 +7,7 @@
 "use strict";
 
 const DEBUG = false;
-const CURR_MEPHISTO_CORE_PACKAGE_VERSION = "1.5.1";
+const CURR_MEPHISTO_CORE_PACKAGE_VERSION = "1.5.4";
 
 // TODO add some testing to launch this server and communicate with it
 

@@ -4,8 +4,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { isWorkerOpinionEnabled } from "mephisto-core";
 import React, { useState } from "react";
 import { WorkerOpinion } from "mephisto-addons";
+
+let WITH_WORKER_OPINION = isWorkerOpinionEnabled();
+
+function Directions({ children }) {
+  return (
+    <div className="card mb-4" data-cy="directions-container">
+      <div className="card-body container">{children}</div>
+    </div>
+  );
+}
 
 function OnboardingComponent({ onSubmit }) {
   return (
@@ -30,16 +41,32 @@ function LoadingScreen() {
   return <Directions>Loading...</Directions>;
 }
 
-function Directions({ children }) {
+function Instructions() {
   return (
-    <div className="card mb-4" data-cy="directions-container">
-      <div className="card-body container">{children}</div>
+    <div className="card bg-primary mb-4">
+      <div className="card-body pt-xl-5 pb-xl-5">
+        <h2 className="text-white">
+          This is an incredibly simple React task working with Mephisto!
+        </h2>
+        <h5 className="text-white">
+          Inside you'll be asked to rate a given sentence as good or bad.
+        </h5>
+      </div>
     </div>
   );
 }
 
-function SimpleFrontend({ taskData, isOnboarding, onSubmit, onError }) {
-  const [resonseSubmitted, setResonseSubmitted] = useState(false);
+function StaticReactTaskFrontend({
+  taskData,
+  isOnboarding,
+  onSubmit,
+  onError,
+}) {
+  const [responseSubmitted, setResponseSubmitted] = useState(false);
+
+  if (!taskData) {
+    return "";
+  }
 
   return (
     <div>
@@ -59,13 +86,13 @@ function SimpleFrontend({ taskData, isOnboarding, onSubmit, onError }) {
             {taskData.text}
           </h2>
 
-          {!resonseSubmitted && (
+          {!responseSubmitted && (
             <div className="mb-5">
               <button
                 className="btn btn-success btn-lg mr-2"
                 data-cy="good-button"
                 onClick={() => {
-                  setResonseSubmitted(true);
+                  setResponseSubmitted(true);
                   onSubmit({ rating: "good" });
                 }}
               >
@@ -76,7 +103,7 @@ function SimpleFrontend({ taskData, isOnboarding, onSubmit, onError }) {
                 className="btn btn-danger btn-lg ml-2"
                 data-cy="bad-button"
                 onClick={() => {
-                  setResonseSubmitted(true);
+                  setResponseSubmitted(true);
                   onSubmit({ rating: "bad" });
                 }}
               >
@@ -85,7 +112,7 @@ function SimpleFrontend({ taskData, isOnboarding, onSubmit, onError }) {
             </div>
           )}
 
-          {resonseSubmitted && (
+          {WITH_WORKER_OPINION && responseSubmitted && (
             <>
               <div className="mb-5">Thank you for your response!</div>
 
@@ -103,4 +130,9 @@ function SimpleFrontend({ taskData, isOnboarding, onSubmit, onError }) {
   );
 }
 
-export { LoadingScreen, SimpleFrontend as BaseFrontend, OnboardingComponent };
+export {
+  Instructions,
+  LoadingScreen,
+  OnboardingComponent,
+  StaticReactTaskFrontend,
+};

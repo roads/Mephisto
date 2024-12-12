@@ -6,6 +6,14 @@
 
 import React, { useState } from "react";
 
+function Directions({ children }) {
+  return (
+    <div className="card mb-4" data-cy="directions-container">
+      <div className="card-body container">{children}</div>
+    </div>
+  );
+}
+
 function OnboardingComponent({ onSubmit }) {
   return (
     <div>
@@ -57,21 +65,17 @@ function LoadingScreen() {
   return <Directions>Loading...</Directions>;
 }
 
-function Directions({ children }) {
-  return (
-    <div className="card mb-4" data-cy="directions-container">
-      <div className="card-body container">{children}</div>
-    </div>
-  );
-}
-
 function StaticReactTaskFrontend({
   taskData,
   isOnboarding,
   onSubmit,
   onError,
 }) {
-  const [resonseSubmitted, setResonseSubmitted] = useState(false);
+  const [responseSubmitted, setResponseSubmitted] = useState(false);
+
+  if (!taskData) {
+    return "";
+  }
 
   return (
     <div>
@@ -85,13 +89,13 @@ function StaticReactTaskFrontend({
             {taskData.text}
           </h2>
 
-          {!resonseSubmitted && (
+          {!responseSubmitted && (
             <div className="mb-5">
               <button
                 className="btn btn-success btn-lg mr-2"
                 data-cy="good-button"
                 onClick={() => {
-                  setResonseSubmitted(true);
+                  setResponseSubmitted(true);
                   onSubmit({ rating: "good" });
                 }}
               >
@@ -102,7 +106,7 @@ function StaticReactTaskFrontend({
                 className="btn btn-danger btn-lg ml-2"
                 data-cy="bad-button"
                 onClick={() => {
-                  setResonseSubmitted(true);
+                  setResponseSubmitted(true);
                   onSubmit({ rating: "bad" });
                 }}
               >
@@ -111,7 +115,7 @@ function StaticReactTaskFrontend({
             </div>
           )}
 
-          {resonseSubmitted && (
+          {responseSubmitted && (
             <div className="mb-5">Thank you for your response!</div>
           )}
         </div>

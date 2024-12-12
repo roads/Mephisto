@@ -4,49 +4,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { MephistoApp } from "mephisto-addons";
+import {
+  MephistoContext,
+  PROVIDER_TYPE,
+  useMephistoRemoteProcedureTask,
+} from "mephisto-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
-  BaseFrontend,
-  LoadingScreen,
   Instructions,
+  LoadingScreen,
+  MnistTaskFrontend,
 } from "./components/core_components.jsx";
 
-import {
-  MephistoContext,
-  useMephistoRemoteProcedureTask,
-  ErrorBoundary,
-} from "mephisto-core";
-
-/* ================= Application Components ================= */
-
-// Generate a random id
-function uuidv4() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-function RemoteProcedureApp() {
+function App() {
   let mephistoProps = useMephistoRemoteProcedureTask({});
 
   let {
     blockedReason,
     blockedExplanation,
-    taskConfig,
     isPreview,
-    previewHtml,
     isLoading,
     handleSubmit,
     remoteProcedure,
     isOnboarding,
     handleFatalError,
     initialTaskData,
+    providerType,
   } = mephistoProps;
 
   const classifyDigit = remoteProcedure("classify_digit");
+
+  const isInhouseProvider = providerType === PROVIDER_TYPE.INHOUSE;
+
+  let _initialTaskData = initialTaskData;
+  if (initialTaskData && initialTaskData.hasOwnProperty("task_data")) {
+    _initialTaskData = initialTaskData.task_data;
+  }
 
   if (isOnboarding) {
     // TODO You can use this as an opportunity to display anything you want for
@@ -61,35 +56,27 @@ function RemoteProcedureApp() {
   if (isLoading) {
     return <LoadingScreen />;
   }
-  if (isPreview) {
+  if (isPreview && !isInhouseProvider) {
     return <Instructions />;
   }
 
   return (
-    <ErrorBoundary handleError={handleFatalError}>
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!_initialTaskData?.has_data}
+      providerType={providerType}
+    >
       <MephistoContext.Provider value={mephistoProps}>
         <div className="container-fluid" id="ui-container">
-          <BaseFrontend
+          <MnistTaskFrontend
             classifyDigit={classifyDigit}
             handleSubmit={handleSubmit}
-            initialTaskData={initialTaskData["task_data"]}
+            initialTaskData={_initialTaskData}
           />
         </div>
       </MephistoContext.Provider>
-    </ErrorBoundary>
+    </MephistoApp>
   );
 }
 
-function TaskPreviewView({ description }) {
-  return (
-    <div className="preview-screen">
-      <div
-        dangerouslySetInnerHTML={{
-          __html: description,
-        }}
-      />
-    </div>
-  );
-}
-
-ReactDOM.render(<RemoteProcedureApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

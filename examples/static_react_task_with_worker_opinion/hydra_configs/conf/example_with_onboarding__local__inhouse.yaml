@@ -8,6 +8,7 @@ defaults:
   - /mephisto/blueprint: static_react_task
   - /mephisto/architect: local
   - /mephisto/provider: inhouse
+
 mephisto:
   blueprint:
     task_source: ${task_dir}/webapp/build/bundle.js
@@ -18,10 +19,11 @@ mephisto:
   provider:
     ui_base_url: "http://localhost:3001"
   task:
-    task_name: react-static-task-with-tips
+    task_name: react-static-task-with-worker-opinion
     task_title: "Rating a sentence as good or bad. There is a tips button that can help when completing this task."
     task_description: "In this task, you'll be given a sentence. It is your job to rate it as either good or bad. Look at the tips for help."
     task_reward: 0.05
-    task_tags: "test,simple,button,tips"
+    task_tags: "test,simple,button,worker_opinion"
     # We expect to be able to handle 300 concurrent tasks without issue
     max_num_concurrent_units: 300
+    force_rebuild: true

@@ -77,7 +77,7 @@ function VideoAnnotatorBaseFrontend({
   );
 
   const inReviewState: boolean = ![undefined, null].includes(finalResults);
-  const initialConfigAnnotatorData: ConfigAnnotatorType = taskData.annotator;
+  const initialConfigAnnotatorData: ConfigAnnotatorType = taskData?.annotator;
 
   if (!inReviewState) {
     prepareRemoteProcedures(remoteProcedure);
@@ -96,7 +96,7 @@ function VideoAnnotatorBaseFrontend({
         setRenderingErrors
       );
     }
-  }, [taskData.annotator]);
+  }, [taskData?.annotator]);
 
   if (!initialConfigAnnotatorData) {
     return <NoDataErrorsMessage />;

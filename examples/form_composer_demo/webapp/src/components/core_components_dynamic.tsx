@@ -41,7 +41,7 @@ function FormComposerBaseFrontend({
   onError,
   finalResults = null,
 }: FormComposerBaseFrontendPropsType) {
-  let initialConfigFormData: ConfigFormType = taskData.form;
+  let initialConfigFormData: ConfigFormType = taskData?.form;
 
   if (!initialConfigFormData) {
     return <div>Passed form data is invalid... Recheck your task config.</div>;

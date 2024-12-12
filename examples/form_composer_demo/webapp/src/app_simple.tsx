@@ -4,15 +4,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { WelcomePage, WorkerOpinion } from "mephisto-addons";
-import {
-  ErrorBoundary,
-  isWorkerOpinionEnabled,
-  useMephistoTask,
-} from "mephisto-core";
+import { MephistoApp, WorkerOpinion } from "mephisto-addons";
+import { isWorkerOpinionEnabled, useMephistoTask } from "mephisto-core";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
   FormComposerBaseFrontend,
   LoadingScreen,
@@ -21,93 +16,37 @@ import {
 
 let WITH_WORKER_OPINION: boolean = isWorkerOpinionEnabled();
 
-/* ================= Application Components ================= */
-
-type HomePagePropsType = {
-  isLoading?: boolean;
-  initialTaskData: ConfigTaskType;
-  handleSubmit: Function;
-  handleFatalError: Function;
-  isOnboarding: boolean;
-  resonseSubmitted: boolean;
-  setResonseSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-function HomePage({
-  handleFatalError,
-  handleSubmit,
-  initialTaskData,
-  isOnboarding,
-  resonseSubmitted,
-  setResonseSubmitted,
-}: HomePagePropsType) {
-  // In case of visiting home page but without any GET-parameters
-  if (!initialTaskData?.form) {
-    return (
-      <div className={"container text-center mt-xl-5"}>
-        <h2 className={"mb-xl-5"}>Welcome to Mephisto</h2>
-
-        <div>
-          <a href={"/welcome"}>Click here</a> to proceed to your tasks.
-        </div>
-      </div>
-    );
-  }
-
-  // If all GET-parameters were passed and server returned task data
-  return (
-    <>
-      <FormComposerBaseFrontend
-        taskData={initialTaskData}
-        isOnboarding={isOnboarding}
-        onSubmit={(data: FormComposerResultsType) => {
-          setResonseSubmitted(true);
-          handleSubmit(data);
-        }}
-        onError={handleFatalError}
-      />
-
-      {WITH_WORKER_OPINION && resonseSubmitted && (
-        <div className={"mx-auto mt-lg-5 mb-lg-5"} style={{ width: "600px" }}>
-          <WorkerOpinion
-            maxTextLength={500}
-            questions={["Was this task hard?", "Is this a good example?"]}
-          />
-        </div>
-      )}
-    </>
-  );
-}
-
-function MainApp() {
+function App() {
   const {
-    isLoading,
-    initialTaskData,
-    handleFatalError,
-    handleSubmit,
-    isOnboarding,
     blockedExplanation,
     blockedReason,
+    handleFatalError,
+    handleSubmit,
+    initialTaskData,
+    isLoading,
+    isOnboarding,
+    providerType,
   }: {
-    isLoading: boolean;
-    initialTaskData: ConfigTaskType;
-    handleSubmit: Function;
-    handleFatalError: Function;
-    isOnboarding: boolean;
     blockedExplanation: string;
     blockedReason: string;
+    handleFatalError: Function;
+    handleSubmit: Function;
+    initialTaskData: ConfigTaskType;
+    isLoading: boolean;
+    isOnboarding: boolean;
+    providerType: string;
   } = useMephistoTask();
 
-  const [resonseSubmitted, setResonseSubmitted] = React.useState<boolean>(
+  const [responseSubmitted, setResponseSubmitted] = React.useState<boolean>(
     false
   );
 
   React.useEffect(() => {
-    if (resonseSubmitted) {
+    if (responseSubmitted) {
       // Scroll to the bollom of the page to reveal Worker Opinion block
       window.scrollTo(0, document.body.scrollHeight);
     }
-  }, [resonseSubmitted]);
+  }, [responseSubmitted]);
 
   if (blockedReason !== null) {
     return (
@@ -128,33 +67,31 @@ function MainApp() {
   }
 
   return (
-    <div>
-      <ErrorBoundary handleError={handleFatalError}>
-        <Routes>
-          <Route path="/welcome" element={<WelcomePage />} />
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!initialTaskData?.form}
+      providerType={providerType}
+    >
+      <FormComposerBaseFrontend
+        taskData={initialTaskData}
+        isOnboarding={isOnboarding}
+        onSubmit={(data: FormComposerResultsType) => {
+          setResponseSubmitted(true);
+          handleSubmit(data);
+        }}
+        onError={handleFatalError}
+      />
 
-          <Route
-            path="/"
-            element={
-              <HomePage
-                handleFatalError={handleFatalError}
-                handleSubmit={handleSubmit}
-                initialTaskData={initialTaskData}
-                isOnboarding={isOnboarding}
-                resonseSubmitted={resonseSubmitted}
-                setResonseSubmitted={setResonseSubmitted}
-              />
-            }
+      {WITH_WORKER_OPINION && responseSubmitted && (
+        <div className={"mx-auto mt-lg-5 mb-lg-5"} style={{ width: "600px" }}>
+          <WorkerOpinion
+            maxTextLength={500}
+            questions={["Was this task hard?", "Is this a good example?"]}
           />
-        </Routes>
-      </ErrorBoundary>
-    </div>
+        </div>
+      )}
+    </MephistoApp>
   );
 }
 
-ReactDOM.render(
-  <BrowserRouter>
-    <MainApp />
-  </BrowserRouter>,
-  document.getElementById("app")
-);
+ReactDOM.render(<App />, document.getElementById("app"));

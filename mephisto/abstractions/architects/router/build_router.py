@@ -25,7 +25,7 @@ NODE_SERVER_SOURCE_ROOT = os.path.join(ROUTER_ROOT_DIR, "node")
 FLASK_SERVER_SOURCE_ROOT = os.path.join(ROUTER_ROOT_DIR, "flask")
 CROWD_SOURCE_PATH = "static/wrap_crowd_source.js"
 TASK_CONFIG_PATH = "static/task_config.json"
-CURR_MEPHISTO_CORE_PACKAGE_VERSION = "1.5.1"
+CURR_MEPHISTO_CORE_PACKAGE_VERSION = "1.5.4"
 
 logger = get_logger(name=__name__)
 
@@ -105,7 +105,7 @@ def build_router(
     logger.debug(f"Copying '{server_source_directory_path}' -> '{local_server_directory_path}'")
     shutil.copytree(server_source_directory_path, local_server_directory_path)
 
-    # Copy the required wrap crowd source path
+    # Copy the required wrap crowdsource path
     local_crowd_source_path = os.path.join(local_server_directory_path, CROWD_SOURCE_PATH)
     logger.debug(f"{local_crowd_source_path=}")
 
@@ -122,6 +122,7 @@ def build_router(
     with open(local_task_config_path, "w+") as task_fp:
         frontend_args = blueprint.get_frontend_args()
         frontend_args["mephisto_core_version"] = CURR_MEPHISTO_CORE_PACKAGE_VERSION
+        frontend_args["provider_type"] = crowd_provider.PROVIDER_TYPE
 
         json.dump(frontend_args, task_fp)
 
