@@ -4,7 +4,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ErrorBoundary, useMephistoRemoteProcedureTask } from "mephisto-core";
+import { MephistoApp } from "mephisto-addons";
+import { useMephistoRemoteProcedureTask } from "mephisto-core";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {
@@ -12,47 +13,49 @@ import {
   LoadingScreen,
 } from "./components/core_components_remote_procedure";
 
-/* ================= Application Components ================= */
-
-function MainApp() {
+function App() {
   const {
-    isLoading,
-    initialTaskData,
-    remoteProcedure,
-    handleSubmit,
     handleFatalError,
+    handleSubmit,
+    initialTaskData,
+    isLoading,
+    providerType,
+    remoteProcedure,
     setTaskSubmitData,
   }: {
-    isLoading: boolean;
-    initialTaskData: ConfigTaskType;
-    remoteProcedure: RemoteProcedureCollectionType;
-    handleSubmit: Function;
     handleFatalError: Function;
+    handleSubmit: Function;
+    initialTaskData: ConfigTaskType;
+    isLoading: boolean;
+    providerType: string;
+    remoteProcedure: RemoteProcedureCollectionType;
     setTaskSubmitData: SetTaskSubmitDataType;
   } = useMephistoRemoteProcedureTask();
 
-  if (isLoading || !initialTaskData) {
+  if (isLoading) {
     return <LoadingScreen />;
   }
 
   let _initialTaskData: ConfigTaskType = initialTaskData;
-  if (initialTaskData.hasOwnProperty("task_data")) {
+  if (initialTaskData && initialTaskData.hasOwnProperty("task_data")) {
     _initialTaskData = initialTaskData.task_data;
   }
 
   return (
-    <div>
-      <ErrorBoundary handleError={handleFatalError}>
-        <FormComposerBaseFrontend
-          taskData={_initialTaskData}
-          onSubmit={handleSubmit}
-          onError={handleFatalError}
-          remoteProcedure={remoteProcedure}
-          setTaskSubmitData={setTaskSubmitData}
-        />
-      </ErrorBoundary>
-    </div>
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!_initialTaskData?.form}
+      providerType={providerType}
+    >
+      <FormComposerBaseFrontend
+        taskData={_initialTaskData}
+        onSubmit={handleSubmit}
+        onError={handleFatalError}
+        remoteProcedure={remoteProcedure}
+        setTaskSubmitData={setTaskSubmitData}
+      />
+    </MephistoApp>
   );
 }
 
-ReactDOM.render(<MainApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

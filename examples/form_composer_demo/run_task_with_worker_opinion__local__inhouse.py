@@ -16,10 +16,12 @@ from mephisto.tools.scripts import task_script
 @task_script(default_config_file="example__local__inhouse")
 def main(operator: Operator, cfg: DictConfig) -> None:
     os.environ["REACT_APP__WITH_WORKER_OPINION"] = "true"
+
     examples.build_form_composer_simple(
         force_rebuild=cfg.mephisto.task.force_rebuild,
         post_install_script=cfg.mephisto.task.post_install_script,
     )
+
     operator.launch_task_run(cfg.mephisto)
     operator.wait_for_runs_then_shutdown(skip_input=True, log_rate=30)
 

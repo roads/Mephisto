@@ -11,10 +11,12 @@ It is only used in a GitHub action as it does not automatically expire units.
 
 
 def main():
-    task_name = "react-static-task-with-tips"
+    task_name = "react-static-task-with-worker-opinion"
     db = LocalMephistoDB()
     tasks = db.find_tasks(task_name=task_name)
+
     assert len(tasks) >= 1, f"No task found under name {task_name}"
+
     task_runs = db.find_task_runs(task_id=tasks[0].db_id)
     for task_run in task_runs:
         assignments = task_run.get_assignments()

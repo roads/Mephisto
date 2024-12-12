@@ -18,6 +18,7 @@ import {
   requestAgent,
 } from "./utils";
 
+export * from "./constants";
 export * from "./MephistoContext";
 export * from "./utils";
 export * from "./live";
@@ -44,18 +45,19 @@ const useMephistoTask = function () {
     ...action,
   });
   const initialState = {
-    providerWorkerId: providerWorkerId,
-    mephistoWorkerId: null,
     agentId: null,
     assignmentId: assignmentId,
-    taskConfig: null,
-    isPreview: isPreview,
-    previewHtml: null,
-    blockedReason: null,
     blockedExplanation: null,
+    blockedReason: null,
     initialTaskData: null,
     isOnboarding: null,
+    isPreview: isPreview,
     loaded: false,
+    mephistoWorkerId: null,
+    previewHtml: null,
+    providerType: null,
+    providerWorkerId: providerWorkerId,
+    taskConfig: null,
   };
 
   const [state, setState] = React.useReducer(reducerFn, initialState);
@@ -104,7 +106,11 @@ const useMephistoTask = function () {
         afterAgentRegistration(data);
       });
     }
-    setState({ taskConfig: taskConfig, loaded: isPreview });
+    setState({
+      loaded: isPreview,
+      providerType: taskConfig.provider_type,
+      taskConfig: taskConfig,
+    });
   }
   function afterAgentRegistration(dataPacket) {
     const workerId = dataPacket.data.worker_id;

@@ -6,16 +6,16 @@
 
 import React, { Fragment, useState } from "react";
 
-function LoadingScreen() {
-  return <Directions>Loading...</Directions>;
-}
-
 function Directions({ children }) {
   return (
     <div className={"card mb-4"}>
       <div className={"card-body container"}>{children}</div>
     </div>
   );
+}
+
+function LoadingScreen() {
+  return <Directions>Loading...</Directions>;
 }
 
 function Instructions() {
@@ -148,4 +148,4 @@ function ToxicityTaskFrontend({
   );
 }
 
-export { LoadingScreen, ToxicityTaskFrontend, Instructions };
+export { Instructions, LoadingScreen, ToxicityTaskFrontend };

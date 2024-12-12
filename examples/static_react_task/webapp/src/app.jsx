@@ -4,7 +4,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ErrorBoundary, useMephistoTask } from "mephisto-core";
+import { MephistoApp } from "mephisto-addons";
+import { useMephistoTask, PROVIDER_TYPE } from "mephisto-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
@@ -14,19 +15,20 @@ import {
   StaticReactTaskFrontend,
 } from "./components/core_components.jsx";
 
-/* ================= Application Components ================= */
-
-function MainApp() {
+function App() {
   const {
-    blockedReason,
     blockedExplanation,
-    isPreview,
-    isLoading,
-    initialTaskData,
-    handleSubmit,
+    blockedReason,
     handleFatalError,
+    handleSubmit,
+    initialTaskData,
+    isLoading,
     isOnboarding,
+    isPreview,
+    providerType,
   } = useMephistoTask();
+
+  const isInhouseProvider = providerType === PROVIDER_TYPE.INHOUSE;
 
   if (blockedReason !== null) {
     return (
@@ -38,30 +40,34 @@ function MainApp() {
     );
   }
 
-  if (isPreview) {
+  if (isPreview && !isInhouseProvider) {
     return <Instructions />;
   }
-  if (isLoading || !initialTaskData) {
+
+  if (isLoading) {
     return <LoadingScreen />;
   }
+
   if (isOnboarding) {
     return <OnboardingComponent onSubmit={handleSubmit} />;
   }
 
   return (
-    <div>
-      <ErrorBoundary handleError={handleFatalError}>
-        <Instructions />
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!initialTaskData?.text}
+      providerType={providerType}
+    >
+      <Instructions />
 
-        <StaticReactTaskFrontend
-          taskData={initialTaskData}
-          onSubmit={handleSubmit}
-          isOnboarding={isOnboarding}
-          onError={handleFatalError}
-        />
-      </ErrorBoundary>
-    </div>
+      <StaticReactTaskFrontend
+        taskData={initialTaskData}
+        onSubmit={handleSubmit}
+        isOnboarding={isOnboarding}
+        onError={handleFatalError}
+      />
+    </MephistoApp>
   );
 }
 
-ReactDOM.render(<MainApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

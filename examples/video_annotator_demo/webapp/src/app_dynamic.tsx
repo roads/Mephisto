@@ -4,44 +4,61 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { MephistoApp } from "mephisto-addons";
+import { useMephistoTask } from "mephisto-core";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {
-  VideoAnnotatorBaseFrontend,
   LoadingScreen,
+  VideoAnnotatorBaseFrontend,
 } from "./components/core_components_dynamic";
-import { useMephistoTask, ErrorBoundary } from "mephisto-core";
 
-/* ================= Application Components ================= */
-
-function MainApp() {
+function App() {
   const {
-    isLoading,
-    initialTaskData,
-    handleSubmit,
+    blockedExplanation,
+    blockedReason,
     handleFatalError,
+    handleSubmit,
+    initialTaskData,
+    isLoading,
+    providerType,
   }: {
-    isLoading: boolean;
-    initialTaskData: ConfigAnnotatorType;
-    handleSubmit: Function;
+    blockedExplanation: string;
+    blockedReason: string;
     handleFatalError: Function;
+    handleSubmit: Function;
+    initialTaskData: ConfigAnnotatorType;
+    isLoading: boolean;
+    providerType: string;
   } = useMephistoTask();
 
-  if (isLoading || !initialTaskData) {
+  if (blockedReason !== null) {
+    return (
+      <div className="card bg-danger mb-4">
+        <div className="card-body pt-xl-5 pb-xl-5">
+          <h2 className="text-white">{blockedExplanation}</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
     return <LoadingScreen />;
   }
 
   return (
-    <div>
-      <ErrorBoundary handleError={handleFatalError}>
-        <VideoAnnotatorBaseFrontend
-          taskData={initialTaskData}
-          onSubmit={handleSubmit}
-          onError={handleFatalError}
-        />
-      </ErrorBoundary>
-    </div>
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!initialTaskData?.annotator}
+      providerType={providerType}
+    >
+      <VideoAnnotatorBaseFrontend
+        taskData={initialTaskData}
+        onSubmit={handleSubmit}
+        onError={handleFatalError}
+      />
+    </MephistoApp>
   );
 }
 
-ReactDOM.render(<MainApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

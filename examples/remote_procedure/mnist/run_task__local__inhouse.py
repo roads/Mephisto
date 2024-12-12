@@ -99,7 +99,7 @@ def main(operator: Operator, cfg: DictConfig) -> None:
         post_install_script=cfg.mephisto.task.post_install_script,
     )
 
-    tasks: List[Dict[str, Any]] = [{"isScreeningUnit": False}] * cfg.num_tasks
+    tasks: List[Dict[str, Any]] = [{"isScreeningUnit": False, "has_data": True}] * cfg.num_tasks
     is_using_screening_units = cfg.mephisto.blueprint["use_screening_task"]
 
     function_registry = {

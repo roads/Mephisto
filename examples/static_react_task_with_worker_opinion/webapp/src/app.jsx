@@ -4,28 +4,31 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { MephistoApp } from "mephisto-addons";
+import { PROVIDER_TYPE, useMephistoTask } from "mephisto-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
-  BaseFrontend,
-  OnboardingComponent,
+  Instructions,
   LoadingScreen,
+  OnboardingComponent,
+  StaticReactTaskFrontend,
 } from "./components/core_components.jsx";
-import { useMephistoTask, ErrorBoundary } from "mephisto-core";
 
-/* ================= Application Components ================= */
-
-function MainApp() {
+function App() {
   const {
-    blockedReason,
     blockedExplanation,
-    isPreview,
-    isLoading,
-    initialTaskData,
-    handleSubmit,
+    blockedReason,
     handleFatalError,
+    handleSubmit,
+    initialTaskData,
+    isLoading,
     isOnboarding,
+    isPreview,
+    providerType,
   } = useMephistoTask();
+
+  const isInhouseProvider = providerType === PROVIDER_TYPE.INHOUSE;
 
   if (blockedReason !== null) {
     return (
@@ -37,38 +40,34 @@ function MainApp() {
     );
   }
 
-  if (isPreview) {
-    return (
-      <div className="card bg-primary mb-4">
-        <div className="card-body pt-xl-5 pb-xl-5">
-          <h2 className="text-white">
-            This is an incredibly simple React task working with Mephisto!
-          </h2>
-          <h5 className="text-white">
-            Inside you'll be asked to rate a given sentence as good or bad.
-          </h5>
-        </div>
-      </div>
-    );
+  if (isPreview && !isInhouseProvider) {
+    return <Instructions />;
   }
-  if (isLoading || !initialTaskData) {
+
+  if (isLoading) {
     return <LoadingScreen />;
   }
+
   if (isOnboarding) {
     return <OnboardingComponent onSubmit={handleSubmit} />;
   }
+
   return (
-    <div>
-      <ErrorBoundary handleError={handleFatalError}>
-        <BaseFrontend
-          taskData={initialTaskData}
-          onSubmit={handleSubmit}
-          isOnboarding={isOnboarding}
-          onError={handleFatalError}
-        />
-      </ErrorBoundary>
-    </div>
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!initialTaskData?.text}
+      providerType={providerType}
+    >
+      <Instructions />
+
+      <StaticReactTaskFrontend
+        taskData={initialTaskData}
+        onSubmit={handleSubmit}
+        isOnboarding={isOnboarding}
+        onError={handleFatalError}
+      />
+    </MephistoApp>
   );
 }
 
-ReactDOM.render(<MainApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

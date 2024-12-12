@@ -78,7 +78,7 @@ function FormComposerBaseFrontend({
     setFormComposerRenderingErrors,
   ] = React.useState(null);
 
-  let initialConfigFormData: ConfigFormType = taskData.form;
+  let initialConfigFormData: ConfigFormType = taskData?.form;
 
   prepareRemoteProcedures(remoteProcedure);
 
@@ -89,7 +89,7 @@ function FormComposerBaseFrontend({
       setLoadingFormData,
       setFormComposerRenderingErrors
     );
-  }, [taskData.form]);
+  }, [taskData?.form]);
 
   if (!initialConfigFormData) {
     return <NoFormDataErrorsMessage />;

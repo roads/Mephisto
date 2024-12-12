@@ -41,7 +41,7 @@ function VideoAnnotatorBaseFrontend({
   onError,
   finalResults = null,
 }: VideoAnnotatorBaseFrontendPropsType) {
-  const initialConfigAnnotatorData: ConfigAnnotatorType = taskData.annotator;
+  const initialConfigAnnotatorData: ConfigAnnotatorType = taskData?.annotator;
 
   if (!initialConfigAnnotatorData) {
     return (

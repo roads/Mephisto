@@ -36,6 +36,7 @@ def _build_tasks(num_tasks: int) -> List[dict]:
             {
                 "index": x,
                 "local_value_key": x,
+                "has_data": True,
             }
         )
 

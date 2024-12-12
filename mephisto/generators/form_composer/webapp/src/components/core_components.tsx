@@ -75,7 +75,7 @@ function FormComposerBaseFrontend({
   const [formData, setFormData] = React.useState<ConfigTaskType>(null);
 
   const inReviewState: boolean = ![undefined, null].includes(finalResults);
-  const initialConfigFormData: ConfigFormType = taskData.form;
+  const initialConfigFormData: ConfigFormType = taskData?.form;
 
   if (!inReviewState) {
     prepareRemoteProcedures(remoteProcedure);
@@ -94,7 +94,7 @@ function FormComposerBaseFrontend({
         setRenderingErrors
       );
     }
-  }, [taskData.form]);
+  }, [taskData?.form]);
 
   if (!initialConfigFormData) {
     return <NoDataErrorsMessage />;

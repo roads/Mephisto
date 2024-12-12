@@ -33,3 +33,4 @@ mephisto:
     # We expect to handle 25 people using the MNIST model at once
     max_num_concurrent_units: 25
     allowed_concurrent: 1
+    force_rebuild: true

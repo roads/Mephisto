@@ -4,47 +4,45 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { MephistoApp } from "mephisto-addons";
 import {
-  ErrorBoundary,
   MephistoContext,
+  PROVIDER_TYPE,
   useMephistoRemoteProcedureTask,
 } from "mephisto-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
-  LoadingScreen,
   ElementaryRemoteProcedureTaskFrontend,
+  LoadingScreen,
 } from "./components/core_components_remote_procedure.jsx";
 
-/* ================= Application Components ================= */
-
-// Generate a random id
-function uuidv4() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-function RemoteProcedureApp() {
-  let mephistoProps = useMephistoRemoteProcedureTask({});
+function App() {
+  let mephistoProps = useMephistoRemoteProcedureTask();
 
   let {
-    blockedReason,
     blockedExplanation,
-    taskConfig,
-    isPreview,
-    previewHtml,
+    blockedReason,
+    handleFatalError,
+    handleSubmit,
     initialTaskData,
     isLoading,
-    handleSubmit,
-    remoteProcedure,
     isOnboarding,
-    handleFatalError,
+    isPreview,
+    previewHtml,
+    providerType,
+    remoteProcedure,
+    taskConfig,
   } = mephistoProps;
 
   const handleRemoteCall = remoteProcedure("handle_with_model");
+
+  const isInhouseProvider = providerType === PROVIDER_TYPE.INHOUSE;
+
+  let _initialTaskData = initialTaskData;
+  if (initialTaskData && initialTaskData.hasOwnProperty("task_data")) {
+    _initialTaskData = initialTaskData.task_data;
+  }
 
   if (isOnboarding) {
     // TODO You can use this as an opportunity to display anything you want for
@@ -62,9 +60,17 @@ function RemoteProcedureApp() {
     return <LoadingScreen />;
   }
 
-  if (isPreview) {
-    if (!taskConfig.has_preview) {
-      return <TaskPreviewView description={taskConfig.task_description} />;
+  if (isPreview && !isInhouseProvider) {
+    if (!taskConfig?.has_preview) {
+      return (
+        <div className={"preview-screen"}>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: taskConfig?.task_description,
+            }}
+          />
+        </div>
+      );
     }
 
     if (previewHtml === null) {
@@ -75,7 +81,11 @@ function RemoteProcedureApp() {
   }
 
   return (
-    <ErrorBoundary handleError={handleFatalError}>
+    <MephistoApp
+      handleFatalError={handleFatalError}
+      hasTaskSpecificData={!!_initialTaskData?.has_data}
+      providerType={providerType}
+    >
       <MephistoContext.Provider value={mephistoProps}>
         <div className={"container"} id={"ui-container"}>
           <ElementaryRemoteProcedureTaskFrontend
@@ -85,20 +95,8 @@ function RemoteProcedureApp() {
           />
         </div>
       </MephistoContext.Provider>
-    </ErrorBoundary>
+    </MephistoApp>
   );
 }
 
-function TaskPreviewView({ description }) {
-  return (
-    <div className={"preview-screen"}>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: description,
-        }}
-      />
-    </div>
-  );
-}
-
-ReactDOM.render(<RemoteProcedureApp />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

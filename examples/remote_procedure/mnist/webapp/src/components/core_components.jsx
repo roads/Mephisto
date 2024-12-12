@@ -7,10 +7,6 @@
 import React, { Fragment } from "react";
 import CanvasDraw from "react-canvas-draw";
 
-function LoadingScreen() {
-  return <Directions>Loading...</Directions>;
-}
-
 function Directions({ children }) {
   return (
     <section className="hero is-light">
@@ -21,6 +17,10 @@ function Directions({ children }) {
       </div>
     </section>
   );
+}
+
+function LoadingScreen() {
+  return <Directions>Loading...</Directions>;
 }
 
 function AnnotationCanvas({ onUpdate, classifyDigit, index }) {
@@ -139,7 +139,7 @@ function Instructions({ taskData }) {
   );
 }
 
-function TaskFrontend({
+function MnistTaskFrontend({
   classifyDigit,
   finalResults = null,
   handleSubmit,
@@ -281,9 +281,4 @@ function ReviewFrontend({ initialTaskData, reviewData }) {
   );
 }
 
-export {
-  LoadingScreen,
-  TaskFrontend as BaseFrontend,
-  ReviewFrontend,
-  Instructions,
-};
+export { Instructions, LoadingScreen, MnistTaskFrontend, ReviewFrontend };

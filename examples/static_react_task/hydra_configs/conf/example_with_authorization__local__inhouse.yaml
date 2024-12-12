@@ -29,3 +29,4 @@ mephisto:
     # We expect to be able to handle 300 concurrent tasks without issue
     max_num_concurrent_units: 300
     allowed_concurrent: 1
+    force_rebuild: true

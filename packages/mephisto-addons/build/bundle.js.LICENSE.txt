@@ -22,7 +22,7 @@
  * Date: 2023-08-28T13:37Z
  */
 
-/*! @name @videojs/http-streaming @version 3.16.0 @license Apache-2.0 */
+/*! @name @videojs/http-streaming @version 3.16.2 @license Apache-2.0 */
 
 /*! @name aes-decrypter @version 4.0.2 @license Apache-2.0 */
 
@@ -59,6 +59,39 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @remix-run/router v1.21.0
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
+ */
+
+/**
+ * React Router DOM v6.28.0
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
+ */
+
+/**
+ * React Router v6.28.0
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
  */
 
 /**!
