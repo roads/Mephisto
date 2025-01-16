@@ -119,6 +119,7 @@ export default function ThumbButtons({
         optionValue={optionValue}
         onClick={handleThumbsDownClick}
       />
+      <span style={{ margin: "0 8px" }}></span>
       <ThumbsUpButton optionValue={optionValue} onClick={handleThumbsUpClick} />
     </div>
   );

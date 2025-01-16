@@ -28,6 +28,7 @@ function useRankable(items, nSelect, moveReferences, onEvents) {
   }
   const initialItemOrder = items.map(determineInitialItemOrder);
   const [itemOrder, setItemOrder] = useState(initialItemOrder);
+  const [reorderedItems, setReorderedItems] = useState(items);
 
   // Create state to track submit button eligibility.
   const [isComplete, setIsComplete] = useState(false);
@@ -69,6 +70,22 @@ function useRankable(items, nSelect, moveReferences, onEvents) {
       }
     });
     return itemOrder;
+  }
+
+  function sortWithIndices(toSort) {
+    for (var i = 0; i < toSort.length; i++) {
+      toSort[i] = [toSort[i], i];
+    }
+    toSort.sort(function (left, right) {
+      return left[0] < right[0] ? -1 : 1;
+    });
+
+    var sortIndices = [];
+    for (var j = 0; j < toSort.length; j++) {
+      sortIndices.push(toSort[j][1]);
+      toSort[j] = toSort[j][0];
+    }
+    return sortIndices;
   }
 
   function handleReferenceClick(referenceIndex) {
@@ -127,6 +144,7 @@ function useRankable(items, nSelect, moveReferences, onEvents) {
       setIsComplete(newIsComplete);
     }
 
+    // console.log("setItemState");
     setItemState(updatedItemState);
 
     var updatedItemOrder;
@@ -136,6 +154,11 @@ function useRankable(items, nSelect, moveReferences, onEvents) {
     } else {
       updatedItemOrder = itemOrder;
     }
+
+    // Determine re-order indices for new item order.
+    const sortIndices = sortWithIndices(updatedItemOrder);
+    const updatedReorderedItems = sortIndices.map((i) => items[i]);
+    setReorderedItems(updatedReorderedItems);
 
     // Append event to history.
     const newEvent = formatEvent({
@@ -152,7 +175,7 @@ function useRankable(items, nSelect, moveReferences, onEvents) {
 
   return {
     itemState,
-    itemOrder,
+    reorderedItems,
     handleReferenceClick,
   };
 }

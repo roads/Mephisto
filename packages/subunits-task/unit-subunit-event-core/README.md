@@ -19,7 +19,7 @@ Alternatively, you can add the package as a dependency in your host application'
 
 ```json
 "dependencies": {
-    "unit-subunit-event-core": "file:../packages/unit-subunit-event-core/unit-subunit-event-core-3.4.0.tgz"
+    "unit-subunit-event-core": "file:../packages/unit-subunit-event-core/unit-subunit-event-core-4.0.0.tgz"
   },
 ```
 

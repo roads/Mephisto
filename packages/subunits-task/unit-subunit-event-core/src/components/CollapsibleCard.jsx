@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Collapse from "react-bootstrap/Collapse";
 import Card from "react-bootstrap/Card";
 
 import formatEvent from "./utils.js";
@@ -45,29 +44,20 @@ function CollapsibleCard({ children, onEvents, startOpen = false }) {
     });
     onEvents([newEvent]);
   }
+
   return (
     <Card className="collapsible-card mb-3">
       <Card.Header className="collapsible-card-header">
         <Row>
           <Col sm="auto">
-            <Button
-              onClick={handleClick}
-              aria-controls="collapsible-card-header"
-              aria-expanded={isOpen}
-              className="mr-2"
-              variant="primary"
-            >
+            <Button onClick={handleClick} className="mr-2" variant="primary">
               ?
             </Button>
           </Col>
           <Col>{header}</Col>
         </Row>
       </Card.Header>
-      <Collapse in={isOpen}>
-        <div className="collapsible-card-body">
-          <Card.Body>{body}</Card.Body>
-        </div>
-      </Collapse>
+      {isOpen && <Card.Body>{body}</Card.Body>}
     </Card>
   );
 }
