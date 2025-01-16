@@ -10,11 +10,10 @@ function useSelfServeTask(tasks) {
 
   const taskData = tasks[taskIndex];
   const unitInput = taskData.unit;
-  var downloadOutput = unitInput.data.download_output
+  var downloadOutput = unitInput.data.download_output;
   if (downloadOutput == undefined) {
     downloadOutput = true;
   }
-  console.log("downloadOutput: " + downloadOutput)
 
   const optionList = tasks.map((task, index) => {
     const optionLabel = "Proto-Unit " + index;

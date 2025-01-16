@@ -1,6 +1,6 @@
 {
   "name": "self-serve-task",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A companion for annotation frontends that desire a self-serve annotation task design.",
   "author": "Brett D. Roads (brettroads@meta.com)",
   "license": "ISC",

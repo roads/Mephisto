@@ -12,14 +12,14 @@ The package is not currently available on npm and must be installed by downloadi
 
 ```console
 cd /path/to/host/webapp/
-npm install /path/to/self-serve-task/self-serve-task-1.3.0.tgz --save
+npm install /path/to/self-serve-task/self-serve-task-1.4.0.tgz --save
 ```
 
 Alternatively, you can add the package as a dependency in your host application's `package.json` file and then run the terminal command `npm install`. For example:
 
 ```json
 "dependencies": {
-    "self-serve-task": "file:../packages/self-serve-task/self-serve-task-1.3.0.tgz"
+    "self-serve-task": "file:../packages/self-serve-task/self-serve-task-1.4.0.tgz"
   },
 ```
 
