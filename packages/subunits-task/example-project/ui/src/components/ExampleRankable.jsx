@@ -8,18 +8,18 @@ import Card from "react-bootstrap/Card";
 
 import {
   CollapsibleCard,
+  MotionRow,
   Rankable,
   ThumbButtons,
   TextArea,
   formatEvent,
 } from "unit-subunit-event-core";
 
-
 export default function ExampleRankable({ subunitInput, onEvents, variant }) {
   const NEXT_BUTTON_TEXT = "Next";
-  const thumbsPromptText = "Were the options ok?";
-  const [isDisabled, setIsDisabled] = useState(true);
   const [textAreaEvent, setTextAreaEvent] = useState({});
+  const thumbsPromptText = "Were the options ok?";
+  const [isNextDisabled, setIsNextDisabled] = useState(true);
 
   const initialEvent = formatEvent({
     kind: "ExampleRankable.initialRender",
@@ -35,9 +35,9 @@ export default function ExampleRankable({ subunitInput, onEvents, variant }) {
     const firstEvent = newEvents.at(0); // TODO HACK replace with proper loop
     if (firstEvent.data.kind === "Rankable.handleReferenceClick") {
       if (firstEvent.data.is_complete) {
-        setIsDisabled(false);
+        setIsNextDisabled(false);
       } else {
-        setIsDisabled(true);
+        setIsNextDisabled(true);
       }
     }
   }
@@ -63,6 +63,20 @@ export default function ExampleRankable({ subunitInput, onEvents, variant }) {
     onEvents([textAreaEvent, newEvent], requestedSubunitIndex);
   }
 
+  // Transition spec to control both reference card movement and movement of
+  // rows when instructions are expanded/collapsed.
+  const rowTransition = {
+    type: "tween",
+    duration: 0.2,
+    ease: "linear",
+  };
+
+  const cardTransition = {
+    type: "tween",
+    duration: 0.2,
+    ease: "linear",
+  };
+
   return (
     <Row className={`subunit pt-3 pb-3 ${variant}`}>
       <Col></Col>
@@ -72,21 +86,47 @@ export default function ExampleRankable({ subunitInput, onEvents, variant }) {
             <CollapsibleCard onEvents={onEvents}>
               <CollapsibleCard.Header>
                 <h4>Instructions</h4>
-                Your task is to ...
+                <span>Your task is to ...</span>
               </CollapsibleCard.Header>
               <CollapsibleCard.Body>
-                Your task is to ...
+                <span>
+                  Detailed instructions of your task Detailed instructions of
+                  your task Detailed instructions of your task Detailed
+                  instructions of your task Detailed instructions of your task
+                  Detailed instructions of your task Detailed instructions of
+                  your task Detailed instructions of your task Detailed
+                  instructions of your task Detailed instructions of your task
+                  Detailed instructions of your task Detailed instructions of
+                  your task Detailed instructions of your task Detailed
+                  instructions of your task Detailed instructions of your task
+                  Detailed instructions of your task Detailed instructions of
+                  your task Detailed instructions of your task Detailed
+                  instructions of your task Detailed instructions of your task
+                  Detailed instructions of your task Detailed instructions of
+                  your task Detailed instructions of your task Detailed
+                  instructions of your task Detailed instructions of your task
+                  Detailed instructions of your task Detailed instructions of
+                  your task Detailed instructions of your task Detailed
+                  instructions of your task Detailed instructions of your task
+                  Detailed instructions of your task Detailed instructions of
+                  your task Detailed instructions of your task Detailed
+                  instructions of your task Detailed instructions of your
+                  task...
+                </span>
               </CollapsibleCard.Body>
             </CollapsibleCard>
           </Col>
         </Row>
-        <Rankable
-          items={subunitInput.data.items}
-          nSelect={subunitInput.data.n_select}
-          moveReferences={true}
-          onEvents={handleRankEvents}
-        />
-        <Row>
+        <MotionRow xs={1} md={3} lg={3} layout transition={rowTransition}>
+          <Rankable
+            items={subunitInput.data.items}
+            nSelect={subunitInput.data.n_select}
+            moveReferences={true}
+            onEvents={handleRankEvents}
+            transition={cardTransition}
+          />
+        </MotionRow>
+        <MotionRow layout transition={rowTransition}>
           <Col></Col>
           <Col sm="auto">
             <Button
@@ -98,14 +138,14 @@ export default function ExampleRankable({ subunitInput, onEvents, variant }) {
                   NEXT_BUTTON_TEXT
                 )
               }
-              disabled={isDisabled}
+              disabled={isNextDisabled}
             >
               {NEXT_BUTTON_TEXT}
             </Button>
           </Col>
           <Col></Col>
-        </Row>
-        <Row>
+        </MotionRow>
+        <MotionRow layout transition={rowTransition}>
           <Col>
             <Card className={`mb-3`}>
               <Card.Body>
@@ -124,7 +164,7 @@ export default function ExampleRankable({ subunitInput, onEvents, variant }) {
               </Card.Body>
             </Card>
           </Col>
-        </Row>
+        </MotionRow>
       </Col>
       <Col></Col>
     </Row>

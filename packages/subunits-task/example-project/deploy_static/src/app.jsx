@@ -1,27 +1,27 @@
 import React from "react";
+import { StrictMode } from "react"; // TODO remove when done debugging
 import { createRoot } from "react-dom/client";
 
 import { SelfServeLanding, useSelfServeTask } from "self-serve-task";
 
 import { UnitBase, IndexedUnit } from "unit-subunit-event-core";
 
-// Import any project-specific components you need here and add them to
+// Import any project-specific components you need here and also add them to
 // `componentRegistry` below.
 import {
   ExampleConsent,
   ExampleDebriefing,
+  ExampleFormQuestion,
   ExampleInstructions,
   ExampleQueryCard,
   ExampleRankable,
   ExampleReferenceCard,
   ExampleSink,
-} from "example-project";
-
+} from "imagenet-phase2";
 
 import tasks from "./tasks/example_project.json";
 
-const container = document.getElementById("app");
-const root = createRoot(container);
+const root = createRoot(document.getElementById("app"));
 
 function MainApp() {
   const {
@@ -37,6 +37,7 @@ function MainApp() {
   const componentRegistry = {
     IndexedUnit: IndexedUnit,
     ExampleConsent: ExampleConsent,
+    ExampleFormQuestion: ExampleFormQuestion,
     ExampleDebriefing: ExampleDebriefing,
     ExampleInstructions: ExampleInstructions,
     ExampleQueryCard: ExampleQueryCard,
@@ -64,4 +65,8 @@ function MainApp() {
   );
 }
 
-root.render(<MainApp />);
+root.render(
+  <StrictMode>
+    <MainApp />
+  </StrictMode>
+);

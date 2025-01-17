@@ -17,7 +17,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-dom": "^18.2.0",
-    "unit-subunit-event-core": "file:../../../ui/unit-subunit-event-core/unit-subunit-event-core-3.4.0.tgz",
+    "unit-subunit-event-core": "file:../../../ui/unit-subunit-event-core/unit-subunit-event-core-4.0.0.tgz",
     "example-project": "file:../../../ui/example-project/example-project-1.0.0.tgz"
   },
   "devDependencies": {

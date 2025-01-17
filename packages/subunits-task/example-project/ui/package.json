@@ -1,7 +1,7 @@
 {
-  "name": "example-project",
+  "name": "example-project-ui",
   "version": "1.0.0",
-  "description": "Example Project",
+  "description": "Example Project UI Components",
   "author": "Brett D. Roads (brettroads@meta.com)",
   "license": "ISC",
   "private": true,
@@ -14,7 +14,7 @@
     "js-untar": "^2.0.0",
     "pako": "^2.1.0",
     "react-bootstrap": "^2.7.2",
-    "unit-subunit-event-core": "file:../unit-subunit-event-core/unit-subunit-event-core-3.4.0.tgz"
+    "unit-subunit-event-core": "file:../../unit-subunit-event-core/unit-subunit-event-core-4.0.0.tgz"
   },
   "scripts": {
     "build": "rollup -c",

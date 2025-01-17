@@ -15,10 +15,11 @@ from omegaconf import DictConfig
 ALL_BLOCKLIST_QUALIFICATION = "all_projects_blocklist"
 EXAMPLE_PROJECT_ONBOARDING_SCORE = "example_project_onboarding_score"
 
-@task_script(default_config_file="proj8.0_mturk_sandbox_onboarding.yaml")
+
+@task_script(default_config_file="example_project_mturk_sandbox_onboarding.yaml")
 def main(operator: Operator, cfg: DictConfig) -> None:
     provider_type = cfg.mephisto.provider._provider_type
-    
+
     shared_state = SharedStaticTaskState()
     shared_state.qualifications = [
         make_qualification_dict(
@@ -38,45 +39,45 @@ def main(operator: Operator, cfg: DictConfig) -> None:
         # for `mock` or `mturk_sandbox`.
         shared_state.mturk_specific_qualifications = [
             {
-                "QualificationTypeId": "00000000000000000040", # The total number of HITs submitted by a Worker that have been approved.
+                "QualificationTypeId": "00000000000000000040",  # The total number of HITs submitted by a Worker that have been approved.
                 "Comparator": "GreaterThanOrEqualTo",
                 "IntegerValues": [1000],
                 "ActionsGuarded": "DiscoverPreviewAndAccept",
             },
             {
-                "QualificationTypeId": "000000000000000000L0", # The percentage of assignments the Worker has submitted that were subsequently approved by the Requester.
+                "QualificationTypeId": "000000000000000000L0",  # The percentage of assignments the Worker has submitted that were subsequently approved by the Requester.
                 "Comparator": "GreaterThanOrEqualTo",
                 "IntegerValues": [90],
                 "ActionsGuarded": "DiscoverPreviewAndAccept",
             },
             {
-                "QualificationTypeId": "00000000000000000071", # Only allow Turkers from specified states in US.
+                "QualificationTypeId": "00000000000000000071",  # Only allow Turkers from specified states in US.
                 "Comparator": "In",
-                "LocaleValues":[
-                    { "Country": "US", "Subdivision": "AL" },
-                    { "Country": "US", "Subdivision": "AR" },
-                    { "Country": "US", "Subdivision": "DE" },
-                    { "Country": "US", "Subdivision": "FL" },
-                    { "Country": "US", "Subdivision": "GA" },
-                    { "Country": "US", "Subdivision": "IA" },
-                    { "Country": "US", "Subdivision": "KS" },
-                    { "Country": "US", "Subdivision": "KY" },
-                    { "Country": "US", "Subdivision": "LA" },
-                    { "Country": "US", "Subdivision": "MD" },
-                    { "Country": "US", "Subdivision": "MN" },
-                    { "Country": "US", "Subdivision": "MS" },
-                    { "Country": "US", "Subdivision": "MO" },
-                    { "Country": "US", "Subdivision": "NE" },
-                    { "Country": "US", "Subdivision": "ND" },
-                    { "Country": "US", "Subdivision": "OK" },
-                    { "Country": "US", "Subdivision": "SC" },
-                    { "Country": "US", "Subdivision": "TN" },
-                    { "Country": "US", "Subdivision": "TX" },
-                    { "Country": "US", "Subdivision": "VA" },
-                    { "Country": "US", "Subdivision": "WV" },
+                "LocaleValues": [
+                    {"Country": "US", "Subdivision": "AL"},
+                    {"Country": "US", "Subdivision": "AR"},
+                    {"Country": "US", "Subdivision": "DE"},
+                    {"Country": "US", "Subdivision": "FL"},
+                    {"Country": "US", "Subdivision": "GA"},
+                    {"Country": "US", "Subdivision": "IA"},
+                    {"Country": "US", "Subdivision": "KS"},
+                    {"Country": "US", "Subdivision": "KY"},
+                    {"Country": "US", "Subdivision": "LA"},
+                    {"Country": "US", "Subdivision": "MD"},
+                    {"Country": "US", "Subdivision": "MN"},
+                    {"Country": "US", "Subdivision": "MS"},
+                    {"Country": "US", "Subdivision": "MO"},
+                    {"Country": "US", "Subdivision": "NE"},
+                    {"Country": "US", "Subdivision": "ND"},
+                    {"Country": "US", "Subdivision": "OK"},
+                    {"Country": "US", "Subdivision": "SC"},
+                    {"Country": "US", "Subdivision": "TN"},
+                    {"Country": "US", "Subdivision": "TX"},
+                    {"Country": "US", "Subdivision": "VA"},
+                    {"Country": "US", "Subdivision": "WV"},
                 ],
                 "ActionsGuarded": "DiscoverPreviewAndAccept",
-            }
+            },
         ]
     task_dir = cfg.task_dir
 

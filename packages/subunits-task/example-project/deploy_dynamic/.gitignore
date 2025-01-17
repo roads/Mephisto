@@ -10,7 +10,7 @@
 
 # production
 /build/bundle.js
-/build/*/
+# /build/*/
 
 # misc
 .DS_Store
