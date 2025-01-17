@@ -1,5 +1,5 @@
 {
-  "name": "self-serve-dynamic",
+  "name": "deploy-self-serve-dynamic",
   "version": "1.0.0",
   "description": "Deployment strategy that uses a local http-server to serve dynamic content.",
   "author": "Brett D. Roads (brettroads@meta.com)",
